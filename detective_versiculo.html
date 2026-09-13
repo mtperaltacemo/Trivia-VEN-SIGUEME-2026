@@ -281,6 +281,23 @@
   const selectScreen = document.getElementById('selectScreen');
   const caseScreen = document.getElementById('caseScreen');
   const casosGrid = document.getElementById('casosGrid');
+  const palabraClaveEl = document.getElementById('palabraClave');
+  const aplicacionEl = document.getElementById('aplicacion');
+
+  // Guarda lo escrito por caso mientras la página está abierta, para poder
+  // pasar de un caso a otro (o hacerlos todos) sin perder los apuntes de
+  // cada uno. Todo esto vive solo en memoria: se borra igual al cerrar o
+  // recargar la página — nunca se guarda ni se envía a ningún lado.
+  const notas = {};
+  let casoActual = null;
+
+  function guardarNotasCasoActual(){
+    if(!casoActual) return;
+    notas[casoActual.letra] = {
+      palabraClave: palabraClaveEl.value,
+      aplicacion: aplicacionEl.value
+    };
+  }
 
   CASOS.forEach(c=>{
     const btn = document.createElement('div');
@@ -292,11 +309,15 @@
   });
 
   document.getElementById('backBtn').addEventListener('click', ()=>{
+    guardarNotasCasoActual();
     caseScreen.hidden = true;
     selectScreen.hidden = false;
   });
 
   function openCase(c){
+    guardarNotasCasoActual();
+    casoActual = c;
+
     document.getElementById('cTitle').textContent = 'Caso ' + c.letra;
     document.getElementById('cRef').textContent = c.ref;
     document.getElementById('cPregunta').textContent = c.pregunta;
@@ -304,8 +325,9 @@
     const pistasBox = document.getElementById('pistasBox');
     pistasBox.innerHTML = `<img src="${c.img}" alt="Escena de ${c.ref}" style="width:100%;border-radius:10px;display:block;">`;
 
-    document.getElementById('palabraClave').value = '';
-    document.getElementById('aplicacion').value = '';
+    const guardado = notas[c.letra];
+    palabraClaveEl.value = guardado ? guardado.palabraClave : '';
+    aplicacionEl.value = guardado ? guardado.aplicacion : '';
 
     selectScreen.hidden = true;
     caseScreen.hidden = false;
