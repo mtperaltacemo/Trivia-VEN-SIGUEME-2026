@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ven, Sígueme 2026 — Panel del anfitrión (Modo Clásico)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
+<style>
+  :root {
+    --bg-red: #0B3D66;
+    --bg-red-deep: #041B2E;
+    --panel: #0A2033;
+    --panel-2: #051422;
+    --blue: #3E8FC4;
+    --blue-dim: #245C86;
+    --blue-light: #7FD4E6;
+    --text: #F3FBFF;
+    --muted: #B7C9D6;
+    --danger: #FF6A4D;
+    --good: #46C98A;
+    --yellow: #F2B705;
+    --cat-red: #2158C4;
+    --cat-yellow: #DDA92E;
+    --cat-blue: #17A2B8;
+    --cat-orange: #F2994A;
+    --cat-green: #379654;
+    --radius: 14px;
+    --ice: #EFF6F8;
+    --ink-soft: #4E6577;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--ice); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+  body {
+    background-color:var(--ice);
+    background-image:
+      radial-gradient(circle at 12% 6%, rgba(62,143,196,0.12), transparent 45%),
+      radial-gradient(circle at 90% 95%, rgba(55,150,84,0.08), transparent 48%);
+    display:flex; justify-content:center; padding:24px 16px 60px;
+  }
+  .app { width:100%; max-width:720px; }
+  h1,h2,h3 { font-family:'Space Grotesk',sans-serif; margin:0; }
+  .hidden { display:none !important; }
+
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+  .brand-logo-credit { display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .brand-logo-credit img { height:64px; width:auto; display:block; filter:drop-shadow(0 3px 8px rgba(18,59,99,0.25)); }
+  .brand-logo img { height:50px; width:auto; display:block; filter:drop-shadow(0 2px 6px rgba(18,59,99,0.18)); }
+  @media (max-width:380px) { .brand-logo-credit img { height:52px; } .brand-logo img { height:42px; } }
+
+  .page-title {
+    font-family:'Bebas Neue',sans-serif; font-size:28px; font-weight:400;
+    letter-spacing:.04em; line-height:1; text-transform:uppercase; color:var(--bg-red);
+    text-align:center; margin:0;
+  }
+  .page-subtitle {
+    font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:600;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--blue-dim);
+    text-align:center; margin:6px 0 20px;
+  }
+  .host-pill {
+    display:inline-flex; align-items:center; gap:6px; background:var(--bg-red); color:#fff;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:11px; letter-spacing:.06em;
+    padding:4px 10px; border-radius:999px; margin:0 auto 14px; text-transform:uppercase;
+  }
+  .host-pill-wrap { display:flex; justify-content:center; }
+
+  .card { background:var(--panel); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius); padding:22px; margin-bottom:16px; }
+  .muted { color:var(--muted); }
+  .center { text-align:center; }
+
+  label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:500; }
+  input[type="text"], select, textarea {
+    width:100%; background:var(--panel-2); border:1px solid rgba(255,255,255,0.08); color:var(--text);
+    padding:12px 14px; border-radius:10px; font-size:15px; font-family:inherit;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus { outline:2px solid var(--blue-light); outline-offset:1px; }
+  textarea { resize:vertical; min-height:70px; }
+
+  button.primary {
+    background:var(--bg-red); color:#FFFFFF; border:none; font-weight:700; font-family:'Space Grotesk',sans-serif;
+    font-size:15px; padding:14px 22px; border-radius:10px; cursor:pointer; width:100%;
+    transition:transform .12s ease, background .12s ease;
+  }
+  button.primary:hover:not(:disabled) { transform:translateY(-1px); background:var(--blue-dim); }
+  button.primary:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+
+  button.secondary, a.secondary {
+    background:transparent; color:var(--blue-light); border:1.5px solid var(--blue-dim); font-weight:600;
+    font-family:'Space Grotesk',sans-serif; font-size:13.5px; padding:10px 16px; border-radius:9px; cursor:pointer;
+  }
+  button.secondary:hover:not(:disabled), a.secondary:hover { background:rgba(127,212,230,0.08); }
+  a.secondary { display:block; text-align:center; text-decoration:none; box-sizing:border-box; }
+
+  button.good-btn {
+    background:var(--good); color:#08321F; border:none; font-weight:700; font-family:'Space Grotesk',sans-serif;
+    font-size:16px; padding:16px 14px; border-radius:10px; cursor:pointer;
+  }
+  button.good-btn:hover:not(:disabled) { filter:brightness(1.08); }
+  button.good-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+  button.bad-btn {
+    background:var(--danger); color:#3A0C02; border:none; font-weight:700; font-family:'Space Grotesk',sans-serif;
+    font-size:16px; padding:16px 14px; border-radius:10px; cursor:pointer;
+  }
+  button.bad-btn:hover:not(:disabled) { filter:brightness(1.08); }
+  button.bad-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+  .code-display {
+    text-align:center; padding:18px 10px; background:var(--panel-2); border-radius:12px; margin-bottom:14px;
+  }
+  .code-display .code { font-family:'Bebas Neue',sans-serif; font-size:44px; letter-spacing:.12em; color:var(--yellow); }
+  .code-display .label { font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .code-actions { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+  .code-actions button { flex:1; min-width:140px; }
+
+  .players-list { display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto; }
+  .player-row {
+    display:flex; justify-content:space-between; align-items:center; background:var(--panel-2);
+    border-radius:9px; padding:10px 14px; font-size:14px;
+  }
+  .player-row b { color:var(--good); font-family:'Space Grotesk',sans-serif; }
+  .player-count { font-size:12.5px; color:var(--muted); margin-bottom:10px; }
+  .empty-note { text-align:center; color:var(--muted); font-size:13.5px; padding:16px 6px; }
+
+  .tabs { display:flex; gap:8px; margin-bottom:16px; }
+  .tab-btn {
+    flex:1; background:var(--panel); border:1.5px solid rgba(255,255,255,0.08); color:var(--muted);
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; padding:11px 8px; border-radius:10px;
+    cursor:pointer; text-transform:uppercase; letter-spacing:.03em;
+  }
+  .tab-btn.active { background:var(--bg-red); color:#fff; border-color:var(--bg-red); }
+
+  .cat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+  .cat-btn {
+    border:none; border-radius:10px; padding:14px 10px; font-family:'Space Grotesk',sans-serif; font-weight:700;
+    font-size:13.5px; color:#fff; cursor:pointer; text-align:center;
+  }
+  .cat-btn.active { outline:3px solid var(--yellow); outline-offset:-3px; }
+  .level-tab.active-tab { background:var(--blue-light); color:#08321F; border-color:var(--blue-light); }
+  .cat-profecias_cumplidas { background:var(--cat-red); }
+  .cat-arrepentimiento { background:var(--cat-yellow); color:#3A2D00; }
+  .cat-ultimos_dias { background:var(--cat-blue); }
+  .cat-llamado_isaias { background:var(--cat-green); }
+  .cat-profecias_mesianicas { background:var(--cat-orange); }
+
+  .q-pick-row {
+    display:flex; justify-content:space-between; align-items:center; background:var(--panel-2);
+    border-radius:9px; padding:11px 14px; font-size:13.5px; margin-bottom:8px; cursor:pointer;
+    border:1.5px solid transparent;
+  }
+  .q-pick-row:hover { border-color:var(--blue-dim); }
+  .q-pick-row.used { opacity:.4; }
+  .q-pick-row .qtxt { flex:1; margin-right:10px; }
+  .q-pick-badge { font-size:10.5px; color:var(--muted); flex-shrink:0; }
+
+  .quiz-cat-label { font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--blue-light); font-weight:700; margin-bottom:6px; text-align:center; }
+  .question-text { font-size:19px; font-weight:700; line-height:1.4; margin:4px 0 16px; font-family:'Space Grotesk',sans-serif; text-align:center; }
+
+  .opt-review { display:grid; gap:8px; margin-bottom:16px; }
+  .opt-review-row {
+    display:flex; align-items:center; gap:10px; background:var(--panel-2); border-radius:10px; padding:12px 14px; font-size:14.5px;
+    border:2px solid transparent;
+  }
+  .opt-review-row.correct-opt { border-color:var(--good); }
+  .opt-letter { width:26px; height:26px; border-radius:7px; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700; flex-shrink:0; }
+
+  .status-box { text-align:center; padding:24px 10px; }
+  .status-icon { font-size:38px; margin-bottom:8px; }
+  .status-text { font-size:15.5px; font-weight:600; line-height:1.5; }
+  .status-sub { font-size:13px; color:var(--muted); margin-top:6px; }
+
+  .timer-track {
+    position:relative; width:100%; max-width:320px; margin:14px auto 0; height:14px;
+    border-radius:999px; background:rgba(183,201,214,0.18); overflow:hidden;
+  }
+  .timer-fill {
+    position:absolute; top:0; left:0; bottom:0; width:100%; border-radius:999px;
+    background:var(--good); transition:background-color .35s ease;
+  }
+  .timer-fill.warn { background:var(--yellow); }
+  .timer-fill.urgent { background:var(--danger); animation:timerPulse .5s ease-in-out infinite; }
+  @keyframes timerPulse { 0%, 100% { opacity:1; } 50% { opacity:.5; } }
+
+  .locked-info {
+    background:var(--panel-2); border:2px solid var(--yellow); border-radius:12px; padding:16px; margin-bottom:16px; text-align:center;
+  }
+  .locked-info .who { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:var(--yellow); }
+  .locked-info .what { font-size:14.5px; color:var(--text); margin-top:4px; }
+
+  .judge-btns { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+  .scoreboard { display:flex; flex-direction:column; gap:7px; }
+  .sb-row { display:flex; justify-content:space-between; align-items:center; background:var(--panel-2); border-radius:9px; padding:9px 14px; font-size:13.5px; }
+  .sb-row .sb-rank { color:var(--muted); width:26px; flex-shrink:0; }
+  .sb-row .sb-name { flex:1; }
+  .sb-row .sb-score { font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--good); }
+  .sb-row.negative .sb-score { color:var(--danger); }
+  .sb-row.failed-tag { opacity:.55; }
+
+  .err-box { background:rgba(255,106,77,0.12); border:1px solid var(--danger); border-radius:10px; padding:12px 14px; font-size:13px; color:var(--text); margin-bottom:14px; }
+  .ok-box { background:rgba(70,201,138,0.12); border:1px solid var(--good); border-radius:10px; padding:12px 14px; font-size:13px; color:var(--text); margin-bottom:14px; }
+
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:520px) { .grid2 { grid-template-columns:1fr; } }
+
+  .field { margin-bottom:14px; }
+  .divider { border:none; border-top:1px solid rgba(255,255,255,0.08); margin:18px 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand-logo" aria-hidden="true"><span style="font-size:40px; line-height:1;">📖</span></div>
+    <div class="brand-logo-credit" aria-hidden="true"></div>
+  </div>
+  <h1 class="page-title">VEN, SÍGUEME 2026</h1>
+  <p class="page-subtitle">Panel del anfitrión · Isaías 1-12</p>
+  <div class="host-pill-wrap"><span class="host-pill">🎙️ ANFITRIÓN</span></div>
+
+  <div id="errBanner" class="err-box hidden"></div>
+  <div id="okBanner" class="ok-box hidden"></div>
+
+  <!-- SETUP: crear o continuar partida -->
+  <div id="screenSetup">
+    <div class="card" style="border-color:var(--yellow);">
+      <h3 style="margin-bottom:6px;">🕹 Modo Clásico</h3>
+      <p class="muted" style="font-size:13px; margin:0 0 14px;">Vos elegís cada pregunta desde el panel y juzgás quién respondió bien. Ideal para grupos pequeños o cuando querés controlar el ritmo del juego a mano.</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:4px;">Crear nueva partida</h3>
+      <p class="muted" style="font-size:13px; margin:0 0 16px;">Se genera un código corto para compartir con los participantes.</p>
+      <button class="primary" id="createGameBtn" type="button">Crear partida nueva</button>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:4px;">Continuar una partida existente</h3>
+      <p class="muted" style="font-size:13px; margin:0 0 12px;">Ingresá el código si ya la habías creado antes.</p>
+      <input type="text" id="resumeCodeInput" placeholder="EJ: AB3X9K" maxlength="8" style="text-transform:uppercase;" autocomplete="off">
+      <div style="height:12px;"></div>
+      <button class="secondary" id="resumeGameBtn" type="button" style="width:100%;">Continuar esta partida</button>
+    </div>
+    <div class="card">
+      <button class="secondary" id="viewHistoricRankBtn" type="button" style="width:100%;">🏆 Ver ranking histórico</button>
+    </div>
+  </div>
+
+  <!-- RANKING HISTÓRICO POR NIVELES -->
+  <div id="screenHistoricRank" class="hidden">
+    <div class="card">
+      <button class="secondary" id="backFromHistoricBtn" type="button" style="margin-bottom:12px;">◀ Volver</button>
+      <h3 style="margin-bottom:10px;">Ranking histórico</h3>
+      <div class="settings-row" id="levelTabs" style="margin-bottom:14px;"></div>
+      <div class="scoreboard" id="historicRankList"></div>
+    </div>
+  </div>
+
+  <!-- CONTROL PANEL (visible una vez que hay partida activa) -->
+  <div id="screenControl" class="hidden">
+
+    <div class="code-display">
+      <div class="label">Código de la partida</div>
+      <div class="code" id="gameCodeDisplay">------</div>
+      <div class="code-actions">
+        <button class="secondary" id="copyLinkBtn" type="button">Copiar link de jugador</button>
+        <button class="secondary" id="whatsappLinkBtn" type="button">Enviar link por WhatsApp</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:10px;">Participantes conectados</h3>
+      <div class="player-count" id="playerCount">0 participantes</div>
+      <div class="players-list" id="playersList">
+        <div class="empty-note">Todavía no se unió nadie. Compartí el link para que empiecen a entrar.</div>
+      </div>
+    </div>
+
+    <!-- PICKER: elegir/lanzar pregunta (visible cuando no hay pregunta activa) -->
+    <div id="pickerBox" class="card">
+      <h3 style="margin-bottom:12px;">Lanzar una pregunta</h3>
+      <div class="tabs">
+        <button class="tab-btn active" id="tabBankBtn" type="button">Del banco de preguntas</button>
+        <button class="tab-btn" id="tabCustomBtn" type="button">Pregunta personalizada</button>
+      </div>
+
+      <div id="bankPanel">
+        <div class="cat-grid">
+          <button class="cat-btn cat-profecias_cumplidas" data-cat="profecias_cumplidas" type="button">Profecías Cumplidas</button>
+          <button class="cat-btn cat-arrepentimiento" data-cat="arrepentimiento" type="button">Pecado y Arrepentimiento</button>
+          <button class="cat-btn cat-ultimos_dias" data-cat="ultimos_dias" type="button">Los Últimos Días</button>
+          <button class="cat-btn cat-llamado_isaias" data-cat="llamado_isaias" type="button">El Llamado de Isaías</button>
+          <button class="cat-btn cat-profecias_mesianicas" data-cat="profecias_mesianicas" type="button">Profecías del Salvador</button>
+        </div>
+        <div id="bankBlockInfo" class="muted" style="font-size:12.5px; margin-bottom:8px;"></div>
+        <div id="bankQuestionsList" style="max-height:280px; overflow-y:auto;"></div>
+      </div>
+
+      <div id="customPanel" class="hidden">
+        <div class="field">
+          <label for="customQText">Pregunta</label>
+          <textarea id="customQText" placeholder="Escribí la pregunta..."></textarea>
+        </div>
+        <div class="field">
+          <label for="customOptA">Opción A</label>
+          <input type="text" id="customOptA" placeholder="Opción A">
+        </div>
+        <div class="field">
+          <label for="customOptB">Opción B</label>
+          <input type="text" id="customOptB" placeholder="Opción B">
+        </div>
+        <div class="field">
+          <label for="customOptC">Opción C</label>
+          <input type="text" id="customOptC" placeholder="Opción C">
+        </div>
+        <div class="field">
+          <label for="customCorrect">¿Cuál es la correcta?</label>
+          <select id="customCorrect">
+            <option value="0">Opción A</option>
+            <option value="1">Opción B</option>
+            <option value="2">Opción C</option>
+          </select>
+        </div>
+        <button class="primary" id="launchCustomBtn" type="button">Lanzar esta pregunta</button>
+      </div>
+    </div>
+
+    <!-- ACTIVE QUESTION BOX (visible cuando hay pregunta abierta/bloqueada/resuelta) -->
+    <div id="activeBox" class="card hidden">
+      <div class="quiz-cat-label" id="activeCatLabel"></div>
+      <div class="question-text" id="activeQText"></div>
+
+      <div class="opt-review" id="activeOptsReview"></div>
+
+      <div id="waitingLockBox" class="status-box">
+        <div class="status-icon">📡</div>
+        <div class="status-text" id="waitingLockText">Pregunta lanzada — esperando que alguien responda...</div>
+        <div class="status-sub" id="waitingLockSub">El primero en tocar una opción se bloquea automáticamente.</div>
+        <div id="reopenTimerBox" class="timer-track hidden"><div id="reopenTimerFill" class="timer-fill"></div></div>
+      </div>
+
+      <div id="lockedReviewBox" class="hidden">
+        <div class="locked-info">
+          <div class="who" id="lockedWho">—</div>
+          <div class="what" id="lockedWhat">—</div>
+        </div>
+        <div class="judge-btns">
+          <button class="good-btn" id="markCorrectBtn" type="button">✓ Correcto (+1)</button>
+          <button class="bad-btn" id="markWrongBtn" type="button">✗ Incorrecto (−1)</button>
+        </div>
+      </div>
+
+      <div id="resolvedBox" class="hidden status-box">
+        <div class="status-icon" id="resolvedIcon">🏆</div>
+        <div class="status-text" id="resolvedText">—</div>
+      </div>
+
+      <div id="allFailedBox" class="hidden">
+        <p class="muted center" style="font-size:13.5px; margin-bottom:12px;">Todos los que intentaron fallaron esta pregunta.</p>
+        <div class="grid2">
+          <button class="secondary" id="revealAnswerBtn" type="button">Revelar respuesta a jugadores</button>
+          <button class="primary" id="closeQuestionBtn" type="button">Cerrar pregunta</button>
+        </div>
+      </div>
+
+      <hr class="divider" id="nextQDivider">
+      <button class="secondary" id="cancelQuestionBtn" type="button" style="width:100%;">Cancelar / volver a elegir pregunta</button>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:10px;">Puntuación en vivo</h3>
+      <div class="scoreboard" id="scoreboard">
+        <div class="empty-note">Sin participantes todavía.</div>
+      </div>
+    </div>
+
+    <div class="card" id="finalizeCard">
+      <h3 style="margin-bottom:6px;">Finalizar partida</h3>
+      <p class="muted" style="font-size:13px; margin:0 0 12px;">Le muestra a cada participante, en su propio celular, el resultado final con el ranking completo.</p>
+      <button class="secondary" id="finalizeBtn" type="button" style="width:100%; border-color:var(--danger); color:var(--danger);">Finalizar partida</button>
+      <div id="finalizeConfirmBox" class="hidden" style="margin-top:12px;">
+        <p style="font-size:13.5px; margin:0 0 10px;">¿Seguro que querés finalizar? Todos los participantes van a ver el resultado final ahora mismo.</p>
+        <div class="grid2">
+          <button class="secondary" id="finalizeCancelBtn" type="button">Cancelar</button>
+          <button class="bad-btn" id="finalizeConfirmBtn" type="button">Sí, finalizar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card hidden" id="finishedCard">
+      <div class="status-box">
+        <div class="status-icon">🏁</div>
+        <div class="status-text">Partida finalizada</div>
+        <div class="status-sub">Los participantes ya están viendo el resultado final en su celular.</div>
+      </div>
+      <button class="secondary" id="reopenGameBtn" type="button" style="width:100%; margin-top:10px;">Reabrir partida</button>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURACIÓN DE FIREBASE
+   Reemplazá estos valores por los de tu propio proyecto Firebase
+   (Configuración del proyecto → Tus apps → SDK de Firebase).
+   Este archivo y envivo-clasico.html deben tener EXACTAMENTE
+   el mismo FIREBASE_CONFIG.
+   ============================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAirG_Kj0zB56aTGJ02bWIXXLquCkJyHz0",
+  authDomain: "finilager-trivia.firebaseapp.com",
+  databaseURL: "https://finilager-trivia-default-rtdb.firebaseio.com",
+  projectId: "finilager-trivia",
+  storageBucket: "finilager-trivia.firebasestorage.app",
+  messagingSenderId: "187189730256",
+  appId: "1:187189730256:web:bec3f70c23006ac73877d5"
+};
+
+/* ============================================================
+   ADAPTADOR DE BASE DE DATOS EN TIEMPO REAL
+   - Producción: Firebase Realtime Database.
+   - Pruebas (agregando ?mock=1 a la URL): localStorage + eventos,
+     funciona solo entre pestañas del mismo navegador. Sirve para
+     probar la lógica del juego sin necesitar un proyecto Firebase
+     real todavía.
+   ============================================================ */
+function isMockMode() {
+  return new URLSearchParams(location.search).get('mock') === '1';
+}
+
+function createFirebaseDb() {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  // A propósito NO usamos Firebase Authentication: las reglas de la base de
+  // datos ya son públicas (".read": true, ".write": true), así que no hace
+  // falta haber iniciado sesión para leer ni escribir. Evitamos llamar a
+  // firebase.auth() por completo para no depender de que el servicio de
+  // Authentication esté inicializado en la consola del proyecto (si no lo
+  // está, firebase.auth() tira un error "auth/configuration-not-found").
+  const db = firebase.database();
+  return {
+    ready: Promise.resolve(),
+    ref(path) {
+      const r = db.ref(path);
+      return {
+        set: (v) => r.set(v),
+        update: (v) => r.update(v),
+        remove: () => r.remove(),
+        once: () => r.once('value').then(s => s.val()),
+        onValue: (cb) => { const h = (s) => cb(s.val()); r.on('value', h); return () => r.off('value', h); },
+        transaction: (fn) => r.transaction(fn).then(res => ({ committed: res.committed, snapshot: res.snapshot ? res.snapshot.val() : null })),
+      };
+    }
+  };
+}
+
+function createMockDb() {
+  // Todo el estado del mock se guarda como UN solo árbol JSON en localStorage,
+  // igual que Firebase Realtime Database: un listener sobre una ruta "padre"
+  // (ej. "liveGames/CODE") recibe automáticamente el árbol combinado de todos
+  // sus hijos (players, question, meta), no solo lo que se escribió en esa ruta exacta.
+  const ROOT_KEY = 'mockdb:root';
+  const LOCK = 'mockdb:global-lock';
+  const listeners = {}; // path -> Set<callback>
+
+  function readRoot() {
+    try { return JSON.parse(localStorage.getItem(ROOT_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function writeRoot(root) { localStorage.setItem(ROOT_KEY, JSON.stringify(root)); }
+  function splitPath(path) { return path ? path.split('/').filter(Boolean) : []; }
+  function getAtPath(root, parts) {
+    let cur = root;
+    for (const p of parts) {
+      if (cur == null || typeof cur !== 'object') return null;
+      cur = cur[p];
+    }
+    return cur === undefined ? null : cur;
+  }
+  function setAtPath(root, parts, value) {
+    if (!parts.length) return (value === null || value === undefined) ? {} : value;
+    const newRoot = (root && typeof root === 'object') ? Object.assign({}, root) : {};
+    let cur = newRoot;
+    for (let i = 0; i < parts.length - 1; i++) {
+      const key = parts[i];
+      const existing = cur[key];
+      const cloned = (existing && typeof existing === 'object') ? Object.assign({}, existing) : {};
+      cur[key] = cloned;
+      cur = cloned;
+    }
+    const lastKey = parts[parts.length - 1];
+    if (value === null || value === undefined) delete cur[lastKey];
+    else cur[lastKey] = value;
+    return newRoot;
+  }
+  function notifyAll() {
+    const root = readRoot();
+    Object.keys(listeners).forEach(path => {
+      const val = getAtPath(root, splitPath(path));
+      (listeners[path] || new Set()).forEach(cb => cb(val));
+    });
+  }
+  window.addEventListener('storage', (e) => {
+    if (e.key !== ROOT_KEY) return;
+    notifyAll();
+  });
+  function withLock(fn) { return navigator.locks.request(LOCK, fn); }
+
+  return {
+    ready: Promise.resolve(),
+    ref(path) {
+      const parts = splitPath(path);
+      return {
+        set: (v) => withLock(async () => {
+          writeRoot(setAtPath(readRoot(), parts, v));
+          notifyAll();
+        }),
+        update: (v) => withLock(async () => {
+          const root = readRoot();
+          const cur = getAtPath(root, parts);
+          const merged = Object.assign({}, (cur && typeof cur === 'object') ? cur : {}, v);
+          writeRoot(setAtPath(root, parts, merged));
+          notifyAll();
+        }),
+        remove: () => withLock(async () => {
+          writeRoot(setAtPath(readRoot(), parts, null));
+          notifyAll();
+        }),
+        once: () => withLock(async () => getAtPath(readRoot(), parts)),
+        onValue: (cb) => {
+          if (!listeners[path]) listeners[path] = new Set();
+          listeners[path].add(cb);
+          cb(getAtPath(readRoot(), parts));
+          return () => listeners[path].delete(cb);
+        },
+        transaction: (fn) => withLock(async () => {
+          const root = readRoot();
+          const current = getAtPath(root, parts);
+          const next = fn(current);
+          if (next === undefined) return { committed: false, snapshot: current };
+          writeRoot(setAtPath(root, parts, next));
+          notifyAll();
+          return { committed: true, snapshot: next };
+        }),
+      };
+    }
+  };
+}
+
+const RAW_DB = isMockMode() ? createMockDb() : createFirebaseDb();
+const DB_NAMESPACE = 'vensigueme2026/';
+const DB = { ready: RAW_DB.ready, ref(path) { return RAW_DB.ref(path === '.info/serverTimeOffset' ? path : (DB_NAMESPACE + path)); } };
+
+/* ============================================================
+   HORA DEL SERVIDOR (corrige el desfase de reloj entre celular/PC)
+   Cada dispositivo (el celular del anfitrión, la compu del jugador) puede
+   tener el reloj unos segundos adelantado o atrasado. Si cada uno calculara
+   el tiempo restante con su propio Date.now(), la barra de 20s se vería
+   desincronizada entre pantallas — que es justo lo que reportó Martín.
+   Firebase expone '.info/serverTimeOffset': la diferencia entre el reloj
+   del servidor y el del dispositivo. Sumando ese offset a Date.now() en
+   ambos archivos, todos calculan el mismo "ahora" real, sin importar cómo
+   esté puesto el reloj de cada aparato. En modo mock (?mock=1) no hay
+   servidor real, así que el offset queda en 0 (no hace falta corregir nada
+   entre pestañas del mismo navegador).
+   ============================================================ */
+let serverTimeOffsetMs = 0;
+DB.ref('.info/serverTimeOffset').onValue(offset => {
+  serverTimeOffsetMs = (typeof offset === 'number') ? offset : 0;
+});
+function serverNow() { return Date.now() + serverTimeOffsetMs; }
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+function randomGameCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let out = '';
+  for (let i = 0; i < 6; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  return out;
+}
+function showError(msg) {
+  const box = document.getElementById('errBanner');
+  box.textContent = msg;
+  box.classList.remove('hidden');
+  setTimeout(() => box.classList.add('hidden'), 5000);
+}
+function showOk(msg) {
+  const box = document.getElementById('okBanner');
+  box.textContent = msg;
+  box.classList.remove('hidden');
+  setTimeout(() => box.classList.add('hidden'), 3500);
+}
+
+/* ============================================================
+   BANCO DE PREGUNTAS (reutilizado de retadorestrivia.html)
+   El índice de la respuesta correcta SOLO existe acá, en el
+   archivo del anfitrión. Nunca se escribe en la base de datos
+   compartida ni se envía al archivo del jugador.
+   ============================================================ */
+const CATEGORY_LABELS = {
+  profecias_cumplidas: 'Profecías Cumplidas',
+  arrepentimiento: 'Pecado y Arrepentimiento',
+  ultimos_dias: 'Los Últimos Días',
+  llamado_isaias: 'El Llamado de Isaías',
+  profecias_mesianicas: 'Profecías del Salvador',
+};
+
+const QUESTIONS = {
+  profecias_cumplidas: [
+    { text: "¿Quién fue el profeta del Antiguo Testamento más citado en el resto de las Escrituras, incluso por el mismo Salvador?", options: ["Jeremías", "Isaías", "Ezequiel"], correct: 1, tip: "Isaías es citado cientos de veces en el Nuevo Testamento y el Libro de Mormón." },
+    { text: "Según 3 Nefi 23, ¿qué mandó el Salvador a los nefitas hacer con las palabras de Isaías?", options: ["Memorizarlas de principio a fin", "Escudriñarlas diligentemente", "Traducirlas a otro idioma"], correct: 1, tip: "El Salvador dijo: \"grandes son las palabras de Isaías\" (3 Nefi 23:1)." },
+    { text: "¿Aproximadamente en qué época escribió Isaías sus profecías?", options: ["Siglo VIII a.C. (alrededor de 740-701 a.C.)", "Siglo III a.C.", "Siglo XII a.C."], correct: 0, tip: "Isaías profetizó durante los reinados de varios reyes de Judá, incluyendo Acaz y Ezequías." },
+    { text: "Según las enseñanzas de los líderes de la Iglesia, ¿qué se necesita para comprender los múltiples cumplimientos de las profecías de Isaías?", options: ["Solo un buen diccionario bíblico", "La revelación del Espíritu Santo", "Estudiar exclusivamente la historia antigua"], correct: 1, tip: null },
+    { text: "Las profecías de Isaías suelen tener cumplimiento en tres épocas distintas. ¿Cuáles son?", options: ["Los días de Isaías, el ministerio terrenal del Salvador y los últimos días", "Solo el pasado y el futuro lejano", "Únicamente la época del cautiverio en Babilonia"], correct: 0, tip: null },
+    { text: "¿Qué profeta del Libro de Mormón declaró que aplicaba las palabras de Isaías a sí mismo y a su pueblo?", options: ["Alma", "Nefi", "Mosíah"], correct: 1, tip: "1 Nefi 19:23 relata que Nefi leía las palabras de Isaías a su pueblo para animarlos a creer en el Señor." },
+    { text: "¿Qué recomienda la guía \"Ven, Sígueme\" para estudiar mejor las profecías de Isaías?", options: ["Ignorar los símbolos y leer solo lo literal", "Hacer un cuadro que compare los cumplimientos en distintas épocas", "Leer solamente los capítulos más cortos"], correct: 1, tip: null },
+    { text: "Isaías usa mucho lenguaje simbólico y poético. ¿Qué pregunta sugiere la guía de estudio para descubrir su significado?", options: ["¿Qué aprendo aquí acerca de Jesucristo?", "¿Cuántas palabras tiene el capítulo?", "¿En qué idioma se escribió originalmente?"], correct: 0, tip: null },
+    { text: "¿Cómo describe la lección la frecuencia con que Isaías es citado en el Nuevo Testamento y el Libro de Mormón?", options: ["Casi nunca es citado", "Solo un par de veces", "Es citado con mucha frecuencia, cientos de veces"], correct: 2, tip: null },
+    { text: "¿Qué libros del Antiguo Testamento se estudiaron la semana previa a Isaías 1-12, según el programa Ven, Sígueme 2026?", options: ["Proverbios y Eclesiastés", "Salmos", "Génesis"], correct: 0, tip: "La semana anterior se estudió Proverbios 1-4;15-16;22;31 y Eclesiastés 1-3;11-12." },
+    { text: "¿Qué significa que una profecía tenga \"múltiples cumplimientos\"?", options: ["Que se cumple una sola vez y ya no aplica más", "Que puede cumplirse en más de una época o circunstancia", "Que nunca llegó a cumplirse realmente"], correct: 1, tip: null },
+    { text: "¿Qué recurso sugiere la guía de estudio para entender mejor el contexto histórico de Isaías?", options: ["Las notas y guías de estudio de las Escrituras", "Un mapa de Sudamérica", "Una enciclopedia de animales"], correct: 0, tip: null },
+    { text: "¿Qué relación tuvo Isaías con los reyes de Judá de su época?", options: ["Fue un consejero y profeta durante varios reinados", "Fue coronado rey él mismo", "Vivió aislado sin contacto con la corte"], correct: 0, tip: null },
+    { text: "¿Qué reyes de Judá gobernaron durante parte del ministerio de Isaías?", options: ["David y Salomón", "Acaz y Ezequías, entre otros", "Saúl y Salomón"], correct: 1, tip: null },
+    { text: "¿Qué palabra usó el Salvador para describir las palabras de Isaías en 3 Nefi 23:1?", options: ["'Sencillas'", "'Grandes'", "'Antiguas'"], correct: 1, tip: null },
+    { text: "¿Qué revista de la Iglesia se sugiere como apoyo para que los jóvenes profundicen en las enseñanzas de Isaías?", options: ["La revista Liahona", "Una revista de historia mundial", "Ninguna revista en particular"], correct: 0, tip: null },
+    { text: "¿Qué relato ilustrado para niños narra la historia del profeta Isaías?", options: ["Historias del Antiguo Testamento", "Historias del Libro de Mormón", "Historias de la Perla de Gran Precio"], correct: 0, tip: null },
+    { text: "¿Es correcto decir que todas las profecías de Isaías se cumplieron por completo en su propia época y no tienen ninguna aplicación posterior?", options: ["Sí, es correcto", "No: muchas tienen cumplimientos adicionales en el ministerio de Cristo y en los últimos días", "Es imposible saberlo"], correct: 1, tip: null },
+    { text: "¿Qué actitud sugiere la lección tener al estudiar un libro tan antiguo y poético como Isaías?", options: ["Paciencia y disposición a buscar significado con ayuda del Espíritu", "Frustración y abandono si no se entiende todo de inmediato", "Leerlo una sola vez y no volver a él"], correct: 0, tip: null },
+    { text: "¿Qué relación existe entre Isaías y los escritores del Nuevo Testamento?", options: ["Ninguna relación", "Ellos citaron frecuentemente sus profecías para explicar la vida y misión de Jesucristo", "Los escritores del Nuevo Testamento nunca oyeron hablar de Isaías"], correct: 1, tip: null },
+  ],
+  arrepentimiento: [
+    { text: "En Isaías 1:3, ¿con qué compara el Señor la falta de reconocimiento de su pueblo hacia Él?", options: ["Con el buey que conoce a su dueño y el asno a su pesebre, mientras Israel no conoce al Señor", "Con un río que se seca en el desierto", "Con un árbol que no da fruto en invierno"], correct: 0, tip: null },
+    { text: "Según Isaías 1:18, aunque nuestros pecados sean como la grana (escarlata), ¿cómo pueden llegar a ser?", options: ["Como el carbón", "Blancos como la nieve", "Verdes como la hierba"], correct: 1, tip: "Es una de las promesas más hermosas sobre el poder purificador del arrepentimiento mediante Cristo." },
+    { text: "¿Qué invita el Señor a hacer en Isaías 1:18 antes de hablar del perdón de los pecados?", options: ["'Venid luego, y razonemos'", "'Guardad silencio para siempre'", "'Huid a las montañas'"], correct: 0, tip: null },
+    { text: "En la parábola de la viña de Isaías 5, ¿qué esperaba el dueño que produjera su viña?", options: ["Uvas silvestres amargas", "Buenas uvas", "Espinos y cardos"], correct: 1, tip: "La viña que solo da \"uvas silvestres\" representa a un pueblo que no vive según lo que se le ha enseñado." },
+    { text: "Según Isaías 5:20, ¿qué advertencia hace el profeta sobre llamar bien al mal?", options: ["'¡Ay de los que a lo malo dicen bueno, y a lo bueno malo!'", "'Bendito el que confunde el bien y el mal'", "'No hay diferencia entre el bien y el mal'"], correct: 0, tip: null },
+    { text: "¿Qué consecuencias describe Isaías para un pueblo que se aparta del Señor (por ejemplo, en Isaías 1:7)?", options: ["Prosperidad sin límites", "Desolación y ruina en la tierra", "Un aumento inmediato de la población"], correct: 1, tip: null },
+    { text: "Según Isaías 4, ¿qué promete el Señor para quienes queden en Sion tras la purificación?", options: ["Ser llamados santos y protegidos, como bajo una nube de día y fuego de noche", "Ser olvidados para siempre", "Vivir bajo un juicio constante sin esperanza"], correct: 0, tip: null },
+    { text: "En los capítulos 1, 3, 4 y 5 de Isaías, ¿qué patrón se repite después de cada advertencia?", options: ["Otra advertencia igual, sin cambios", "Un mensaje de esperanza y redención por medio del Salvador", "El fin inmediato del mundo"], correct: 1, tip: null },
+    { text: "Isaías 3:16-17 y 3:9 describen el orgullo y la vanidad como parte de:", options: ["Las virtudes que el Señor alaba", "Las condiciones espirituales que Isaías reprende", "Un ritual de adoración aprobado"], correct: 1, tip: null },
+    { text: "¿Qué comparación usa el Señor en Isaías 1 para describir a un pueblo que no lo reconoce, en contraste con animales domesticados?", options: ["El buey y el asno reconocen a su amo, pero Israel no reconoce al Señor", "Los peces reconocen el mar, pero Israel no", "Las aves reconocen el cielo, pero Israel no"], correct: 0, tip: null },
+    { text: "Según el mensaje de estos capítulos, los profetas de nuestros días, igual que Isaías, ¿qué hacen respecto al pecado?", options: ["Lo ignoran para no incomodar a nadie", "Advierten sobre él y ofrecen esperanza por medio de Cristo", "Solo lo condenan sin ofrecer esperanza"], correct: 1, tip: null },
+    { text: "¿Qué simboliza, en Isaías 1:25, la imagen de \"limpiar las escorias\" del pueblo?", options: ["La purificación que Dios ofrece a su pueblo", "Un castigo sin posibilidad de perdón", "Una limpieza únicamente física del templo"], correct: 0, tip: null },
+    { text: "¿Qué se nos invita a hacer al comparar la condición espiritual del antiguo Israel en Isaías con la actualidad?", options: ["Sentir que esos problemas no tienen relación con nosotros", "Reflexionar si enfrentamos advertencias similares hoy", "Buscar únicamente errores en otras personas"], correct: 1, tip: null },
+    { text: "En Isaías 1:16-17, además de dejar de hacer el mal, ¿qué otras acciones se piden?", options: ["Aprender a hacer el bien, buscar el juicio, socorrer al oprimido", "Aislarse completamente de la sociedad", "Guardar silencio sobre toda injusticia"], correct: 0, tip: null },
+    { text: "¿Qué representa \"el renuevo del Señor\" mencionado en Isaías 4?", options: ["Un símbolo de belleza y gloria para los que se salvan", "Una nueva especie de árbol", "Un nombre de ciudad"], correct: 0, tip: null },
+    { text: "¿Qué relación hay entre el arrepentimiento y la promesa de Isaías 1:18 sobre la limpieza de los pecados?", options: ["El arrepentimiento no tiene relación con esa promesa", "El arrepentimiento, por medio de Cristo, es lo que permite esa limpieza espiritual", "Solo el paso del tiempo puede limpiar los pecados"], correct: 1, tip: null },
+    { text: "En Isaías 1:21-23, ¿qué imagen usa el profeta para describir a Jerusalén cuando se aparta del Señor?", options: ["Una ciudad antes fiel, ahora llena de corrupción", "Una ciudad en constante celebración", "Una ciudad completamente vacía y olvidada"], correct: 0, tip: null },
+    { text: "¿Qué principio enseña la parábola de la viña (Isaías 5:1-7) sobre la relación entre Dios y su pueblo?", options: ["Dios cuida y espera fruto de quienes bendice, y se entristece cuando no lo hay", "Dios abandona la viña sin cuidarla", "La viña no representa ninguna relación espiritual"], correct: 0, tip: null },
+    { text: "¿Qué mensaje de esperanza sigue a las advertencias de Isaías 1 y 3-5, mostrando el patrón general del profeta?", options: ["Ningún mensaje de esperanza, solo condenación", "La promesa de redención y limpieza a través del Salvador", "Un mensaje de que ya es demasiado tarde para cambiar"], correct: 1, tip: null },
+    { text: "¿Cuál es el propósito final de las advertencias que dan los profetas antiguos y modernos sobre el pecado?", options: ["Condenar sin posibilidad de cambio", "Ayudarnos a volver a Dios y recibir su ayuda redentora", "Simplemente señalar culpables"], correct: 1, tip: null },
+  ],
+  ultimos_dias: [
+    { text: "Según Isaías 2:2-3, ¿qué sucederá con \"el monte de la casa de Jehová\" en los últimos días?", options: ["Será destruido por completo", "Será establecido en la cumbre de los montes y todas las naciones fluirán a él", "Permanecerá oculto para siempre"], correct: 1, tip: "Los líderes de la Iglesia han relacionado esta profecía con la obra de los templos en los últimos días." },
+    { text: "¿En qué transformarán las naciones sus espadas y lanzas, según Isaías 2:4, como señal de paz?", options: ["En rejas de arado y hoces", "En herramientas de construcción de templos", "En instrumentos musicales"], correct: 0, tip: null },
+    { text: "¿Qué se sugiere hacer, según el espíritu de Isaías 2, respecto a la promesa de que \"todas las naciones\" fluirán hacia el Señor?", options: ["Buscar formas personales de invitar a otros a acercarse a Cristo y su evangelio", "Ignorar completamente esa promesa", "Esperar que otra persona se encargue de cumplirla"], correct: 0, tip: null },
+    { text: "Según Isaías 11, ¿de dónde saldría una vara o renuevo, en referencia al linaje del Salvador?", options: ["Del tronco de Jesé", "De la casa de Faraón", "Del linaje de los filisteos"], correct: 0, tip: "Jesé fue el padre del rey David; esta profecía se asocia con el linaje mesiánico." },
+    { text: "En la visión pacífica de Isaías 11, ¿qué animales se describen conviviendo en paz?", options: ["El lobo y el cordero, el leopardo y el cabrito", "El águila y la serpiente", "El león y el ratón"], correct: 0, tip: "Esta imagen describe las condiciones de paz que se esperan durante el Milenio." },
+    { text: "¿Qué tiempo verbal usa Isaías con frecuencia en los capítulos sobre los últimos días (2, 4, 11-12), y qué sugiere la guía de estudio hacer con eso?", options: ["Tiempo pasado; buscar solo hechos históricos", "Tiempo futuro ('será', 'irán'); identificarlos ayuda a ver las promesas venideras", "Tiempo condicional; ignorarlo por ser poco claro"], correct: 1, tip: null },
+    { text: "Según Isaías 12, ¿con qué actitud se anima al pueblo a alabar al Señor por su salvación?", options: ["Con temor y silencio", "Con gozo, sacando aguas de los pozos de salvación", "Con indiferencia"], correct: 1, tip: "Isaías 12 es un cántico de alabanza y gratitud por la salvación de Dios." },
+    { text: "¿Qué proceso de los últimos días se relaciona con la profecía de que \"todas las naciones\" fluirán al monte del Señor?", options: ["El congelamiento de las fronteras nacionales", "El recogimiento de Israel y la obra del templo", "La desaparición de todas las religiones"], correct: 1, tip: null },
+    { text: "En Isaías 4, ¿qué imagen usa el profeta para describir la protección del Señor sobre Sion, similar a la que tuvo Israel en el desierto?", options: ["Una nube de día y una llama de fuego de noche", "Un muro de piedra inquebrantable", "Un ejército visible de ángeles armados"], correct: 0, tip: null },
+    { text: "¿Qué relación se sugiere entre la profecía de Isaías 2:2-3 y los templos actuales de la Iglesia?", options: ["Ninguna relación", "Se considera especialmente relevante para los Santos de los Últimos Días respecto a la obra del templo", "Solo aplica a un templo específico en Jerusalén"], correct: 1, tip: null },
+    { text: "¿Qué se nos invita a hacer al leer las promesas de paz y justicia de Isaías 11 sobre el Milenio?", options: ["Pensar en cómo podemos contribuir a la paz ahora, en anticipación a esas promesas", "Esperar pasivamente sin hacer nada al respecto", "Dudar de que esas promesas se cumplirán"], correct: 0, tip: null },
+    { text: "¿Qué significa, en el contexto de Isaías 2, que las naciones digan: \"subamos al monte de Jehová... y nos enseñará sus caminos\"?", options: ["Un deseo de aprender los caminos y verdades del Señor", "Un plan de conquista militar", "Una alianza puramente comercial"], correct: 0, tip: null },
+    { text: "¿Cómo se describe el cántico de Isaías 12?", options: ["Como un documento legal", "Como un cántico de alabanza y confianza en la salvación de Dios", "Como un discurso político"], correct: 1, tip: null },
+    { text: "¿Qué relación hay entre el \"recogimiento de Israel\" en los últimos días y las profecías de Isaías estudiadas esta semana?", options: ["No tienen relación alguna", "Isaías anuncia que las naciones se congregarán al Señor, lo cual se relaciona con el recogimiento", "Isaías solo habla del pasado de Israel"], correct: 1, tip: null },
+    { text: "Según la guía de estudio, ¿qué época describen principalmente los capítulos 2, 4 y 11-12 de Isaías?", options: ["La época del diluvio", "Los últimos días y la obra que Dios hará en ellos", "La época de los patriarcas"], correct: 1, tip: null },
+    { text: "¿Qué representa, en Isaías 2, la invitación de las naciones a \"subir\" al monte de la casa del Señor?", options: ["Una peregrinación exclusivamente física, sin significado espiritual", "El deseo de aprender los caminos del Señor y acercarse a Él", "Una competencia deportiva entre naciones"], correct: 1, tip: null },
+    { text: "¿Qué idea central comparten Isaías 2 y las enseñanzas modernas sobre el recogimiento de Israel?", options: ["Que las naciones del mundo se acercarán al Señor y a su convenio en los últimos días", "Que Israel desaparecerá como pueblo", "Que solo una nación se salvará"], correct: 0, tip: null },
+    { text: "En la visión pacífica de Isaías 11, ¿qué se describe jugando sin peligro junto a una serpiente venenosa?", options: ["Un niño de pecho", "Un guerrero armado", "No se menciona a ningún niño"], correct: 0, tip: null },
+    { text: "¿Qué podemos aprender del cántico de gratitud de Isaías 12 para aplicarlo a nuestra vida diaria?", options: ["Que debemos expresar gratitud a Dios por su salvación en nuestra propia vida", "Que la gratitud no tiene lugar en la adoración", "Que solo se debe agradecer una vez en la vida"], correct: 0, tip: null },
+    { text: "¿Qué papel juega la idea de un \"estandarte\" o señal a las naciones en relación con Isaías 11?", options: ["Se asocia con la obra de reunir a Israel en los últimos días", "No tiene ninguna aplicación conocida", "Se refiere únicamente a una bandera nacional moderna"], correct: 0, tip: null },
+  ],
+  llamado_isaias: [
+    { text: "En la visión de Isaías 6, ¿dónde vio Isaías al Señor?", options: ["Sentado sobre un trono, alto y sublime", "Caminando por el desierto", "Escondido en una cueva"], correct: 0, tip: null },
+    { text: "¿Qué criaturas rodeaban el trono del Señor en la visión de Isaías 6?", options: ["Querubines con cuatro caras", "Serafines, cada uno con seis alas", "Ángeles sin descripción específica"], correct: 1, tip: null },
+    { text: "¿Qué palabras repetían los serafines en la visión de Isaías 6?", options: ["'Gloria, gloria, gloria'", "'Santo, santo, santo, Jehová de los ejércitos'", "'Amén, amén, amén'"], correct: 1, tip: null },
+    { text: "Al verse indigno ante la santidad de Dios, ¿qué dijo Isaías sobre sí mismo?", options: ["\"Soy demasiado joven para esto\"", "\"¡Ay de mí! que soy hombre inmundo de labios...\"", "\"No necesito ser purificado\""], correct: 1, tip: null },
+    { text: "¿Qué hizo uno de los serafines para purificar a Isaías después de que él reconociera su indignidad?", options: ["Le dio a beber agua de una fuente sagrada", "Tocó su boca con un carbón encendido tomado del altar", "Le impuso las manos sobre la cabeza"], correct: 1, tip: "El carbón simboliza la limpieza y purificación necesaria antes de recibir un llamamiento profético." },
+    { text: "Después de ser purificado, ¿qué preguntó el Señor y qué respondió Isaías?", options: ["'¿Quién irá por nosotros?' — Isaías respondió: 'Heme aquí, envíame a mí'", "'¿Quién construirá el templo?' — Isaías no respondió", "'¿Quién será rey?' — Isaías pidió tiempo para pensarlo"], correct: 0, tip: null },
+    { text: "¿Qué nos puede enseñar la disposición de Isaías (\"Heme aquí, envíame a mí\") sobre nuestra propia disposición a servir?", options: ["Que debemos esperar a sentirnos completamente dignos antes de servir", "Que podemos responder con humildad y disposición, confiando en que el Señor puede purificarnos", "Que el servicio siempre debe ser rechazado al principio"], correct: 1, tip: null },
+    { text: "¿Qué principio enseña la visión de Isaías 6 acerca de cómo son llamados los profetas?", options: ["Se postulan a sí mismos ante el pueblo", "Son llamados por Dios, no se autonombran", "Son elegidos por votación popular"], correct: 1, tip: null },
+    { text: "¿Qué reacción tuvo Isaías al principio, al estar en presencia de la santidad de Dios?", options: ["Orgullo por el privilegio", "Un profundo reconocimiento de su propia indignidad", "Total indiferencia"], correct: 1, tip: null },
+    { text: "¿Qué patrón comparte la experiencia de Isaías 6 con otros llamamientos profeticos registrados en las Escrituras?", options: ["No hay comparaciones posibles", "Un llamado divino, humildad inicial y disposición a servir", "Isaías es el único ejemplo de este tipo en toda la Biblia"], correct: 1, tip: null },
+    { text: "¿Qué imagen usa Isaías 6 para representar la gloria de Dios llenando el templo?", options: ["El templo se llenó de humo", "La tierra tembló violentamente", "Se escuchó un trueno constante"], correct: 0, tip: "Isaías 6:4 describe que \"la casa se llenó de humo\" mientras los quiciales de las puertas se estremecían." },
+    { text: "¿Qué nos invita a reflexionar la pregunta: \"¿Qué te impresiona de la experiencia de Isaías al ser llamado?\"", options: ["Nada en particular, es solo historia antigua", "Cómo esa experiencia moldea nuestra comprensión del Señor y de sus profetas", "Es una pregunta sin respuesta posible"], correct: 1, tip: null },
+    { text: "Según Isaías 6, ¿qué parte de Isaías fue purificada específicamente antes de su llamamiento?", options: ["Sus ojos", "Sus labios", "Sus manos"], correct: 1, tip: null },
+    { text: "¿Qué actitud demuestra Isaías que es clave para cualquier persona llamada a servir en la Iglesia hoy?", options: ["Buscar reconocimiento antes de aceptar el llamado", "Humildad, reconocimiento de la santidad de Dios y disposición a servir", "Negociar las condiciones del llamamiento"], correct: 1, tip: null },
+    { text: "¿En qué capítulo del libro de Isaías se relata el llamamiento del profeta?", options: ["Isaías 1", "Isaías 6", "Isaías 12"], correct: 1, tip: null },
+    { text: "¿Qué efecto tuvo la voz de los serafines sobre los quiciales de las puertas del templo en la visión de Isaías 6?", options: ["Se estremecieron", "No hubo ningún efecto físico", "Las puertas se cerraron solas"], correct: 0, tip: null },
+    { text: "¿Qué mensaje inicialmente difícil se le encomendó a Isaías anunciar a un pueblo que no querría escuchar?", options: ["Un mensaje de advertencia, ya que el pueblo endurecería su corazón", "Un mensaje de que todo estaba perfectamente bien", "Ningún mensaje en particular"], correct: 0, tip: null },
+    { text: "¿Qué nos enseña la secuencia de la visión de Isaías 6 (ver la gloria de Dios, reconocer indignidad, ser purificado, recibir el llamado) sobre prepararnos para servir?", options: ["Que debemos evitar reconocer nuestras debilidades", "Que reconocer nuestra necesidad de Cristo y ser purificados nos prepara para servir", "Que el llamado siempre viene antes de cualquier preparación"], correct: 1, tip: null },
+    { text: "¿En qué lugar sagrado tuvo Isaías la visión relatada en Isaías 6?", options: ["En el templo", "En el desierto de Judea", "En su propia casa"], correct: 0, tip: null },
+    { text: "¿Qué contraste hay entre la respuesta humilde de Isaías (\"Heme aquí, envíame a mí\") y la duda o la excusa que a veces podríamos sentir ante una responsabilidad?", options: ["Una disposición sincera frente a la duda o la excusa", "No hay ningún contraste posible", "Isaías se negó varias veces antes de aceptar"], correct: 0, tip: null },
+  ],
+  profecias_mesianicas: [
+    { text: "¿Qué nombre profético se menciona en Isaías 7:14 para el niño que nacería de una virgen?", options: ["Emanuel", "Melquisedec", "Elías"], correct: 0, tip: "'Emanuel' significa 'Dios con nosotros'." },
+    { text: "¿Qué significa el nombre \"Emanuel\"?", options: ["'Príncipe de Paz'", "'Dios con nosotros'", "'Salvador de Israel'"], correct: 1, tip: null },
+    { text: "¿Qué conflicto histórico llevó al rey Acaz a considerar una alianza con Asiria, en el contexto de Isaías 7-8?", options: ["La presión de Israel (Efraín) y Siria para unirse contra Asiria", "Una guerra civil dentro de Judá", "Un conflicto con Egipto por el control del Nilo"], correct: 0, tip: null },
+    { text: "¿Qué consejo le dio Isaías al rey Acaz en medio de esa crisis política?", options: ["Confiar en el Señor en lugar de buscar alianzas humanas", "Rendirse inmediatamente a Siria e Israel", "Declarar la guerra sin consultar a nadie"], correct: 0, tip: "Isaías 7:9 advierte: \"si vosotros no creyereis, de cierto no permaneceréis.\"" },
+    { text: "Según Isaías 8:12-13, en lugar de temer las conspiraciones humanas, ¿a quién debemos santificar y temer?", options: ["A los líderes políticos", "A Jehová de los ejércitos", "A nadie en particular"], correct: 1, tip: null },
+    { text: "¿Qué título se da al Salvador en Isaías 9:6 relacionado con dar consejo y dirección?", options: ["'Consejero'", "'Guerrero'", "'Legislador'"], correct: 0, tip: null },
+    { text: "Isaías 9:6 contiene varios títulos para el Salvador. ¿Cuál de los siguientes NO aparece en ese versículo?", options: ["'Príncipe de Paz'", "'Dios Fuerte'", "'Rey de gloria'"], correct: 2, tip: "Los títulos que sí aparecen son: Admirable, Consejero, Dios Fuerte, Padre Eterno y Príncipe de Paz." },
+    { text: "Según Isaías 9:7, ¿qué se dice sobre el reino del Salvador?", options: ["Que tendrá fin dentro de mil años", "Que no tendrá fin, y será establecido con juicio y justicia", "Que será temporal hasta la siguiente generación"], correct: 1, tip: "Lucas 1:33 hace eco de esta promesa: \"de su reino no habrá fin\"." },
+    { text: "¿Qué versículo de Isaías se cita en Mateo 4:16 para describir el ministerio del Salvador en Galilea?", options: ["Isaías 9:2, \"el pueblo que andaba en tinieblas vio gran luz\"", "Isaías 1:1", "Isaías 12:3"], correct: 0, tip: null },
+    { text: "¿Qué pasaje del Nuevo Testamento cita directamente Isaías 7:14 para explicar el nacimiento de Jesús?", options: ["Mateo 1:21-23", "Juan 3:16", "Hechos 2:1-4"], correct: 0, tip: null },
+    { text: "¿Cómo describe Isaías 9:2 la condición del pueblo antes de recibir \"la gran luz\"?", options: ["Un pueblo próspero y sin necesidades", "Un pueblo que andaba en tinieblas", "Un pueblo en guerra constante con Egipto"], correct: 1, tip: null },
+    { text: "Aplicando el título \"Consejero\" (Isaías 9:6) a nuestra vida, ¿qué se nos invita a reflexionar?", options: ["Si alguna vez hemos buscado el consejo del Salvador en nuestras decisiones", "Cuántos consejeros tiene nuestra congregación", "Nada en particular"], correct: 0, tip: null },
+    { text: "¿Qué testifican tanto Isaías 7-9 como varios pasajes del Libro de Mormón sobre el nacimiento del Salvador?", options: ["Ninguna relación, son completamente independientes", "Ambos testifican del nacimiento profetizado de Jesucristo como Salvador del mundo", "El Libro de Mormón contradice lo dicho por Isaías"], correct: 1, tip: null },
+    { text: "¿Qué palabra usa Isaías 8:14 para describir al Señor, en el sentido de que puede ser motivo de tropiezo para quienes no creen?", options: ["'Piedra' (piedra de tropiezo)", "'Río'", "'Montaña que se aleja'"], correct: 0, tip: null },
+    { text: "En el contexto de Isaías 7-9, ¿qué nos ayuda a comprender mejor quién es Jesucristo para nosotros personalmente?", options: ["Memorizar solo las fechas históricas", "Reflexionar en cómo Él ha sido nuestro Consejero o Príncipe de Paz en momentos difíciles", "Ignorar la aplicación personal y quedarnos solo con la historia"], correct: 1, tip: null },
+    { text: "¿Qué relación tiene el nombre del hijo de Isaías, \"Sear-jasub\", con el mensaje profético de esos capítulos?", options: ["Su nombre significa 'un remanente volverá', relacionado con la esperanza para Israel", "No tiene ningún significado", "Fue un nombre elegido al azar"], correct: 0, tip: null },
+    { text: "¿Qué papel jugó la falta de fe del rey Acaz en los sucesos narrados en Isaías 7?", options: ["Su falta de fe lo llevó a buscar ayuda en alianzas humanas en lugar de confiar en Dios", "Tuvo una fe perfecta en todo momento", "La fe no se menciona en esos capítulos"], correct: 0, tip: null },
+    { text: "Según Lucas 1:31-33, ¿qué anunció el ángel Gabriel a María sobre el reino de su hijo, en eco de Isaías 9:7?", options: ["Que sería un reino temporal y pequeño", "Que reinaría para siempre y su reino no tendría fin", "Que su reino terminaría antes de que él creciera"], correct: 1, tip: null },
+    { text: "¿Qué título mesiánico de Isaías 9:6 se relaciona con la esperanza de paz personal y mundial que ofrece el Salvador?", options: ["'Príncipe de Paz'", "'Legislador supremo'", "'Rey conquistador'"], correct: 0, tip: null },
+    { text: "¿Cómo podemos aplicar hoy la pregunta: \"¿de qué manera ha sido el Salvador tu Consejero o tu Príncipe de Paz?\"", options: ["Reflexionando en experiencias personales donde hemos sentido su guía o paz", "Es una pregunta que no admite aplicación personal", "Solo aplica a los profetas antiguos"], correct: 0, tip: null },
+  ]
+};
+
+let currentGameCode = null;
+let currentCat = 'profecias_cumplidas';
+let launchedQIds = new Set(); // preguntas del banco ya usadas en esta sesión de partida
+let unsubGame = null;
+let questionCounter = 0;
+let currentPlayers = {}; // último snapshot de game.players, para saber cuántos participantes hay
+let currentMeta = {}; // último snapshot de game.meta (incluye el bloque de preguntas asignado por categoría)
+
+/* ---------- bloques de 15 preguntas por partida ----------
+   Cada categoría tiene 75 preguntas (25 básicas + 25 intermedias + 25 avanzadas).
+   Cada partida usa un bloque de 15 (5 básicas + 5 intermedias + 5 avanzadas), en ese
+   orden. Hay 5 bloques posibles por categoría (75 / 15 = 5); un contador persistente
+   en Firebase (categoryCycle/{categoria}/nextBlock) va rotando 0→1→2→3→4→0→... cada
+   vez que una partida nueva "estrena" esa categoría, así cada partida trae preguntas
+   distintas hasta agotar las 75, y ahí vuelve a empezar desde el bloque 1. */
+/* ============================================================
+   BANCO DE PREGUNTAS POR CATEGORÍA
+   Cada categoría tiene su propio banco (ver arriba). El anfitrión elige
+   libremente cualquier pregunta de la categoría activa; las ya lanzadas
+   en esta sesión de partida quedan marcadas como "ya usada".
+   ============================================================ */
+const pendingBlockAssignments = new Set();
+
+const screens = {
+  setup: document.getElementById('screenSetup'),
+  control: document.getElementById('screenControl'),
+  historicRank: document.getElementById('screenHistoricRank'),
+};
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.add('hidden'));
+  screens[name].classList.remove('hidden');
+}
+
+/* ---------- crear / continuar partida ---------- */
+document.getElementById('createGameBtn').addEventListener('click', async () => {
+  try {
+    await DB.ready;
+    let code = randomGameCode();
+    await DB.ref('liveGames/' + code + '/meta').set({ createdAt: Date.now() });
+    localStorage.setItem('lasthostgame', code);
+    enterControlPanel(code);
+  } catch (err) {
+    console.error('Error al crear la partida:', err);
+    showError('No se pudo crear la partida. Revisá tu conexión a internet y que la configuración de Firebase esté bien pegada. Detalle: ' + (err && err.message ? err.message : err));
+  }
+});
+
+document.getElementById('resumeGameBtn').addEventListener('click', async () => {
+  const code = document.getElementById('resumeCodeInput').value.trim().toUpperCase();
+  if (!code) return;
+  try {
+    await DB.ready;
+    const meta = await DB.ref('liveGames/' + code + '/meta').once();
+    if (!meta) { showError('No se encontró ninguna partida con ese código.'); return; }
+    localStorage.setItem('lasthostgame', code);
+    enterControlPanel(code);
+  } catch (err) {
+    console.error('Error al continuar la partida:', err);
+    showError('No se pudo conectar con la partida. Revisá tu conexión a internet y que la configuración de Firebase esté bien pegada. Detalle: ' + (err && err.message ? err.message : err));
+  }
+});
+
+function enterControlPanel(code) {
+  currentGameCode = code;
+  document.getElementById('gameCodeDisplay').textContent = code;
+  showScreen('control');
+  wireControlPanel();
+  const gameRef = DB.ref('liveGames/' + code);
+  unsubGame = gameRef.onValue(handleGameUpdate);
+}
+
+/* ---------- link de jugador / compartir ---------- */
+function playerLink() {
+  const base = location.href.replace(/anfitrion-clasico\.html.*$/, 'envivo-clasico.html');
+  const mock = isMockMode() ? '&mock=1' : '';
+  return base + '?g=' + currentGameCode + mock;
+}
+document.getElementById('copyLinkBtn').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(playerLink());
+    showOk('Link copiado. Pegalo donde quieras compartirlo.');
+  } catch (e) {
+    showError('No se pudo copiar automáticamente. Copiá el link manualmente: ' + playerLink());
+  }
+});
+document.getElementById('whatsappLinkBtn').addEventListener('click', () => {
+  const text = 'Unite a la partida en vivo de Desafiando tu Conocimiento — Ven, Sígueme 2026 🎮\nCódigo: ' + currentGameCode + '\n' + playerLink();
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+});
+
+/* ---------- panel de control: jugadores + puntuación ---------- */
+function handleGameUpdate(game) {
+  if (!game) return;
+  currentMeta = game.meta || {};
+  currentPlayers = game.players || {};
+  renderPlayers(game.players || {});
+  renderScoreboard(game.players || {});
+  const finished = game.gameStatus === 'finished';
+  renderFinalizeUI(finished);
+  if (finished) {
+    // mientras la partida está finalizada, se oculta el selector de preguntas y
+    // el bloque de pregunta activa: los participantes ya están viendo el resultado final.
+    document.getElementById('pickerBox').classList.add('hidden');
+    document.getElementById('activeBox').classList.add('hidden');
+  } else {
+    renderActiveQuestion(game.question || null);
+  }
+}
+
+function renderFinalizeUI(finished) {
+  document.getElementById('finalizeCard').classList.toggle('hidden', finished);
+  document.getElementById('finishedCard').classList.toggle('hidden', !finished);
+}
+
+function renderPlayers(players) {
+  const list = document.getElementById('playersList');
+  const entries = Object.entries(players);
+  document.getElementById('playerCount').textContent = entries.length + (entries.length === 1 ? ' participante' : ' participantes');
+  if (!entries.length) {
+    list.innerHTML = '<div class="empty-note">Todavía no se unió nadie. Compartí el link para que empiecen a entrar.</div>';
+    return;
+  }
+  entries.sort((a, b) => (a[1].joinedAt || 0) - (b[1].joinedAt || 0));
+  list.innerHTML = entries.map(([id, p]) =>
+    `<div class="player-row"><span>${escapeHtml(p.name || '(sin nombre)')}</span><b>${typeof p.score === 'number' ? p.score : 0} pts</b></div>`
+  ).join('');
+}
+
+function renderScoreboard(players) {
+  const box = document.getElementById('scoreboard');
+  const entries = Object.entries(players);
+  if (!entries.length) {
+    box.innerHTML = '<div class="empty-note">Sin participantes todavía.</div>';
+    return;
+  }
+  entries.sort((a, b) => (b[1].score || 0) - (a[1].score || 0));
+  box.innerHTML = entries.map(([id, p], idx) => {
+    const score = typeof p.score === 'number' ? p.score : 0;
+    return `<div class="sb-row${score < 0 ? ' negative' : ''}"><span class="sb-rank">#${idx + 1}</span><span class="sb-name">${escapeHtml(p.name || '(sin nombre)')}</span><span class="sb-score">${score}</span></div>`;
+  }).join('');
+}
+
+/* ---------- selector de categoría / banco de preguntas ---------- */
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = btn.dataset.cat;
+    renderBankList();
+  });
+});
+document.querySelector('.cat-btn[data-cat="profecias_cumplidas"]').classList.add('active');
+
+function renderBankList() {
+  const wrap = document.getElementById('bankQuestionsList');
+  const infoBox = document.getElementById('bankBlockInfo');
+  const list = QUESTIONS[currentCat] || [];
+  infoBox.textContent = list.length + ' preguntas disponibles en esta categoría — elegí cualquiera para lanzarla.';
+
+  wrap.innerHTML = list.map((q, idx) => {
+    const qid = currentCat + '_' + idx;
+    const used = launchedQIds.has(qid);
+    return `<div class="q-pick-row${used ? ' used' : ''}" data-qid="${qid}" data-idx="${idx}">
+      <span class="qtxt">${escapeHtml(q.text)}</span>
+      <span class="q-pick-badge">${used ? 'ya usada' : '❓'}</span>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('.q-pick-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const idx = Number(row.dataset.idx);
+      launchBankQuestion(currentCat, idx);
+    });
+  });
+}
+
+/* ---------- tabs banco / personalizada ---------- */
+document.getElementById('tabBankBtn').addEventListener('click', () => {
+  document.getElementById('tabBankBtn').classList.add('active');
+  document.getElementById('tabCustomBtn').classList.remove('active');
+  document.getElementById('bankPanel').classList.remove('hidden');
+  document.getElementById('customPanel').classList.add('hidden');
+});
+document.getElementById('tabCustomBtn').addEventListener('click', () => {
+  document.getElementById('tabCustomBtn').classList.add('active');
+  document.getElementById('tabBankBtn').classList.remove('active');
+  document.getElementById('customPanel').classList.remove('hidden');
+  document.getElementById('bankPanel').classList.add('hidden');
+});
+
+/* ---------- lanzar pregunta ---------- */
+const ANSWER_WINDOW_MS = 20000; // 20 segundos para que todos respondan
+let activeCorrectIndex = null; // solo vive en memoria del anfitrión hasta que se resuelve la ronda
+let answerTimerHandle = null;  // setInterval de la cuenta regresiva de 20s de la pregunta activa
+
+// Puntaje por velocidad: se divide la ventana de 20s en 4 cuartos.
+// Solo aplica si la respuesta fue correcta; una respuesta incorrecta sigue restando 1 punto parejo.
+function pointsForElapsed(elapsedMs) {
+  if (elapsedMs <= 5000) return 4;
+  if (elapsedMs <= 10000) return 3;
+  if (elapsedMs <= 15000) return 2;
+  return 1; // 15s-20s (o cualquier caso límite por diferencia de reloj)
+}
+
+function clearAnswerTimer() {
+  if (answerTimerHandle) { clearInterval(answerTimerHandle); answerTimerHandle = null; }
+}
+
+function startAnswerTimer(q) {
+  const box = document.getElementById('reopenTimerBox');
+  const fill = document.getElementById('reopenTimerFill');
+  const deadline = q.deadline;
+  const qId = q.qId;
+  box.classList.remove('hidden');
+
+  // La barra se contrae de forma continua y pareja hasta el deadline exacto
+  // (vía transición CSS), en vez de saltar cada segundo como el número viejo
+  // — así no se pierde de vista mientras el jugador está pensando la respuesta.
+  const msLeftNow = Math.max(0, deadline - serverNow());
+  fill.style.transition = 'none';
+  fill.style.width = (msLeftNow / ANSWER_WINDOW_MS * 100) + '%';
+  void fill.offsetWidth; // fuerza reflow para que el ancho inicial se aplique antes de animar
+  fill.style.transition = 'width ' + msLeftNow + 'ms linear';
+  fill.style.width = '0%';
+
+  const tick = () => {
+    const msLeft = deadline - serverNow();
+    fill.classList.toggle('warn', msLeft <= ANSWER_WINDOW_MS / 2);
+    fill.classList.toggle('urgent', msLeft <= 5000);
+    if (msLeft <= 0) {
+      clearAnswerTimer();
+      resolveQuestion(qId, deadline);
+    }
+  };
+  tick();
+  answerTimerHandle = setInterval(tick, 250);
+}
+
+// se cumplieron los 20 segundos: se cierra la pregunta, se revela la opción
+// correcta y se suma/resta el puntaje de cada participante según lo que haya
+// respondido (transacción guardada para no resolver dos veces la misma ronda
+// ni pisar una pregunta que ya haya cambiado).
+async function resolveQuestion(qId, deadline) {
+  const qRef = DB.ref('liveGames/' + currentGameCode + '/question');
+  const result = await qRef.transaction(current => {
+    if (!current || current.qId !== qId) return; // la pregunta ya cambió
+    if (current.status !== 'open' || current.deadline !== deadline) return; // ya no aplica
+    return Object.assign({}, current, { status: 'resolved', correctIndex: activeCorrectIndex });
+  });
+  if (!result.committed) return;
+
+  const answers = (result.snapshot && result.snapshot.answers) || {};
+  const launchedAt = (result.snapshot && result.snapshot.launchedAt) || deadline - ANSWER_WINDOW_MS;
+  for (const [pid, ans] of Object.entries(answers)) {
+    const isCorrect = !!(ans && ans.optionIndex === activeCorrectIndex);
+    const elapsedMs = (ans && typeof ans.answeredAt === 'number') ? (ans.answeredAt - launchedAt) : ANSWER_WINDOW_MS;
+    const delta = isCorrect ? pointsForElapsed(elapsedMs) : -1;
+    const playerRef = DB.ref('liveGames/' + currentGameCode + '/players/' + pid);
+    try {
+      const p = await playerRef.once();
+      const curScore = (p && typeof p.score === 'number') ? p.score : 0;
+      await playerRef.update({ score: curScore + delta });
+    } catch (e) {
+      console.error('No se pudo actualizar el puntaje del jugador', pid, e);
+    }
+    try {
+      await DB.ref('globalPlayers/' + pid).transaction(gp => {
+        if (!gp) return gp; // si no existe perfil global, no crear uno vacío
+        gp.totalScore = (gp.totalScore || 0) + delta;
+        gp.categoriesPlayed = gp.categoriesPlayed || {};
+        gp.categoriesPlayed[currentCat] = true;
+        gp.attemptCount = (gp.attemptCount || 0) + 1; // cuenta toda respuesta, correcta o no
+        if (isCorrect) {
+          gp.correctCount = (gp.correctCount || 0) + 1;
+          gp.correctTimeSumSec = (gp.correctTimeSumSec || 0) + (elapsedMs / 1000); // para el tiempo promedio del ranking
+        } else {
+          gp.wrongCount = (gp.wrongCount || 0) + 1;
+        }
+        return gp;
+      });
+    } catch (e) {
+      console.error('No se pudo actualizar el perfil global del jugador', pid, e);
+    }
+  }
+}
+
+async function launchBankQuestion(cat, idx) {
+  const q = QUESTIONS[cat][idx];
+  if (!q) return;
+  const qid = cat + '_' + idx;
+  activeCorrectIndex = q.correct;
+  launchedQIds.add(qid);
+  questionCounter++;
+  const launchedAt = serverNow();
+  await DB.ref('liveGames/' + currentGameCode + '/question').set({
+    qId: 'q' + questionCounter + '_' + qid,
+    status: 'open',
+    categoryLabel: CATEGORY_LABELS[cat] || cat,
+    text: q.text,
+    options: q.options,
+    launchedAt: launchedAt,
+    deadline: launchedAt + ANSWER_WINDOW_MS,
+    answers: {},
+  });
+}
+
+document.getElementById('launchCustomBtn').addEventListener('click', async () => {
+  const text = document.getElementById('customQText').value.trim();
+  const a = document.getElementById('customOptA').value.trim();
+  const b = document.getElementById('customOptB').value.trim();
+  const c = document.getElementById('customOptC').value.trim();
+  const correct = Number(document.getElementById('customCorrect').value);
+  if (!text || !a || !b || !c) { showError('Completá la pregunta y las tres opciones.'); return; }
+  activeCorrectIndex = correct;
+  questionCounter++;
+  const launchedAt = serverNow();
+  await DB.ref('liveGames/' + currentGameCode + '/question').set({
+    qId: 'qcustom' + questionCounter,
+    status: 'open',
+    categoryLabel: 'Personalizada',
+    text: text,
+    options: [a, b, c],
+    launchedAt: launchedAt,
+    deadline: launchedAt + ANSWER_WINDOW_MS,
+    answers: {},
+  });
+  document.getElementById('customQText').value = '';
+  document.getElementById('customOptA').value = '';
+  document.getElementById('customOptB').value = '';
+  document.getElementById('customOptC').value = '';
+});
+
+/* ---------- render de la pregunta activa (estado en vivo) ---------- */
+function renderActiveQuestion(q) {
+  clearAnswerTimer();
+
+  const pickerBox = document.getElementById('pickerBox');
+  const activeBox = document.getElementById('activeBox');
+
+  if (!q || q.status === 'idle') {
+    pickerBox.classList.remove('hidden');
+    activeBox.classList.add('hidden');
+    renderBankList();
+    return;
+  }
+
+  pickerBox.classList.add('hidden');
+  activeBox.classList.remove('hidden');
+
+  document.getElementById('activeCatLabel').textContent = q.categoryLabel || '';
+  document.getElementById('activeQText').textContent = q.text;
+
+  const letters = ['A', 'B', 'C'];
+  const reviewBox = document.getElementById('activeOptsReview');
+  reviewBox.innerHTML = (q.options || []).map((opt, idx) => {
+    const isCorrect = activeCorrectIndex === idx;
+    return `<div class="opt-review-row${isCorrect ? ' correct-opt' : ''}"><span class="opt-letter">${letters[idx]}</span><span>${escapeHtml(opt)}</span>${isCorrect ? ' <span style="margin-left:auto;color:var(--good);font-size:12px;font-weight:700;">✓ correcta</span>' : ''}</div>`;
+  }).join('');
+
+  const waitingBox = document.getElementById('waitingLockBox');
+  const lockedBox = document.getElementById('lockedReviewBox');
+  const resolvedBox = document.getElementById('resolvedBox');
+  const allFailedBox = document.getElementById('allFailedBox');
+  [lockedBox, allFailedBox].forEach(b => b.classList.add('hidden'));
+
+  const cancelBtn = document.getElementById('cancelQuestionBtn');
+  const resolved = q.status === 'resolved';
+  cancelBtn.textContent = resolved ? 'Siguiente pregunta →' : 'Cancelar / volver a elegir pregunta';
+  cancelBtn.classList.toggle('primary', resolved);
+  cancelBtn.classList.toggle('secondary', !resolved);
+
+  const answeredCount = Object.keys(q.answers || {}).length;
+  const totalPlayers = Object.keys(currentPlayers || {}).length;
+
+  if (q.status === 'open') {
+    resolvedBox.classList.add('hidden');
+    waitingBox.classList.remove('hidden');
+    document.getElementById('waitingLockText').textContent = 'Pregunta lanzada — todos pueden responder';
+    document.getElementById('waitingLockSub').textContent = answeredCount + ' de ' + totalPlayers + ' participantes ya respondieron.';
+    startAnswerTimer(q);
+  } else if (q.status === 'resolved') {
+    waitingBox.classList.add('hidden');
+    resolvedBox.classList.remove('hidden');
+    const answers = q.answers || {};
+    let correctCount = 0, wrongCount = 0;
+    Object.values(answers).forEach(a => { if (a && a.optionIndex === q.correctIndex) correctCount++; else wrongCount++; });
+    const noAnswerCount = Math.max(0, totalPlayers - Object.keys(answers).length);
+    document.getElementById('resolvedIcon').textContent = '🏁';
+    document.getElementById('resolvedText').textContent =
+      correctCount + ' acertaron, ' + wrongCount + ' fallaron' +
+      (noAnswerCount ? ', ' + noAnswerCount + ' no respondieron' : '') + '.';
+  }
+}
+
+/* ---------- cancelar pregunta / pasar a la siguiente ----------
+   La resolución (quién acertó, quién falló, puntajes) ahora es automática
+   al cumplirse el cronómetro de 20s — ver resolveQuestion() más arriba.
+   Este botón sirve para: (a) cancelar una pregunta antes de tiempo, o
+   (b) una vez resuelta, pasar a elegir la siguiente. */
+document.getElementById('cancelQuestionBtn').addEventListener('click', async () => {
+  clearAnswerTimer();
+  const qRef = DB.ref('liveGames/' + currentGameCode + '/question');
+  await qRef.set({ status: 'idle' });
+  activeCorrectIndex = null;
+});
+
+/* ---------- finalizar / reabrir partida ---------- */
+document.getElementById('finalizeBtn').addEventListener('click', () => {
+  document.getElementById('finalizeConfirmBox').classList.remove('hidden');
+});
+document.getElementById('finalizeCancelBtn').addEventListener('click', () => {
+  document.getElementById('finalizeConfirmBox').classList.add('hidden');
+});
+document.getElementById('finalizeConfirmBtn').addEventListener('click', async () => {
+  try {
+    clearAnswerTimer();
+    // se cierra cualquier pregunta que haya quedado abierta antes de finalizar
+    await DB.ref('liveGames/' + currentGameCode + '/question').set({ status: 'idle' });
+    await DB.ref('liveGames/' + currentGameCode + '/gameStatus').set('finished');
+    activeCorrectIndex = null;
+    document.getElementById('finalizeConfirmBox').classList.add('hidden');
+  } catch (err) {
+    console.error('Error al finalizar la partida:', err);
+    showError('No se pudo finalizar la partida. Intentá de nuevo. Detalle: ' + (err && err.message ? err.message : err));
+  }
+});
+document.getElementById('reopenGameBtn').addEventListener('click', async () => {
+  try {
+    await DB.ref('liveGames/' + currentGameCode + '/gameStatus').set(null);
+  } catch (err) {
+    console.error('Error al reabrir la partida:', err);
+    showError('No se pudo reabrir la partida. Intentá de nuevo. Detalle: ' + (err && err.message ? err.message : err));
+  }
+});
+
+/* ---------- retomar automáticamente la última partida creada (mismo navegador) ---------- */
+(function tryAutoResume() {
+  // Solo sugiere; no entra automáticamente para evitar confusión si el anfitrión
+  // realmente quiere crear una partida nueva.
+  const last = localStorage.getItem('lasthostgame');
+  if (last) {
+    document.getElementById('resumeCodeInput').value = last;
+  }
+})();
+
+function wireControlPanel() {
+  // no-op placeholder: los listeners ya están enlazados una sola vez arriba;
+  // esta función existe por si se necesita re-enlazar algo al entrar al panel.
+}
+
+/* ---------- ranking histórico por niveles ---------- */
+const LEVELS = [
+  { key: 'aprendiz', label: 'Aprendiz', minCats: 1 },
+  { key: 'junior', label: 'Junior', minCats: 2 },
+  { key: 'experto', label: 'Experto', minCats: 3 },
+  { key: 'master', label: 'Master', minCats: 4 },
+];
+
+function playerLevel(gp) {
+  const catsPlayed = gp.categoriesPlayed ? Object.keys(gp.categoriesPlayed).length : 0;
+  let lvl = null;
+  LEVELS.forEach(l => { if (catsPlayed >= l.minCats) lvl = l; });
+  return lvl;
+}
+
+let currentHistoricLevel = 'aprendiz';
+
+document.getElementById('viewHistoricRankBtn').addEventListener('click', async () => {
+  showScreen('historicRank');
+  renderLevelTabs();
+  await loadHistoricRanking(currentHistoricLevel);
+});
+document.getElementById('backFromHistoricBtn').addEventListener('click', () => {
+  showScreen('setup');
+});
+
+function renderLevelTabs() {
+  const tabs = document.getElementById('levelTabs');
+  tabs.innerHTML = LEVELS.map(l =>
+    '<button type="button" class="secondary level-tab" data-level="' + l.key + '">' + l.label + '</button>'
+  ).join('');
+  tabs.querySelectorAll('.level-tab').forEach(btn => {
+    btn.classList.toggle('active-tab', btn.dataset.level === currentHistoricLevel);
+    btn.addEventListener('click', async () => {
+      currentHistoricLevel = btn.dataset.level;
+      tabs.querySelectorAll('.level-tab').forEach(b => b.classList.toggle('active-tab', b === btn));
+      await loadHistoricRanking(currentHistoricLevel);
+    });
+  });
+}
+
+async function loadHistoricRanking(levelKey) {
+  const box = document.getElementById('historicRankList');
+  box.innerHTML = '<div class="empty-note">Cargando...</div>';
+  try {
+    const allPlayers = (await DB.ref('globalPlayers').once()) || {};
+    const inLevel = Object.entries(allPlayers).filter(([id, gp]) => {
+      const lvl = playerLevel(gp);
+      return lvl && lvl.key === levelKey;
+    });
+
+    if (!inLevel.length) {
+      box.innerHTML = '<div class="empty-note">Todavía nadie alcanzó este nivel.</div>';
+      return;
+    }
+
+    inLevel.sort((a, b) => (b[1].totalScore || 0) - (a[1].totalScore || 0));
+
+    const top20 = inLevel.slice(0, 20);
+    box.innerHTML = top20.map(([id, gp], idx) => {
+      const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : ('#' + (idx + 1));
+      const catsCount = gp.categoriesPlayed ? Object.keys(gp.categoriesPlayed).length : 0;
+      return '<div class="sb-row"><span class="sb-rank">' + medal + '</span><span class="sb-name">' + escapeHtml(gp.name || '') + '</span><span class="sb-score">' + (gp.totalScore || 0) + ' pts</span></div>' +
+        '<div class="muted" style="font-size:11.5px; margin:-6px 0 6px;">' + catsCount + ' categoría' + (catsCount === 1 ? '' : 's') + ' jugadas</div>';
+    }).join('');
+  } catch (e) {
+    console.error('Error al cargar ranking histórico:', e);
+    box.innerHTML = '<div class="empty-note">No se pudo cargar el ranking.</div>';
+  }
+}
+</script>
+</body>
+</html>

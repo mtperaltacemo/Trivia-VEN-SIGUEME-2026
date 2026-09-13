@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desafiando tu Conocimiento — Ven, Sígueme 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-red: #1E4E8C;
+    --bg-red-deep: #0B2545;
+    --panel: #0A192F;
+    --panel-2: #050D18;
+    --blue: #708090;
+    --blue-dim: #495363;
+    --blue-light: #93A3B1;
+    --text: #FFFAFA;
+    --muted: #C4CDD6;
+    --danger: #FF6A4D;
+    --good: #46C98A;
+    --yellow: #FFD400;
+    --gold: #E8C240;
+    --cat-red: #E4362C;
+    --cat-yellow: #FFC300;
+    --cat-blue: #2D7DD2;
+    --cat-orange: #FF8A1E;
+    --cat-green: #2E7D32;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--bg-red-deep); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+  body {
+    background-image:
+      radial-gradient(circle at 12% 6%, rgba(112,128,144,0.20), transparent 42%),
+      radial-gradient(circle at 90% 95%, rgba(255,255,255,0.06), transparent 45%),
+      linear-gradient(160deg, var(--bg-red) 0%, var(--bg-red-deep) 65%);
+    display:flex; justify-content:center; padding:28px 16px 60px;
+  }
+  .app { width:100%; max-width:720px; }
+  h1,h2,h3 { font-family:'Space Grotesk',sans-serif; margin:0; }
+  .hidden { display:none !important; }
+
+  /* header / nav */
+  .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; gap:14px; flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .brand-logo {
+    background:linear-gradient(150deg, #FFFFFF, #DDE2E6);
+    border-radius:12px; padding:9px 16px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.95) inset,
+      0 -4px 7px rgba(0,0,0,0.18) inset,
+      0 2px 0 rgba(255,255,255,0.5),
+      0 8px 16px rgba(0,0,0,0.5);
+    border:1px solid rgba(0,0,0,0.12);
+    flex-shrink:0;
+  }
+  .brand-logo img { height:38px; width:auto; display:block; }
+  .page-title {
+    font-family:'Bebas Neue',sans-serif; font-size:34px; font-weight:400;
+    letter-spacing:.04em; line-height:1; text-transform:uppercase; color:var(--yellow);
+    text-shadow:0 2px 10px rgba(0,0,0,0.35);
+    text-align:center; margin:0 0 24px;
+  }
+  .player-pill {
+    font-size:13px; color:var(--muted); background:var(--panel);
+    border:1px solid rgba(255,255,255,0.06); padding:8px 14px; border-radius:999px;
+  }
+  .player-pill b { color:var(--text); }
+  .practice-tag {
+    background:var(--cat-orange); color:#FFFFFF; font-size:10px; font-weight:700;
+    letter-spacing:.04em; padding:2px 7px; border-radius:999px; margin-left:4px;
+  }
+
+  .card { background:var(--panel); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius); padding:26px; margin-bottom:18px; }
+  .muted { color:var(--muted); }
+
+  label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:500; }
+  input[type="text"] {
+    width:100%; background:var(--panel-2); border:1px solid rgba(255,255,255,0.08); color:var(--text);
+    padding:13px 14px; border-radius:10px; font-size:15px; font-family:inherit;
+  }
+  input[type="text"]:focus { outline:2px solid var(--blue-light); outline-offset:1px; }
+
+  button.primary {
+    background:#FFFFFF; color:var(--bg-red-deep); border:none; font-weight:700; font-family:'Space Grotesk',sans-serif;
+    font-size:15px; padding:13px 22px; border-radius:10px; cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  button.primary:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,0,.3); }
+  button.primary:focus-visible { outline:3px solid var(--blue-light); outline-offset:2px; }
+  button.primary:disabled { opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+  button.ghost {
+    background:transparent; border:1px solid rgba(255,255,255,0.15); color:var(--text);
+    font-family:'Inter',sans-serif; font-size:14px; padding:10px 16px; border-radius:10px; cursor:pointer;
+  }
+  button.ghost:hover { border-color:var(--blue-light); color:var(--blue-light); }
+  button.ghost:focus-visible { outline:2px solid var(--blue-light); outline-offset:2px; }
+
+  button.ranking-btn {
+    background:var(--panel-2); border:1px solid rgba(112,128,144,0.35); color:var(--blue);
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px;
+    padding:10px 18px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:8px;
+  }
+  button.ranking-btn:hover { background:rgba(112,128,144,0.1); }
+  button.ranking-btn:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
+
+  button.practice-btn {
+    background:var(--cat-orange); color:#FFFFFF; border:none; font-weight:700;
+    font-family:'Space Grotesk',sans-serif; font-size:13px; padding:13px 16px; border-radius:10px;
+    cursor:pointer; white-space:nowrap; flex-shrink:0;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.3) inset,
+      0 -3px 6px rgba(0,0,0,0.2) inset,
+      0 4px 10px rgba(0,0,0,0.3);
+    transition:transform .12s ease;
+  }
+  button.practice-btn:hover { transform:translateY(-1px); }
+  button.practice-btn:focus-visible { outline:2px solid #FFFFFF; outline-offset:2px; }
+
+  button.admin-reset-btn {
+    background:transparent; border:1px solid rgba(255,255,255,0.1); color:var(--muted);
+    font-size:12px; padding:10px 14px; border-radius:10px; cursor:pointer;
+    font-family:'Inter',sans-serif; opacity:0.5; transition:opacity .2s ease;
+  }
+  button.admin-reset-btn:hover { opacity:1; border-color:var(--danger); color:var(--danger); }
+
+  .admin-panel {
+    background:var(--panel); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius);
+    padding:20px; margin-top:14px;
+  }
+  .admin-panel h3 { font-size:15px; margin-bottom:12px; color:var(--danger); }
+  .admin-panel .admin-player-row {
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:10px 12px; background:var(--panel-2); border-radius:8px; margin-bottom:8px;
+  }
+  .admin-panel .admin-player-name { font-weight:600; font-size:14px; flex:1; }
+  .admin-panel .admin-delete-btn {
+    background:var(--danger); color:#FFFFFF; border:none; font-size:12px; font-weight:600;
+    padding:6px 12px; border-radius:6px; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .admin-panel .admin-delete-btn:hover { opacity:0.85; }
+  .admin-panel .admin-delete-all {
+    background:transparent; border:1px solid var(--danger); color:var(--danger); width:100%;
+    font-size:13px; font-weight:700; padding:12px; border-radius:10px; cursor:pointer;
+    font-family:'Space Grotesk',sans-serif; margin-top:8px;
+  }
+  .admin-panel .admin-delete-all:hover { background:rgba(226,104,90,0.15); }
+
+  /* category grid */
+  .cat-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:520px) { .cat-grid { grid-template-columns:1fr; } }
+  .cat-card {
+    --cat-color: var(--blue-light);
+    background:linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
+    border:1px solid rgba(255,255,255,0.06); border-top:4px solid var(--cat-color);
+    border-radius:var(--radius);
+    padding:20px; cursor:pointer; text-align:left; color:var(--text); font-family:inherit;
+    display:flex; flex-direction:column; gap:10px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.05) inset,
+      0 -10px 16px rgba(0,0,0,0.28) inset,
+      0 10px 20px rgba(0,0,0,0.35);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .cat-card:hover {
+    transform:translateY(-4px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 -10px 16px rgba(0,0,0,0.28) inset,
+      0 0 0 2px var(--cat-color),
+      0 14px 26px rgba(0,0,0,0.45);
+  }
+  .cat-card:focus-visible { outline:2px solid var(--cat-color); outline-offset:2px; }
+  .cat-card.cat-profecias_cumplidas { --cat-color: var(--cat-red); }
+  .cat-card.cat-arrepentimiento { --cat-color: var(--cat-yellow); }
+  .cat-card.cat-ultimos_dias { --cat-color: var(--cat-blue); }
+  .cat-card.cat-llamado_isaias { --cat-color: var(--cat-green); }
+  .cat-card.cat-profecias_mesianicas { --cat-color: var(--cat-orange); }
+
+  .cat-icon-badge {
+    width:80px; height:80px; border-radius:16px; padding:8px; flex-shrink:0;
+    background:radial-gradient(circle at 32% 26%, #FFFFFF 0%, var(--cat-color) 65%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 -5px 9px rgba(0,0,0,0.3) inset,
+      0 4px 10px rgba(0,0,0,0.35);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cat-icon { width:100%; height:100%; color:var(--cat-color); }
+  .cat-icon svg { width:100%; height:100%; display:block; }
+  .cat-icon img { width:100%; height:100%; object-fit:contain; display:block; }
+  .cat-name { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; }
+  .cat-stats { font-size:12px; color:var(--muted); display:flex; gap:12px; }
+  .cat-stats b { color:var(--cat-color); }
+
+  /* quiz */
+  .quiz-head { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:12px; }
+  .quiz-progress { font-size:13px; color:var(--muted); }
+  .quiz-cat-label { font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--blue-light); font-weight:600; margin-bottom:4px; }
+
+  .gauge-wrap { position:relative; width:64px; height:64px; flex-shrink:0; }
+  .gauge-wrap svg { transform:rotate(-90deg); }
+  .gauge-bg { fill:none; stroke:var(--panel-2); stroke-width:6; }
+  .gauge-fg { fill:none; stroke:var(--blue-light); stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset 1s linear, stroke .2s ease; }
+  .gauge-fg.warn { stroke:var(--blue); }
+  .gauge-fg.danger { stroke:var(--danger); }
+  .gauge-num {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px;
+  }
+
+  .question-text { font-size:19px; font-weight:600; line-height:1.4; margin:6px 0 22px; font-family:'Space Grotesk',sans-serif; }
+
+  .options { display:grid; gap:12px; }
+  .option-btn {
+    text-align:left; background:var(--panel-2); border:1px solid rgba(255,255,255,0.08); color:var(--text);
+    padding:15px 16px; border-radius:10px; font-size:15px; font-family:inherit; cursor:pointer;
+    display:flex; align-items:center; gap:12px; transition:border-color .15s ease, background .15s ease;
+  }
+  .option-btn:hover:not(:disabled) { border-color:var(--blue-light); }
+  .option-btn:focus-visible { outline:2px solid var(--blue-light); outline-offset:2px; }
+  .option-btn:disabled { cursor:default; }
+  .option-letter { width:26px; height:26px; border-radius:6px; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+  .option-btn.correct { background:rgba(79,201,138,0.15); border-color:var(--good); }
+  .option-btn.correct .option-letter { background:var(--good); color:#0F2A1D; }
+  .option-btn.wrong { background:rgba(226,104,90,0.15); border-color:var(--danger); }
+  .option-btn.wrong .option-letter { background:var(--danger); color:#3A1410; }
+
+  .feedback-row { display:flex; justify-content:space-between; align-items:center; margin-top:20px; }
+  .feedback-text { font-weight:600; font-size:14px; }
+  .feedback-text.good { color:var(--good); }
+  .feedback-text.bad { color:var(--danger); }
+  .feedback-text.neutral { color:var(--blue); }
+  .tip-box {
+    background:rgba(255,255,255,0.05); border-left:3px solid var(--yellow);
+    border-radius:0 8px 8px 0; padding:10px 14px; margin-top:12px;
+    font-size:13px; line-height:1.5; color:var(--text);
+  }
+  .tip-box .tip-label { font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--yellow); font-weight:700; margin-bottom:4px; }
+
+  /* Weekly challenge banner */
+  .weekly-banner {
+    background:linear-gradient(135deg, rgba(255,195,0,0.12) 0%, rgba(255,138,30,0.08) 100%);
+    border:1px solid rgba(255,195,0,0.25); border-radius:var(--radius);
+    padding:16px 20px; margin-bottom:14px; display:flex; align-items:center; gap:14px;
+  }
+  .weekly-icon { font-size:28px; flex-shrink:0; }
+  .weekly-info { flex:1; }
+  .weekly-title { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:var(--cat-yellow); }
+  .weekly-desc { font-size:12.5px; color:var(--muted); margin-top:2px; }
+  .weekly-desc b { color:var(--text); }
+
+  /* result screen */
+  .practice-big-result { text-align:center; padding:18px 0 6px; }
+  .practice-percent {
+    font-family:'Bebas Neue',sans-serif; font-size:64px; line-height:1; color:var(--cat-orange);
+    text-shadow:0 2px 10px rgba(0,0,0,0.3);
+  }
+  .practice-phrase { font-size:14.5px; color:var(--text); font-weight:600; max-width:440px; margin:10px auto 0; line-height:1.5; }
+
+  .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:18px 0; }
+  .result-stat { background:var(--panel-2); border-radius:10px; padding:14px; text-align:center; }
+  .result-stat .val { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:22px; color:var(--blue); }
+  .result-stat .lbl { font-size:12px; color:var(--muted); margin-top:2px; }
+
+  /* ranking */
+  .level-section { margin-bottom:26px; }
+  .level-title { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .level-medal { font-size:26px; line-height:1; display:flex; align-items:center; }
+  .medal-copper {
+    display:inline-block; width:22px; height:22px; border-radius:50%;
+    background:radial-gradient(circle at 32% 26%, #E8A87C 0%, #B5651D 65%, #8B4513 100%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 -3px 5px rgba(0,0,0,0.35) inset,
+      0 2px 4px rgba(0,0,0,0.4);
+    border:1px solid rgba(255,255,255,0.25);
+  }
+  .level-badge {
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; padding:7px 18px; border-radius:999px;
+  }
+  .level-badge.Master { background:linear-gradient(120deg,var(--blue),var(--blue-dim)); color:#FFFFFF; }
+  .level-badge.Experto { background:rgba(112,128,144,0.25); color:var(--blue-light); border:1px solid var(--blue-light); }
+  .level-badge.Básico { background:rgba(255,255,255,0.08); color:var(--text); border:1px solid rgba(255,255,255,0.2); }
+  .level-badge.Aprendiz { background:rgba(255,255,255,0.05); color:var(--muted); border:1px solid rgba(255,255,255,0.1); }
+
+  .rank-row {
+    display:flex; align-items:center; gap:14px; padding:16px 18px; background:var(--panel);
+    border:1px solid rgba(255,255,255,0.06); border-radius:10px; margin-bottom:10px;
+  }
+  .rank-pos { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px; width:30px; color:var(--muted); flex-shrink:0; }
+  .rank-name { font-weight:700; font-size:16px; flex:1; min-width:80px; }
+  .rank-detail { font-size:12.5px; color:var(--muted); margin-top:2px; }
+  .rank-pct { font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--blue-light); font-size:19px; flex-shrink:0; }
+
+  .rank-entry { margin-bottom:10px; }
+  .rank-row { cursor:pointer; }
+  .rank-toggle {
+    width:24px; height:24px; border-radius:6px; background:rgba(255,255,255,0.06); border:none;
+    color:var(--muted); font-size:14px; cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .2s ease, background .15s ease;
+  }
+  .rank-toggle.open { transform:rotate(90deg); background:rgba(255,255,255,0.1); }
+  .rank-expand {
+    overflow:hidden; max-height:0; opacity:0;
+    transition:max-height .3s ease, opacity .25s ease, padding .2s ease;
+    background:var(--panel-2); border-radius:0 0 10px 10px;
+    margin-top:-2px; padding:0 16px;
+  }
+  .rank-expand.open { max-height:600px; opacity:1; padding:14px 16px; }
+  .rank-expand-title { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; margin-bottom:10px; }
+  .rank-cat-row {
+    display:flex; align-items:center; gap:10px; padding:10px 12px;
+    background:var(--panel); border-radius:8px; margin-bottom:8px;
+  }
+  .rank-cat-color {
+    width:6px; height:36px; border-radius:3px; flex-shrink:0;
+  }
+  .rank-cat-info { flex:1; }
+  .rank-cat-name { font-weight:600; font-size:13px; }
+  .rank-cat-stats { font-size:11.5px; color:var(--muted); margin-top:2px; }
+  .rank-cat-stats b { color:var(--text); font-weight:600; }
+  .rank-cat-score { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:var(--good); flex-shrink:0; }
+  .rank-summary { font-size:12px; color:var(--muted); padding-top:6px; border-top:1px solid rgba(255,255,255,0.06); margin-top:4px; }
+  .rank-summary b { color:var(--text); }
+
+  .welcome-banner {
+    background:linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
+    border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius);
+    padding:20px; margin-bottom:18px; text-align:center;
+  }
+  .welcome-name { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--yellow); }
+  .welcome-msg { font-size:13.5px; color:var(--muted); margin-top:6px; line-height:1.5; }
+  .welcome-msg b { color:var(--text); }
+
+  .progress-section { margin-bottom:18px; }
+  .progress-section .card { padding:20px; }
+  .progress-section h3 { font-size:15px; margin-bottom:14px; }
+  .progress-cat-block { margin-bottom:18px; }
+  .progress-cat-block:last-child { margin-bottom:0; }
+  .progress-cat-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .progress-cat-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .progress-cat-label { font-size:13px; font-weight:600; }
+  .progress-chart {
+    display:flex; align-items:flex-end; gap:6px; height:80px;
+    padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .progress-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0; }
+  .progress-bar { width:100%; border-radius:4px 4px 0 0; min-height:4px; transition:height .3s ease; }
+  .progress-bar-label { font-size:9px; color:var(--muted); white-space:nowrap; }
+  .progress-bar-value { font-size:10px; font-weight:700; color:var(--text); }
+  .progress-no-data { font-size:12px; color:var(--muted); font-style:italic; text-align:center; padding:16px 0; }
+  .btn-progress {
+    background:var(--panel-2); border:1px solid rgba(255,255,255,0.1); color:var(--blue-light);
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px;
+    padding:10px 16px; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:8px;
+  }
+  .btn-progress:hover { border-color:var(--blue-light); }
+
+  /* Badges / Logros */
+  .badges-strip { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .badge-item {
+    display:flex; align-items:center; gap:7px; padding:7px 12px;
+    background:var(--panel-2); border:1px solid rgba(255,255,255,0.06);
+    border-radius:999px; font-size:12px; font-weight:500; color:var(--muted);
+    transition:all .2s ease;
+  }
+  .badge-item.unlocked {
+    background:rgba(79,201,138,0.1); border-color:var(--good); color:var(--good);
+  }
+  .badge-item .badge-icon { font-size:16px; flex-shrink:0; }
+  .badge-item.locked { opacity:0.4; }
+  .badge-new { animation:badgePop .4s ease; }
+  @keyframes badgePop { 0%{transform:scale(0.7);opacity:0;} 60%{transform:scale(1.15);} 100%{transform:scale(1);opacity:1;} }
+
+  .badges-section { margin-bottom:18px; }
+  .badges-section .card { padding:20px; }
+  .badges-section h3 { font-size:15px; margin-bottom:4px; }
+  .badges-count { font-size:12px; color:var(--muted); margin-bottom:12px; }
+
+  /* WhatsApp share */
+  .btn-whatsapp {
+    background:#25D366; color:#FFFFFF; border:none; font-weight:700;
+    font-family:'Space Grotesk',sans-serif; font-size:13px; padding:12px 18px;
+    border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:8px; justify-content:center;
+    box-shadow:0 4px 12px rgba(37,211,102,0.3); transition:transform .12s ease;
+  }
+  .btn-whatsapp:hover { transform:translateY(-1px); }
+  .btn-whatsapp:focus-visible { outline:2px solid #FFFFFF; outline-offset:2px; }
+  .btn-whatsapp svg { width:18px; height:18px; fill:#FFFFFF; }
+
+  .empty-note { color:var(--muted); font-size:14px; text-align:center; padding:20px 0; }
+  .storage-note { font-size:12px; color:var(--muted); background:rgba(112,128,144,0.08); border:1px dashed rgba(112,128,144,.4); border-radius:10px; padding:10px 14px; margin-bottom:16px; }
+
+  #screenRegister { display:flex; flex-direction:column; align-items:center; }
+  .card-register {
+    max-width:420px; width:100%;
+    background:linear-gradient(160deg, var(--cat-blue) 0%, #133456 100%);
+    border:1px solid rgba(255,255,255,0.12);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.1) inset,
+      0 -10px 18px rgba(0,0,0,0.3) inset,
+      0 12px 24px rgba(0,0,0,0.4);
+  }
+  .card-register label, .card-register h3 { color:#FFFFFF; }
+  .card-register input[type="text"] { background:rgba(0,0,0,0.25); border-color:rgba(255,255,255,0.2); }
+  .card-register .input-wrap { position:relative; }
+  .autocomplete-list {
+    position:absolute; top:100%; left:0; right:0; z-index:10;
+    background:#1A2640; border:1px solid rgba(255,255,255,0.15);
+    border-radius:0 0 10px 10px; max-height:180px; overflow-y:auto;
+    box-shadow:0 8px 20px rgba(0,0,0,0.5);
+  }
+  .autocomplete-item {
+    padding:12px 14px; font-size:14px; color:var(--text); cursor:pointer;
+    border-bottom:1px solid rgba(255,255,255,0.06); font-weight:500;
+    transition:background .1s ease;
+  }
+  .autocomplete-item:last-child { border-bottom:none; }
+  .autocomplete-item:hover, .autocomplete-item.active { background:rgba(255,255,255,0.1); }
+  .autocomplete-item .match-highlight { color:var(--yellow); font-weight:700; }
+  .autocomplete-hint { font-size:11px; color:rgba(255,255,255,0.45); font-style:italic; padding:8px 14px; }
+  #screenRegister .storage-note { max-width:420px; width:100%; text-align:center; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+
+  .corner-credit {
+    position:fixed; bottom:12px; right:14px; z-index:5;
+    width:110px; height:110px; flex-shrink:0;
+    pointer-events:none;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+  }
+  .corner-credit img { width:100%; height:100%; object-fit:contain; display:block; }
+  @media (max-width:480px) { .corner-credit { width:92px; height:92px; bottom:8px; right:8px; } }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">
+        <span style="font-size:32px; line-height:1; display:block;">📖</span>
+      </div>
+    </div>
+    <div id="navRight" style="display:flex; gap:10px; align-items:center;"></div>
+  </div>
+
+  <h1 class="page-title">DESAFIANDO TU CONOCIMIENTO</h1>
+  <p style="text-align:center; color:var(--muted); font-size:13px; margin:-16px 0 22px; letter-spacing:.02em;">VEN, SÍGUEME 2026 · ISAÍAS 1–12 · 14–20 DE SEPTIEMBRE</p>
+
+
+  <!-- REGISTRO -->
+  <div id="screenRegister">
+    <div class="card card-register">
+      <h3 style="margin-bottom:14px;">Registrate para empezar</h3>
+      <label for="playerNameInput">Tu nombre y apellido</label>
+      <div class="input-wrap">
+        <input type="text" id="playerNameInput" placeholder="EJ: JUAN PÉREZ" maxlength="30" style="text-transform:uppercase;" autocomplete="off">
+        <div id="autocompleteList" class="autocomplete-list hidden"></div>
+      </div>
+      <div style="height:12px;"></div>
+      <label for="playerContactInput">Tu correo o número de celular</label>
+      <div class="input-wrap">
+        <input type="text" id="playerContactInput" placeholder="EJ: juan.perez@empresa.com o 70123456" maxlength="60" autocomplete="off">
+      </div>
+      <div id="contactError" class="hidden" style="color:#E4362C; font-size:12px; margin-top:6px;">Ingresá un correo o número de celular válido.</div>
+      <div style="height:14px;"></div>
+      <div style="display:flex; gap:10px;">
+        <button class="primary" id="registerBtn" type="button" style="flex:1;">Comenzar</button>
+        <button class="practice-btn" id="practiceBtn" type="button">Entrenamiento</button>
+      </div>
+    </div>
+    <button class="ranking-btn" id="rankingFromRegisterBtn" type="button" style="margin:0 auto 16px;">🏆 Ver ranking</button>
+    <div class="storage-note">
+      Tu nombre y tus resultados quedan guardados en un ranking compartido: cualquiera que use esta
+      trivia va a poder ver tu progreso y tu posición. Tu correo o celular se usa solo para identificarte
+      y no se muestra públicamente.
+    </div>
+  </div>
+
+  <!-- CATEGORIAS -->
+  <div id="screenCategories" class="hidden">
+    <div id="welcomeBanner" class="welcome-banner hidden"></div>
+    <div id="weeklyBanner" class="weekly-banner hidden"></div>
+    <div class="card" style="padding-bottom:14px;">
+      <h3 style="margin-bottom:4px;">Elegí una categoría</h3>
+      <p class="muted" style="font-size:13px; margin:0 0 16px;">Cada intervención toma 15 preguntas al azar (de un banco más grande por categoría), 20 segundos por pregunta.</p>
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
+      <button class="ghost" id="backToHomeCatBtn" type="button">← Volver al inicio</button>
+      <button class="btn-progress" id="showProgressBtn" type="button">📈 Mi evolución</button>
+      <button class="btn-progress" id="showBadgesBtn" type="button">🏅 Mis logros</button>
+    </div>
+  </div>
+
+  <!-- MIS LOGROS -->
+  <div id="screenBadges" class="hidden">
+    <div class="badges-section">
+      <div class="card">
+        <h3>🏅 Mis logros</h3>
+        <div class="badges-count" id="badgesCount"></div>
+        <div class="badges-strip" id="badgesContainer"></div>
+      </div>
+    </div>
+    <button class="ghost" id="backFromBadgesBtn" type="button">← Volver a categorías</button>
+  </div>
+
+  <!-- MI EVOLUCIÓN -->
+  <div id="screenProgress" class="hidden">
+    <div class="progress-section">
+      <div class="card">
+        <h3>📈 Mi evolución</h3>
+        <p class="muted" style="font-size:12px; margin:0 0 14px;">Tu progreso intento a intento en cada categoría. ¡Mirá cómo mejorás!</p>
+        <div id="progressCharts"></div>
+      </div>
+    </div>
+    <button class="ghost" id="backFromProgressBtn" type="button">← Volver a categorías</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="screenQuiz" class="hidden">
+    <div class="quiz-head">
+      <div>
+        <div class="quiz-cat-label" id="quizCatLabel"></div>
+        <div class="quiz-progress" id="quizProgress"></div>
+      </div>
+      <button class="primary hidden" id="nextBtnTop" type="button" style="margin-right:8px;">Siguiente →</button>
+      <div class="gauge-wrap">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle class="gauge-bg" cx="32" cy="32" r="27"></circle>
+          <circle class="gauge-fg" id="gaugeFg" cx="32" cy="32" r="27"></circle>
+        </svg>
+        <div class="gauge-num" id="gaugeNum">20</div>
+      </div>
+    </div>
+    <button class="ghost" id="abortQuizBtn" type="button" style="width:100%; margin-bottom:12px;">✕ Abortar y volver a categorías</button>
+
+    <div class="card">
+      <div class="question-text" id="questionText"></div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="tip-box hidden" id="tipBox">
+        <div class="tip-label">💡 Sabías que...</div>
+        <div id="tipContent"></div>
+      </div>
+      <div class="feedback-row hidden" id="feedbackRow">
+        <div class="feedback-text" id="feedbackText"></div>
+        <button class="primary" id="nextBtn" type="button">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div id="screenResult" class="hidden">
+    <div class="card">
+      <h3 style="margin-bottom:2px;">Intervención completada</h3>
+      <p class="muted" id="resultCatName" style="font-size:13px; margin:0 0 8px;"></p>
+      <div id="practiceNote" class="hidden" style="font-size:12px; color:var(--cat-orange); font-weight:600; margin-bottom:14px;">
+        ⚠ Esto fue un entrenamiento: no se guardó ningún dato ni cuenta para el ranking.
+      </div>
+
+      <div id="practiceBigResult" class="hidden practice-big-result">
+        <div class="practice-percent" id="practicePercent">-</div>
+        <p class="practice-phrase" id="practicePhrase"></p>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-stat"><div class="val" id="resCorrect">-</div><div class="lbl">Aciertos</div></div>
+        <div class="result-stat"><div class="val" id="resTime">-</div><div class="lbl">Tiempo total</div></div>
+        <div class="result-stat"><div class="val" id="resAttempt">-</div><div class="lbl">N° de intento</div></div>
+        <div class="result-stat"><div class="val" id="resBest">-</div><div class="lbl">Mejor resultado</div></div>
+      </div>
+      <div id="resultBadges" class="badges-strip hidden" style="margin:12px 0 4px;"></div>
+      <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+        <button class="ghost" id="backToCatBtn" type="button" style="flex:1;">Volver a categorías</button>
+        <button class="primary" id="goRankingBtn" type="button" style="flex:1;">Ver ranking</button>
+        <button class="primary" id="backToHomeBtn" type="button" style="flex:1;">Volver al inicio</button>
+      </div>
+      <button class="btn-whatsapp" id="shareWhatsAppBtn" type="button" style="margin-top:10px; width:100%;">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492l4.634-1.215A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-2.09 0-4.029-.657-5.625-1.775l-.404-.268-2.75.721.735-2.682-.294-.428A9.712 9.712 0 012.25 12 9.75 9.75 0 0112 2.25 9.75 9.75 0 0121.75 12 9.75 9.75 0 0112 21.75z"/></svg>
+        Compartir mi resultado
+      </button>
+    </div>
+  </div>
+
+  <!-- RANKING -->
+  <div id="screenRanking" class="hidden">
+    <div class="card">
+      <h3 style="margin-bottom:2px;">Ranking general</h3>
+      <p class="muted" style="font-size:13px; margin:0 0 4px;">
+        El nivel depende de cuántas categorías jugaste. El puesto dentro de cada nivel depende del % logrado
+        (aciertos, intentos y tiempo usado).
+      </p>
+    </div>
+    <div id="rankingBody"></div>
+    <div style="display:flex; gap:10px; margin-top:12px;">
+      <button class="ghost" id="backFromRankingBtn" type="button">← Volver</button>
+      <button class="admin-reset-btn" id="adminResetBtn" type="button">🔒 Admin</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   CATEGORÍAS Y PREGUNTAS
+   Cada categoría tiene un banco de preguntas (3 opciones y el
+   índice 0,1 o 2 de la correcta). En cada intento se eligen 15
+   al azar de ese banco (ver QUIZ_LENGTH y sampleQuestions), así
+   no se repiten siempre las mismas. Podés agregar/editar preguntas
+   libremente: cuantas más haya en el banco, más variedad habrá.
+   ============================================================ */
+const CATEGORIES = [
+  { key: 'profecias_cumplidas', name: 'Profecías Cumplidas', icon: `<span style="font-size:48px;">📜</span>` },
+  { key: 'arrepentimiento', name: 'Pecado y Arrepentimiento', icon: `<span style="font-size:48px;">🕊️</span>` },
+  { key: 'ultimos_dias', name: 'Los Últimos Días', icon: `<span style="font-size:48px;">⛰️</span>` },
+  { key: 'llamado_isaias', name: 'El Llamado de Isaías', icon: `<span style="font-size:48px;">🔥</span>` },
+  { key: 'profecias_mesianicas', name: 'Profecías del Salvador', icon: `<span style="font-size:48px;">⭐</span>` }
+];
+
+const QUESTIONS = {
+  profecias_cumplidas: [
+    { text: "¿Quién fue el profeta del Antiguo Testamento más citado en el resto de las Escrituras, incluso por el mismo Salvador?", options: ["Jeremías", "Isaías", "Ezequiel"], correct: 1, tip: "Isaías es citado cientos de veces en el Nuevo Testamento y el Libro de Mormón." },
+    { text: "Según 3 Nefi 23, ¿qué mandó el Salvador a los nefitas hacer con las palabras de Isaías?", options: ["Memorizarlas de principio a fin", "Escudriñarlas diligentemente", "Traducirlas a otro idioma"], correct: 1, tip: "El Salvador dijo: \"grandes son las palabras de Isaías\" (3 Nefi 23:1)." },
+    { text: "¿Aproximadamente en qué época escribió Isaías sus profecías?", options: ["Siglo VIII a.C. (alrededor de 740-701 a.C.)", "Siglo III a.C.", "Siglo XII a.C."], correct: 0, tip: "Isaías profetizó durante los reinados de varios reyes de Judá, incluyendo Acaz y Ezequías." },
+    { text: "Según las enseñanzas de los líderes de la Iglesia, ¿qué se necesita para comprender los múltiples cumplimientos de las profecías de Isaías?", options: ["Solo un buen diccionario bíblico", "La revelación del Espíritu Santo", "Estudiar exclusivamente la historia antigua"], correct: 1, tip: null },
+    { text: "Las profecías de Isaías suelen tener cumplimiento en tres épocas distintas. ¿Cuáles son?", options: ["Los días de Isaías, el ministerio terrenal del Salvador y los últimos días", "Solo el pasado y el futuro lejano", "Únicamente la época del cautiverio en Babilonia"], correct: 0, tip: null },
+    { text: "¿Qué profeta del Libro de Mormón declaró que aplicaba las palabras de Isaías a sí mismo y a su pueblo?", options: ["Alma", "Nefi", "Mosíah"], correct: 1, tip: "1 Nefi 19:23 relata que Nefi leía las palabras de Isaías a su pueblo para animarlos a creer en el Señor." },
+    { text: "¿Qué recomienda la guía \"Ven, Sígueme\" para estudiar mejor las profecías de Isaías?", options: ["Ignorar los símbolos y leer solo lo literal", "Hacer un cuadro que compare los cumplimientos en distintas épocas", "Leer solamente los capítulos más cortos"], correct: 1, tip: null },
+    { text: "Isaías usa mucho lenguaje simbólico y poético. ¿Qué pregunta sugiere la guía de estudio para descubrir su significado?", options: ["¿Qué aprendo aquí acerca de Jesucristo?", "¿Cuántas palabras tiene el capítulo?", "¿En qué idioma se escribió originalmente?"], correct: 0, tip: null },
+    { text: "¿Cómo describe la lección la frecuencia con que Isaías es citado en el Nuevo Testamento y el Libro de Mormón?", options: ["Casi nunca es citado", "Solo un par de veces", "Es citado con mucha frecuencia, cientos de veces"], correct: 2, tip: null },
+    { text: "¿Qué libros del Antiguo Testamento se estudiaron la semana previa a Isaías 1-12, según el programa Ven, Sígueme 2026?", options: ["Proverbios y Eclesiastés", "Salmos", "Génesis"], correct: 0, tip: "La semana anterior se estudió Proverbios 1-4;15-16;22;31 y Eclesiastés 1-3;11-12." },
+    { text: "¿Qué significa que una profecía tenga \"múltiples cumplimientos\"?", options: ["Que se cumple una sola vez y ya no aplica más", "Que puede cumplirse en más de una época o circunstancia", "Que nunca llegó a cumplirse realmente"], correct: 1, tip: null },
+    { text: "¿Qué recurso sugiere la guía de estudio para entender mejor el contexto histórico de Isaías?", options: ["Las notas y guías de estudio de las Escrituras", "Un mapa de Sudamérica", "Una enciclopedia de animales"], correct: 0, tip: null },
+    { text: "¿Qué relación tuvo Isaías con los reyes de Judá de su época?", options: ["Fue un consejero y profeta durante varios reinados", "Fue coronado rey él mismo", "Vivió aislado sin contacto con la corte"], correct: 0, tip: null },
+    { text: "¿Qué reyes de Judá gobernaron durante parte del ministerio de Isaías?", options: ["David y Salomón", "Acaz y Ezequías, entre otros", "Saúl y Salomón"], correct: 1, tip: null },
+    { text: "¿Qué palabra usó el Salvador para describir las palabras de Isaías en 3 Nefi 23:1?", options: ["'Sencillas'", "'Grandes'", "'Antiguas'"], correct: 1, tip: null },
+    { text: "¿Qué revista de la Iglesia se sugiere como apoyo para que los jóvenes profundicen en las enseñanzas de Isaías?", options: ["La revista Liahona", "Una revista de historia mundial", "Ninguna revista en particular"], correct: 0, tip: null },
+    { text: "¿Qué relato ilustrado para niños narra la historia del profeta Isaías?", options: ["Historias del Antiguo Testamento", "Historias del Libro de Mormón", "Historias de la Perla de Gran Precio"], correct: 0, tip: null },
+    { text: "¿Es correcto decir que todas las profecías de Isaías se cumplieron por completo en su propia época y no tienen ninguna aplicación posterior?", options: ["Sí, es correcto", "No: muchas tienen cumplimientos adicionales en el ministerio de Cristo y en los últimos días", "Es imposible saberlo"], correct: 1, tip: null },
+    { text: "¿Qué actitud sugiere la lección tener al estudiar un libro tan antiguo y poético como Isaías?", options: ["Paciencia y disposición a buscar significado con ayuda del Espíritu", "Frustración y abandono si no se entiende todo de inmediato", "Leerlo una sola vez y no volver a él"], correct: 0, tip: null },
+    { text: "¿Qué relación existe entre Isaías y los escritores del Nuevo Testamento?", options: ["Ninguna relación", "Ellos citaron frecuentemente sus profecías para explicar la vida y misión de Jesucristo", "Los escritores del Nuevo Testamento nunca oyeron hablar de Isaías"], correct: 1, tip: null },
+  ],
+  arrepentimiento: [
+    { text: "En Isaías 1:3, ¿con qué compara el Señor la falta de reconocimiento de su pueblo hacia Él?", options: ["Con el buey que conoce a su dueño y el asno a su pesebre, mientras Israel no conoce al Señor", "Con un río que se seca en el desierto", "Con un árbol que no da fruto en invierno"], correct: 0, tip: null },
+    { text: "Según Isaías 1:18, aunque nuestros pecados sean como la grana (escarlata), ¿cómo pueden llegar a ser?", options: ["Como el carbón", "Blancos como la nieve", "Verdes como la hierba"], correct: 1, tip: "Es una de las promesas más hermosas sobre el poder purificador del arrepentimiento mediante Cristo." },
+    { text: "¿Qué invita el Señor a hacer en Isaías 1:18 antes de hablar del perdón de los pecados?", options: ["'Venid luego, y razonemos'", "'Guardad silencio para siempre'", "'Huid a las montañas'"], correct: 0, tip: null },
+    { text: "En la parábola de la viña de Isaías 5, ¿qué esperaba el dueño que produjera su viña?", options: ["Uvas silvestres amargas", "Buenas uvas", "Espinos y cardos"], correct: 1, tip: "La viña que solo da \"uvas silvestres\" representa a un pueblo que no vive según lo que se le ha enseñado." },
+    { text: "Según Isaías 5:20, ¿qué advertencia hace el profeta sobre llamar bien al mal?", options: ["'¡Ay de los que a lo malo dicen bueno, y a lo bueno malo!'", "'Bendito el que confunde el bien y el mal'", "'No hay diferencia entre el bien y el mal'"], correct: 0, tip: null },
+    { text: "¿Qué consecuencias describe Isaías para un pueblo que se aparta del Señor (por ejemplo, en Isaías 1:7)?", options: ["Prosperidad sin límites", "Desolación y ruina en la tierra", "Un aumento inmediato de la población"], correct: 1, tip: null },
+    { text: "Según Isaías 4, ¿qué promete el Señor para quienes queden en Sion tras la purificación?", options: ["Ser llamados santos y protegidos, como bajo una nube de día y fuego de noche", "Ser olvidados para siempre", "Vivir bajo un juicio constante sin esperanza"], correct: 0, tip: null },
+    { text: "En los capítulos 1, 3, 4 y 5 de Isaías, ¿qué patrón se repite después de cada advertencia?", options: ["Otra advertencia igual, sin cambios", "Un mensaje de esperanza y redención por medio del Salvador", "El fin inmediato del mundo"], correct: 1, tip: null },
+    { text: "Isaías 3:16-17 y 3:9 describen el orgullo y la vanidad como parte de:", options: ["Las virtudes que el Señor alaba", "Las condiciones espirituales que Isaías reprende", "Un ritual de adoración aprobado"], correct: 1, tip: null },
+    { text: "¿Qué comparación usa el Señor en Isaías 1 para describir a un pueblo que no lo reconoce, en contraste con animales domesticados?", options: ["El buey y el asno reconocen a su amo, pero Israel no reconoce al Señor", "Los peces reconocen el mar, pero Israel no", "Las aves reconocen el cielo, pero Israel no"], correct: 0, tip: null },
+    { text: "Según el mensaje de estos capítulos, los profetas de nuestros días, igual que Isaías, ¿qué hacen respecto al pecado?", options: ["Lo ignoran para no incomodar a nadie", "Advierten sobre él y ofrecen esperanza por medio de Cristo", "Solo lo condenan sin ofrecer esperanza"], correct: 1, tip: null },
+    { text: "¿Qué simboliza, en Isaías 1:25, la imagen de \"limpiar las escorias\" del pueblo?", options: ["La purificación que Dios ofrece a su pueblo", "Un castigo sin posibilidad de perdón", "Una limpieza únicamente física del templo"], correct: 0, tip: null },
+    { text: "¿Qué se nos invita a hacer al comparar la condición espiritual del antiguo Israel en Isaías con la actualidad?", options: ["Sentir que esos problemas no tienen relación con nosotros", "Reflexionar si enfrentamos advertencias similares hoy", "Buscar únicamente errores en otras personas"], correct: 1, tip: null },
+    { text: "En Isaías 1:16-17, además de dejar de hacer el mal, ¿qué otras acciones se piden?", options: ["Aprender a hacer el bien, buscar el juicio, socorrer al oprimido", "Aislarse completamente de la sociedad", "Guardar silencio sobre toda injusticia"], correct: 0, tip: null },
+    { text: "¿Qué representa \"el renuevo del Señor\" mencionado en Isaías 4?", options: ["Un símbolo de belleza y gloria para los que se salvan", "Una nueva especie de árbol", "Un nombre de ciudad"], correct: 0, tip: null },
+    { text: "¿Qué relación hay entre el arrepentimiento y la promesa de Isaías 1:18 sobre la limpieza de los pecados?", options: ["El arrepentimiento no tiene relación con esa promesa", "El arrepentimiento, por medio de Cristo, es lo que permite esa limpieza espiritual", "Solo el paso del tiempo puede limpiar los pecados"], correct: 1, tip: null },
+    { text: "En Isaías 1:21-23, ¿qué imagen usa el profeta para describir a Jerusalén cuando se aparta del Señor?", options: ["Una ciudad antes fiel, ahora llena de corrupción", "Una ciudad en constante celebración", "Una ciudad completamente vacía y olvidada"], correct: 0, tip: null },
+    { text: "¿Qué principio enseña la parábola de la viña (Isaías 5:1-7) sobre la relación entre Dios y su pueblo?", options: ["Dios cuida y espera fruto de quienes bendice, y se entristece cuando no lo hay", "Dios abandona la viña sin cuidarla", "La viña no representa ninguna relación espiritual"], correct: 0, tip: null },
+    { text: "¿Qué mensaje de esperanza sigue a las advertencias de Isaías 1 y 3-5, mostrando el patrón general del profeta?", options: ["Ningún mensaje de esperanza, solo condenación", "La promesa de redención y limpieza a través del Salvador", "Un mensaje de que ya es demasiado tarde para cambiar"], correct: 1, tip: null },
+    { text: "¿Cuál es el propósito final de las advertencias que dan los profetas antiguos y modernos sobre el pecado?", options: ["Condenar sin posibilidad de cambio", "Ayudarnos a volver a Dios y recibir su ayuda redentora", "Simplemente señalar culpables"], correct: 1, tip: null },
+  ],
+  ultimos_dias: [
+    { text: "Según Isaías 2:2-3, ¿qué sucederá con \"el monte de la casa de Jehová\" en los últimos días?", options: ["Será destruido por completo", "Será establecido en la cumbre de los montes y todas las naciones fluirán a él", "Permanecerá oculto para siempre"], correct: 1, tip: "Los líderes de la Iglesia han relacionado esta profecía con la obra de los templos en los últimos días." },
+    { text: "¿En qué transformarán las naciones sus espadas y lanzas, según Isaías 2:4, como señal de paz?", options: ["En rejas de arado y hoces", "En herramientas de construcción de templos", "En instrumentos musicales"], correct: 0, tip: null },
+    { text: "¿Qué se sugiere hacer, según el espíritu de Isaías 2, respecto a la promesa de que \"todas las naciones\" fluirán hacia el Señor?", options: ["Buscar formas personales de invitar a otros a acercarse a Cristo y su evangelio", "Ignorar completamente esa promesa", "Esperar que otra persona se encargue de cumplirla"], correct: 0, tip: null },
+    { text: "Según Isaías 11, ¿de dónde saldría una vara o renuevo, en referencia al linaje del Salvador?", options: ["Del tronco de Jesé", "De la casa de Faraón", "Del linaje de los filisteos"], correct: 0, tip: "Jesé fue el padre del rey David; esta profecía se asocia con el linaje mesiánico." },
+    { text: "En la visión pacífica de Isaías 11, ¿qué animales se describen conviviendo en paz?", options: ["El lobo y el cordero, el leopardo y el cabrito", "El águila y la serpiente", "El león y el ratón"], correct: 0, tip: "Esta imagen describe las condiciones de paz que se esperan durante el Milenio." },
+    { text: "¿Qué tiempo verbal usa Isaías con frecuencia en los capítulos sobre los últimos días (2, 4, 11-12), y qué sugiere la guía de estudio hacer con eso?", options: ["Tiempo pasado; buscar solo hechos históricos", "Tiempo futuro ('será', 'irán'); identificarlos ayuda a ver las promesas venideras", "Tiempo condicional; ignorarlo por ser poco claro"], correct: 1, tip: null },
+    { text: "Según Isaías 12, ¿con qué actitud se anima al pueblo a alabar al Señor por su salvación?", options: ["Con temor y silencio", "Con gozo, sacando aguas de los pozos de salvación", "Con indiferencia"], correct: 1, tip: "Isaías 12 es un cántico de alabanza y gratitud por la salvación de Dios." },
+    { text: "¿Qué proceso de los últimos días se relaciona con la profecía de que \"todas las naciones\" fluirán al monte del Señor?", options: ["El congelamiento de las fronteras nacionales", "El recogimiento de Israel y la obra del templo", "La desaparición de todas las religiones"], correct: 1, tip: null },
+    { text: "En Isaías 4, ¿qué imagen usa el profeta para describir la protección del Señor sobre Sion, similar a la que tuvo Israel en el desierto?", options: ["Una nube de día y una llama de fuego de noche", "Un muro de piedra inquebrantable", "Un ejército visible de ángeles armados"], correct: 0, tip: null },
+    { text: "¿Qué relación se sugiere entre la profecía de Isaías 2:2-3 y los templos actuales de la Iglesia?", options: ["Ninguna relación", "Se considera especialmente relevante para los Santos de los Últimos Días respecto a la obra del templo", "Solo aplica a un templo específico en Jerusalén"], correct: 1, tip: null },
+    { text: "¿Qué se nos invita a hacer al leer las promesas de paz y justicia de Isaías 11 sobre el Milenio?", options: ["Pensar en cómo podemos contribuir a la paz ahora, en anticipación a esas promesas", "Esperar pasivamente sin hacer nada al respecto", "Dudar de que esas promesas se cumplirán"], correct: 0, tip: null },
+    { text: "¿Qué significa, en el contexto de Isaías 2, que las naciones digan: \"subamos al monte de Jehová... y nos enseñará sus caminos\"?", options: ["Un deseo de aprender los caminos y verdades del Señor", "Un plan de conquista militar", "Una alianza puramente comercial"], correct: 0, tip: null },
+    { text: "¿Cómo se describe el cántico de Isaías 12?", options: ["Como un documento legal", "Como un cántico de alabanza y confianza en la salvación de Dios", "Como un discurso político"], correct: 1, tip: null },
+    { text: "¿Qué relación hay entre el \"recogimiento de Israel\" en los últimos días y las profecías de Isaías estudiadas esta semana?", options: ["No tienen relación alguna", "Isaías anuncia que las naciones se congregarán al Señor, lo cual se relaciona con el recogimiento", "Isaías solo habla del pasado de Israel"], correct: 1, tip: null },
+    { text: "Según la guía de estudio, ¿qué época describen principalmente los capítulos 2, 4 y 11-12 de Isaías?", options: ["La época del diluvio", "Los últimos días y la obra que Dios hará en ellos", "La época de los patriarcas"], correct: 1, tip: null },
+    { text: "¿Qué representa, en Isaías 2, la invitación de las naciones a \"subir\" al monte de la casa del Señor?", options: ["Una peregrinación exclusivamente física, sin significado espiritual", "El deseo de aprender los caminos del Señor y acercarse a Él", "Una competencia deportiva entre naciones"], correct: 1, tip: null },
+    { text: "¿Qué idea central comparten Isaías 2 y las enseñanzas modernas sobre el recogimiento de Israel?", options: ["Que las naciones del mundo se acercarán al Señor y a su convenio en los últimos días", "Que Israel desaparecerá como pueblo", "Que solo una nación se salvará"], correct: 0, tip: null },
+    { text: "En la visión pacífica de Isaías 11, ¿qué se describe jugando sin peligro junto a una serpiente venenosa?", options: ["Un niño de pecho", "Un guerrero armado", "No se menciona a ningún niño"], correct: 0, tip: null },
+    { text: "¿Qué podemos aprender del cántico de gratitud de Isaías 12 para aplicarlo a nuestra vida diaria?", options: ["Que debemos expresar gratitud a Dios por su salvación en nuestra propia vida", "Que la gratitud no tiene lugar en la adoración", "Que solo se debe agradecer una vez en la vida"], correct: 0, tip: null },
+    { text: "¿Qué papel juega la idea de un \"estandarte\" o señal a las naciones en relación con Isaías 11?", options: ["Se asocia con la obra de reunir a Israel en los últimos días", "No tiene ninguna aplicación conocida", "Se refiere únicamente a una bandera nacional moderna"], correct: 0, tip: null },
+  ],
+  llamado_isaias: [
+    { text: "En la visión de Isaías 6, ¿dónde vio Isaías al Señor?", options: ["Sentado sobre un trono, alto y sublime", "Caminando por el desierto", "Escondido en una cueva"], correct: 0, tip: null },
+    { text: "¿Qué criaturas rodeaban el trono del Señor en la visión de Isaías 6?", options: ["Querubines con cuatro caras", "Serafines, cada uno con seis alas", "Ángeles sin descripción específica"], correct: 1, tip: null },
+    { text: "¿Qué palabras repetían los serafines en la visión de Isaías 6?", options: ["'Gloria, gloria, gloria'", "'Santo, santo, santo, Jehová de los ejércitos'", "'Amén, amén, amén'"], correct: 1, tip: null },
+    { text: "Al verse indigno ante la santidad de Dios, ¿qué dijo Isaías sobre sí mismo?", options: ["\"Soy demasiado joven para esto\"", "\"¡Ay de mí! que soy hombre inmundo de labios...\"", "\"No necesito ser purificado\""], correct: 1, tip: null },
+    { text: "¿Qué hizo uno de los serafines para purificar a Isaías después de que él reconociera su indignidad?", options: ["Le dio a beber agua de una fuente sagrada", "Tocó su boca con un carbón encendido tomado del altar", "Le impuso las manos sobre la cabeza"], correct: 1, tip: "El carbón simboliza la limpieza y purificación necesaria antes de recibir un llamamiento profético." },
+    { text: "Después de ser purificado, ¿qué preguntó el Señor y qué respondió Isaías?", options: ["'¿Quién irá por nosotros?' — Isaías respondió: 'Heme aquí, envíame a mí'", "'¿Quién construirá el templo?' — Isaías no respondió", "'¿Quién será rey?' — Isaías pidió tiempo para pensarlo"], correct: 0, tip: null },
+    { text: "¿Qué nos puede enseñar la disposición de Isaías (\"Heme aquí, envíame a mí\") sobre nuestra propia disposición a servir?", options: ["Que debemos esperar a sentirnos completamente dignos antes de servir", "Que podemos responder con humildad y disposición, confiando en que el Señor puede purificarnos", "Que el servicio siempre debe ser rechazado al principio"], correct: 1, tip: null },
+    { text: "¿Qué principio enseña la visión de Isaías 6 acerca de cómo son llamados los profetas?", options: ["Se postulan a sí mismos ante el pueblo", "Son llamados por Dios, no se autonombran", "Son elegidos por votación popular"], correct: 1, tip: null },
+    { text: "¿Qué reacción tuvo Isaías al principio, al estar en presencia de la santidad de Dios?", options: ["Orgullo por el privilegio", "Un profundo reconocimiento de su propia indignidad", "Total indiferencia"], correct: 1, tip: null },
+    { text: "¿Qué patrón comparte la experiencia de Isaías 6 con otros llamamientos profeticos registrados en las Escrituras?", options: ["No hay comparaciones posibles", "Un llamado divino, humildad inicial y disposición a servir", "Isaías es el único ejemplo de este tipo en toda la Biblia"], correct: 1, tip: null },
+    { text: "¿Qué imagen usa Isaías 6 para representar la gloria de Dios llenando el templo?", options: ["El templo se llenó de humo", "La tierra tembló violentamente", "Se escuchó un trueno constante"], correct: 0, tip: "Isaías 6:4 describe que \"la casa se llenó de humo\" mientras los quiciales de las puertas se estremecían." },
+    { text: "¿Qué nos invita a reflexionar la pregunta: \"¿Qué te impresiona de la experiencia de Isaías al ser llamado?\"", options: ["Nada en particular, es solo historia antigua", "Cómo esa experiencia moldea nuestra comprensión del Señor y de sus profetas", "Es una pregunta sin respuesta posible"], correct: 1, tip: null },
+    { text: "Según Isaías 6, ¿qué parte de Isaías fue purificada específicamente antes de su llamamiento?", options: ["Sus ojos", "Sus labios", "Sus manos"], correct: 1, tip: null },
+    { text: "¿Qué actitud demuestra Isaías que es clave para cualquier persona llamada a servir en la Iglesia hoy?", options: ["Buscar reconocimiento antes de aceptar el llamado", "Humildad, reconocimiento de la santidad de Dios y disposición a servir", "Negociar las condiciones del llamamiento"], correct: 1, tip: null },
+    { text: "¿En qué capítulo del libro de Isaías se relata el llamamiento del profeta?", options: ["Isaías 1", "Isaías 6", "Isaías 12"], correct: 1, tip: null },
+    { text: "¿Qué efecto tuvo la voz de los serafines sobre los quiciales de las puertas del templo en la visión de Isaías 6?", options: ["Se estremecieron", "No hubo ningún efecto físico", "Las puertas se cerraron solas"], correct: 0, tip: null },
+    { text: "¿Qué mensaje inicialmente difícil se le encomendó a Isaías anunciar a un pueblo que no querría escuchar?", options: ["Un mensaje de advertencia, ya que el pueblo endurecería su corazón", "Un mensaje de que todo estaba perfectamente bien", "Ningún mensaje en particular"], correct: 0, tip: null },
+    { text: "¿Qué nos enseña la secuencia de la visión de Isaías 6 (ver la gloria de Dios, reconocer indignidad, ser purificado, recibir el llamado) sobre prepararnos para servir?", options: ["Que debemos evitar reconocer nuestras debilidades", "Que reconocer nuestra necesidad de Cristo y ser purificados nos prepara para servir", "Que el llamado siempre viene antes de cualquier preparación"], correct: 1, tip: null },
+    { text: "¿En qué lugar sagrado tuvo Isaías la visión relatada en Isaías 6?", options: ["En el templo", "En el desierto de Judea", "En su propia casa"], correct: 0, tip: null },
+    { text: "¿Qué contraste hay entre la respuesta humilde de Isaías (\"Heme aquí, envíame a mí\") y la duda o la excusa que a veces podríamos sentir ante una responsabilidad?", options: ["Una disposición sincera frente a la duda o la excusa", "No hay ningún contraste posible", "Isaías se negó varias veces antes de aceptar"], correct: 0, tip: null },
+  ],
+  profecias_mesianicas: [
+    { text: "¿Qué nombre profético se menciona en Isaías 7:14 para el niño que nacería de una virgen?", options: ["Emanuel", "Melquisedec", "Elías"], correct: 0, tip: "'Emanuel' significa 'Dios con nosotros'." },
+    { text: "¿Qué significa el nombre \"Emanuel\"?", options: ["'Príncipe de Paz'", "'Dios con nosotros'", "'Salvador de Israel'"], correct: 1, tip: null },
+    { text: "¿Qué conflicto histórico llevó al rey Acaz a considerar una alianza con Asiria, en el contexto de Isaías 7-8?", options: ["La presión de Israel (Efraín) y Siria para unirse contra Asiria", "Una guerra civil dentro de Judá", "Un conflicto con Egipto por el control del Nilo"], correct: 0, tip: null },
+    { text: "¿Qué consejo le dio Isaías al rey Acaz en medio de esa crisis política?", options: ["Confiar en el Señor en lugar de buscar alianzas humanas", "Rendirse inmediatamente a Siria e Israel", "Declarar la guerra sin consultar a nadie"], correct: 0, tip: "Isaías 7:9 advierte: \"si vosotros no creyereis, de cierto no permaneceréis.\"" },
+    { text: "Según Isaías 8:12-13, en lugar de temer las conspiraciones humanas, ¿a quién debemos santificar y temer?", options: ["A los líderes políticos", "A Jehová de los ejércitos", "A nadie en particular"], correct: 1, tip: null },
+    { text: "¿Qué título se da al Salvador en Isaías 9:6 relacionado con dar consejo y dirección?", options: ["'Consejero'", "'Guerrero'", "'Legislador'"], correct: 0, tip: null },
+    { text: "Isaías 9:6 contiene varios títulos para el Salvador. ¿Cuál de los siguientes NO aparece en ese versículo?", options: ["'Príncipe de Paz'", "'Dios Fuerte'", "'Rey de gloria'"], correct: 2, tip: "Los títulos que sí aparecen son: Admirable, Consejero, Dios Fuerte, Padre Eterno y Príncipe de Paz." },
+    { text: "Según Isaías 9:7, ¿qué se dice sobre el reino del Salvador?", options: ["Que tendrá fin dentro de mil años", "Que no tendrá fin, y será establecido con juicio y justicia", "Que será temporal hasta la siguiente generación"], correct: 1, tip: "Lucas 1:33 hace eco de esta promesa: \"de su reino no habrá fin\"." },
+    { text: "¿Qué versículo de Isaías se cita en Mateo 4:16 para describir el ministerio del Salvador en Galilea?", options: ["Isaías 9:2, \"el pueblo que andaba en tinieblas vio gran luz\"", "Isaías 1:1", "Isaías 12:3"], correct: 0, tip: null },
+    { text: "¿Qué pasaje del Nuevo Testamento cita directamente Isaías 7:14 para explicar el nacimiento de Jesús?", options: ["Mateo 1:21-23", "Juan 3:16", "Hechos 2:1-4"], correct: 0, tip: null },
+    { text: "¿Cómo describe Isaías 9:2 la condición del pueblo antes de recibir \"la gran luz\"?", options: ["Un pueblo próspero y sin necesidades", "Un pueblo que andaba en tinieblas", "Un pueblo en guerra constante con Egipto"], correct: 1, tip: null },
+    { text: "Aplicando el título \"Consejero\" (Isaías 9:6) a nuestra vida, ¿qué se nos invita a reflexionar?", options: ["Si alguna vez hemos buscado el consejo del Salvador en nuestras decisiones", "Cuántos consejeros tiene nuestra congregación", "Nada en particular"], correct: 0, tip: null },
+    { text: "¿Qué testifican tanto Isaías 7-9 como varios pasajes del Libro de Mormón sobre el nacimiento del Salvador?", options: ["Ninguna relación, son completamente independientes", "Ambos testifican del nacimiento profetizado de Jesucristo como Salvador del mundo", "El Libro de Mormón contradice lo dicho por Isaías"], correct: 1, tip: null },
+    { text: "¿Qué palabra usa Isaías 8:14 para describir al Señor, en el sentido de que puede ser motivo de tropiezo para quienes no creen?", options: ["'Piedra' (piedra de tropiezo)", "'Río'", "'Montaña que se aleja'"], correct: 0, tip: null },
+    { text: "En el contexto de Isaías 7-9, ¿qué nos ayuda a comprender mejor quién es Jesucristo para nosotros personalmente?", options: ["Memorizar solo las fechas históricas", "Reflexionar en cómo Él ha sido nuestro Consejero o Príncipe de Paz en momentos difíciles", "Ignorar la aplicación personal y quedarnos solo con la historia"], correct: 1, tip: null },
+    { text: "¿Qué relación tiene el nombre del hijo de Isaías, \"Sear-jasub\", con el mensaje profético de esos capítulos?", options: ["Su nombre significa 'un remanente volverá', relacionado con la esperanza para Israel", "No tiene ningún significado", "Fue un nombre elegido al azar"], correct: 0, tip: null },
+    { text: "¿Qué papel jugó la falta de fe del rey Acaz en los sucesos narrados en Isaías 7?", options: ["Su falta de fe lo llevó a buscar ayuda en alianzas humanas en lugar de confiar en Dios", "Tuvo una fe perfecta en todo momento", "La fe no se menciona en esos capítulos"], correct: 0, tip: null },
+    { text: "Según Lucas 1:31-33, ¿qué anunció el ángel Gabriel a María sobre el reino de su hijo, en eco de Isaías 9:7?", options: ["Que sería un reino temporal y pequeño", "Que reinaría para siempre y su reino no tendría fin", "Que su reino terminaría antes de que él creciera"], correct: 1, tip: null },
+    { text: "¿Qué título mesiánico de Isaías 9:6 se relaciona con la esperanza de paz personal y mundial que ofrece el Salvador?", options: ["'Príncipe de Paz'", "'Legislador supremo'", "'Rey conquistador'"], correct: 0, tip: null },
+    { text: "¿Cómo podemos aplicar hoy la pregunta: \"¿de qué manera ha sido el Salvador tu Consejero o tu Príncipe de Paz?\"", options: ["Reflexionando en experiencias personales donde hemos sentido su guía o paz", "Es una pregunta que no admite aplicación personal", "Solo aplica a los profetas antiguos"], correct: 0, tip: null },
+  ]
+};
+
+const QUESTION_TIME = 20;          // segundos por pregunta
+const POINTS_PER_CORRECT = 10;
+const QUIZ_LENGTH = 15;            // preguntas por intento (se eligen al azar del banco de cada categoría)
+const MAX_TIME_PER_CATEGORY = QUIZ_LENGTH * QUESTION_TIME; // 300s
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Mezcla el orden de las 3 opciones de una pregunta (y recalcula el índice
+// correcto) para que la respuesta correcta no caiga siempre en la misma letra.
+function shuffleQuestionOptions(q) {
+  const order = shuffleArray([0, 1, 2]);
+  const options = order.map(i => q.options[i]);
+  const correct = order.indexOf(q.correct);
+  return { text: q.text, options, correct, tip: q.tip || null };
+}
+
+/* ============================================================
+   MAZO ROTATIVO DE PREGUNTAS (sin repetir hasta agotar el banco)
+   Para cada categoría se guarda, en el almacenamiento compartido,
+   un orden mezclado de TODAS las preguntas del banco y un cursor.
+   Cada vez que CUALQUIER usuario entra a esa categoría, se le
+   entregan las siguientes 15 preguntas de ese orden (sin repetir
+   ninguna). Cuando ya se usaron las 60, se vuelve a mezclar todo
+   el banco desde cero (con un orden distinto) y se reinicia el
+   cursor. Así nadie puede "copiar respuestas" entrando con otro
+   nombre: el orden y el set de preguntas cambian para todos.
+   ============================================================ */
+async function drawQuizQuestions(categoryKey, n) {
+  const pool = QUESTIONS[categoryKey];
+  const deckKey = 'quizdeck:' + categoryKey;
+  let deck = await storageGet(deckKey, true);
+
+  const needsReshuffle = !deck || !Array.isArray(deck.order) || deck.order.length !== pool.length;
+  if (needsReshuffle) {
+    deck = { order: shuffleArray([...Array(pool.length).keys()]), cursor: 0 };
+  }
+
+  let start = deck.cursor * n;
+  if (start + n > deck.order.length) {
+    // Ya se agotó el banco completo: se mezcla de nuevo desde cero.
+    deck = { order: shuffleArray([...Array(pool.length).keys()]), cursor: 0 };
+    start = 0;
+  }
+
+  const idxSlice = deck.order.slice(start, start + Math.min(n, pool.length));
+  const questions = idxSlice.map(i => shuffleQuestionOptions(pool[i]));
+
+  deck.cursor = deck.cursor + 1;
+  await storageSet(deckKey, deck, true);
+
+  return questions;
+}
+
+/* ============================================================
+   ALMACENAMIENTO (ranking compartido vía window.storage)
+   Si no está disponible (por ejemplo, fuera de Claude), se usa
+   un almacenamiento en memoria solo para esta sesión.
+   ============================================================ */
+let memoryStore = {};
+let storageAvailable = (typeof window.storage !== 'undefined');
+
+async function storageGet(key, shared) {
+  if (storageAvailable) {
+    try {
+      const res = await window.storage.get(key, shared);
+      return res ? JSON.parse(res.value) : null;
+    } catch (e) { return null; }
+  }
+  return memoryStore[key] ? JSON.parse(memoryStore[key]) : null;
+}
+async function storageSet(key, value, shared) {
+  const str = JSON.stringify(value);
+  if (storageAvailable) {
+    try { await window.storage.set(key, str, shared); return true; }
+    catch (e) { return false; }
+  }
+  memoryStore[key] = str;
+  return true;
+}
+async function storageListKeys(prefix, shared) {
+  if (storageAvailable) {
+    try {
+      const res = await window.storage.list(prefix, shared);
+      return res ? res.keys : [];
+    } catch (e) { return []; }
+  }
+  return Object.keys(memoryStore).filter(k => k.startsWith(prefix));
+}
+
+function slugify(name) {
+  return name.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+}
+
+/* Normaliza el correo o celular y valida su formato. Devuelve el slug único
+   basado en ese contacto, o null si no es válido. */
+function normalizeContact(raw) {
+  const value = raw.trim().toLowerCase();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (emailRegex.test(value)) {
+    return { type: 'email', value, slug: 'c_' + slugify(value) };
+  }
+  const digitsOnly = value.replace(/[^0-9]/g, '');
+  if (digitsOnly.length >= 7 && digitsOnly.length <= 15) {
+    return { type: 'phone', value: digitsOnly, slug: 'c_' + digitsOnly };
+  }
+  return null;
+}
+
+function defaultPlayerData(name, contact) {
+  const cats = {};
+  CATEGORIES.forEach(c => { cats[c.key] = { attempts: 0, bestCorrect: 0, bestTime: null, history: [] }; });
+  return { name, contact: contact || '', categories: cats };
+}
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+let player = null;       // { name, slug, data }
+let practiceMode = false; // true = modo entrenamiento: no se guarda nada ni cuenta para el ranking
+let currentCategory = null;
+let quizQueue = [];      // 15 preguntas elegidas al azar para el intento actual
+let quizIndex = 0;
+let quizCorrect = 0;
+let quizTimeUsed = 0;
+let timeLeft = QUESTION_TIME;
+let timerHandle = null;
+let questionAnswered = false;
+
+/* ============================================================
+   ELEMENTOS
+   ============================================================ */
+const screens = {
+  register: document.getElementById('screenRegister'),
+  categories: document.getElementById('screenCategories'),
+  progress: document.getElementById('screenProgress'),
+  badges: document.getElementById('screenBadges'),
+  quiz: document.getElementById('screenQuiz'),
+  result: document.getElementById('screenResult'),
+  ranking: document.getElementById('screenRanking')
+};
+const navRight = document.getElementById('navRight');
+
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.add('hidden'));
+  screens[name].classList.remove('hidden');
+  renderNav(name);
+}
+
+function renderNav(current) {
+  navRight.innerHTML = '';
+  if (!player) return;
+  const pillLabel = practiceMode
+    ? `<b>${escapeHtml(player.name)}</b> <span class="practice-tag">ENTRENAMIENTO</span>`
+    : `<b>${escapeHtml(player.name)}</b>`;
+  if (current === 'quiz') {
+    const pill = document.createElement('span');
+    pill.className = 'player-pill';
+    pill.innerHTML = pillLabel;
+    navRight.appendChild(pill);
+    return;
+  }
+  const pill = document.createElement('span');
+  pill.className = 'player-pill';
+  pill.innerHTML = pillLabel;
+  const rankBtn = document.createElement('button');
+  rankBtn.className = 'ranking-btn';
+  rankBtn.type = 'button';
+  rankBtn.innerHTML = '🏆 Ranking';
+  rankBtn.addEventListener('click', () => renderRanking());
+  navRight.appendChild(pill);
+  navRight.appendChild(rankBtn);
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/* ============================================================
+   REGISTRO
+   ============================================================ */
+document.getElementById('registerBtn').addEventListener('click', registerPlayer);
+document.getElementById('playerNameInput').addEventListener('keydown', e => {
+  const list = document.getElementById('autocompleteList');
+  const items = list.querySelectorAll('.autocomplete-item');
+  const activeItem = list.querySelector('.autocomplete-item.active');
+
+  if (e.key === 'ArrowDown' && !list.classList.contains('hidden') && items.length > 0) {
+    e.preventDefault();
+    if (!activeItem) { items[0].classList.add('active'); }
+    else {
+      activeItem.classList.remove('active');
+      const next = activeItem.nextElementSibling;
+      if (next && next.classList.contains('autocomplete-item')) next.classList.add('active');
+      else items[0].classList.add('active');
+    }
+    return;
+  }
+  if (e.key === 'ArrowUp' && !list.classList.contains('hidden') && items.length > 0) {
+    e.preventDefault();
+    if (!activeItem) { items[items.length - 1].classList.add('active'); }
+    else {
+      activeItem.classList.remove('active');
+      const prev = activeItem.previousElementSibling;
+      if (prev && prev.classList.contains('autocomplete-item')) prev.classList.add('active');
+      else items[items.length - 1].classList.add('active');
+    }
+    return;
+  }
+  if (e.key === 'Enter') {
+    if (activeItem) {
+      e.preventDefault();
+      document.getElementById('playerNameInput').value = activeItem.dataset.name;
+      list.classList.add('hidden');
+    } else {
+      registerPlayer();
+    }
+    return;
+  }
+  if (e.key === 'Escape') { list.classList.add('hidden'); return; }
+});
+
+document.getElementById('playerContactInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    registerPlayer();
+  }
+});
+
+document.getElementById('playerNameInput').addEventListener('input', e => {
+  const pos = e.target.selectionStart;
+  e.target.value = e.target.value.toUpperCase();
+  e.target.setSelectionRange(pos, pos);
+  showAutocompleteSuggestions(e.target.value.trim());
+});
+
+// Close autocomplete when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.input-wrap')) {
+    document.getElementById('autocompleteList').classList.add('hidden');
+  }
+});
+
+let cachedPlayerNames = null;
+let cachedPlayerNamesTime = 0;
+
+async function loadRegisteredNames() {
+  const now = Date.now();
+  // Cache for 10 seconds to avoid repeated storage calls
+  if (cachedPlayerNames && (now - cachedPlayerNamesTime) < 10000) return cachedPlayerNames;
+
+  const names = [];
+  let keys = [];
+  try { keys = await storageListKeys('player:', true); } catch (e) { keys = []; }
+  for (const key of keys) {
+    const data = await storageGet(key, true);
+    if (data && data.name) names.push({ name: data.name, contact: data.contact || '' });
+  }
+  cachedPlayerNames = names;
+  cachedPlayerNamesTime = now;
+  return names;
+}
+
+async function showAutocompleteSuggestions(typed) {
+  const list = document.getElementById('autocompleteList');
+  if (typed.length < 3) {
+    list.classList.add('hidden');
+    return;
+  }
+
+  const names = await loadRegisteredNames();
+  const matches = names.filter(n => n.name.toUpperCase().includes(typed.toUpperCase()));
+
+  if (matches.length === 0) {
+    list.classList.add('hidden');
+    return;
+  }
+
+  list.innerHTML = '<div class="autocomplete-hint">Seleccioná tu nombre si ya te registraste:</div>';
+  matches.forEach(entry => {
+    const name = entry.name;
+    const div = document.createElement('div');
+    div.className = 'autocomplete-item';
+    div.dataset.name = name;
+    div.dataset.contact = entry.contact;
+    // Highlight the matching part
+    const upperName = name.toUpperCase();
+    const idx = upperName.indexOf(typed.toUpperCase());
+    if (idx >= 0) {
+      const before = escapeHtml(name.substring(0, idx));
+      const match = escapeHtml(name.substring(idx, idx + typed.length));
+      const after = escapeHtml(name.substring(idx + typed.length));
+      div.innerHTML = `${before}<span class="match-highlight">${match}</span>${after}`;
+    } else {
+      div.textContent = name;
+    }
+    div.addEventListener('click', () => {
+      document.getElementById('playerNameInput').value = name;
+      if (entry.contact) document.getElementById('playerContactInput').value = entry.contact;
+      list.classList.add('hidden');
+      document.getElementById('playerNameInput').focus();
+    });
+    list.appendChild(div);
+  });
+  list.classList.remove('hidden');
+}
+document.getElementById('practiceBtn').addEventListener('click', startPractice);
+
+async function registerPlayer() {
+  const input = document.getElementById('playerNameInput');
+  const contactInput = document.getElementById('playerContactInput');
+  const contactError = document.getElementById('contactError');
+  const name = input.value.trim();
+  if (!name) { input.focus(); return; }
+
+  const contactInfo = normalizeContact(contactInput.value);
+  if (!contactInfo) {
+    contactError.classList.remove('hidden');
+    contactInput.focus();
+    return;
+  }
+  contactError.classList.add('hidden');
+
+  const slug = contactInfo.slug;
+  if (!slug) { contactInput.focus(); return; }
+
+  practiceMode = false;
+  let data = await storageGet('player:' + slug, true);
+  if (!data) {
+    data = defaultPlayerData(name, contactInfo.value);
+    await storageSet('player:' + slug, data, true);
+  } else {
+    data.name = name; // por si cambia mayúsculas/formato
+    data.contact = contactInfo.value;
+  }
+  player = { name, slug, data };
+  renderCategories();
+  showScreen('categories');
+}
+
+function startPractice() {
+  practiceMode = true;
+  player = { name: 'Entrenamiento', slug: null, data: defaultPlayerData('Entrenamiento', '') };
+  renderCategories();
+  showScreen('categories');
+}
+
+/* ============================================================
+   CATEGORÍAS
+   ============================================================ */
+function renderCategories() {
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const cd = player.data.categories[cat.key];
+    const btn = document.createElement('button');
+    btn.className = `cat-card cat-${cat.key}`;
+    btn.type = 'button';
+    const bestLabel = cd.attempts > 0 ? `${cd.bestCorrect}/15 mejor puntaje` : 'sin intentos aún';
+    btn.innerHTML = `
+      <div class="cat-icon-badge"><div class="cat-icon">${cat.icon}</div></div>
+      <div class="cat-name">${escapeHtml(cat.name)}</div>
+      <div class="cat-stats"><span>Intentos: <b>${cd.attempts}</b></span><span>${bestLabel}</span></div>
+    `;
+    btn.addEventListener('click', () => startQuiz(cat.key));
+    grid.appendChild(btn);
+  });
+
+  // Welcome banner
+  renderWelcomeBanner();
+  renderWeeklyChallenge();
+}
+
+/* ============================================================
+   DESAFÍO SEMANAL
+   La categoría destacada cambia automáticamente cada semana.
+   ============================================================ */
+function getWeeklyCategory() {
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const weekNum = Math.floor(((now - startOfYear) / 86400000 + startOfYear.getDay()) / 7);
+  return CATEGORIES[weekNum % CATEGORIES.length];
+}
+
+function renderWeeklyChallenge() {
+  const banner = document.getElementById('weeklyBanner');
+  if (practiceMode) { banner.classList.add('hidden'); return; }
+
+  const weeklyCat = getWeeklyCategory();
+  const cd = player.data.categories[weeklyCat.key];
+  let msg = '';
+  if (cd.attempts === 0) {
+    msg = `Todavía no la intentaste. ¡Animate a ser el primero de tu equipo!`;
+  } else {
+    msg = `Ya la intentaste <b>${cd.attempts}</b> vez${cd.attempts === 1 ? '' : 'es'}. Tu mejor: <b>${cd.bestCorrect}/15</b>. ¿Podés superarte?`;
+  }
+
+  banner.classList.remove('hidden');
+  banner.innerHTML = `
+    <div class="weekly-icon">🏆</div>
+    <div class="weekly-info">
+      <div class="weekly-title">DESAFÍO DE LA SEMANA: ${escapeHtml(weeklyCat.name).toUpperCase()}</div>
+      <div class="weekly-desc">${msg}</div>
+    </div>
+  `;
+}
+
+function renderWelcomeBanner() {
+  const banner = document.getElementById('welcomeBanner');
+  if (practiceMode || !player || !player.data) { banner.classList.add('hidden'); return; }
+
+  const played = CATEGORIES.filter(c => player.data.categories[c.key].attempts > 0);
+  if (played.length === 0) {
+    banner.classList.remove('hidden');
+    banner.innerHTML = `
+      <div class="welcome-name">¡BIENVENIDO/A, ${escapeHtml(player.name)}!</div>
+      <div class="welcome-msg">Es tu primera vez. Elegí una categoría y descubrí cuánto sabés. ¡No hay presión, es para aprender!</div>
+    `;
+    return;
+  }
+
+  // Find best and worst category to give a personalized suggestion
+  let bestCat = null, bestPct = -1, worstCat = null, worstPct = 101;
+  played.forEach(c => {
+    const cd = player.data.categories[c.key];
+    const pct = Math.round((cd.bestCorrect / 15) * 100);
+    if (pct > bestPct) { bestPct = pct; bestCat = c; }
+    if (pct < worstPct) { worstPct = pct; worstCat = c; }
+  });
+
+  const notPlayed = CATEGORIES.filter(c => player.data.categories[c.key].attempts === 0);
+  let suggestion = '';
+  if (notPlayed.length > 0) {
+    suggestion = `Todavía no probaste <b>${notPlayed.map(c => c.name).join(', ')}</b>. ¿Te animás?`;
+  } else if (worstCat && worstPct < 80) {
+    suggestion = `Tu categoría con más oportunidad de mejora es <b>${worstCat.name}</b> (${worstPct}%). ¡Intentá superarte!`;
+  } else {
+    suggestion = `¡Excelente nivel en todas las categorías! Seguí practicando para mantenerte al tope.`;
+  }
+
+  banner.classList.remove('hidden');
+  banner.innerHTML = `
+    <div class="welcome-name">¡HOLA DE NUEVO, ${escapeHtml(player.name)}!</div>
+    <div class="welcome-msg">Tu mejor categoría es <b>${bestCat.name}</b> con <b>${bestPct}%</b>. ${suggestion}</div>
+  `;
+}
+
+/* ============================================================
+   MI EVOLUCIÓN — Gráfico de progreso personal
+   ============================================================ */
+const CAT_COLORS_MAP = { profecias_cumplidas: 'var(--cat-red)', arrepentimiento: 'var(--cat-yellow)', ultimos_dias: 'var(--cat-blue)', llamado_isaias: 'var(--cat-green)', profecias_mesianicas: 'var(--cat-orange)' };
+const CAT_COLORS_HEX = { profecias_cumplidas: '#E4362C', arrepentimiento: '#FFC300', ultimos_dias: '#2D7DD2', llamado_isaias: '#2E7D32', profecias_mesianicas: '#FF8A1E' };
+
+document.getElementById('showProgressBtn').addEventListener('click', () => {
+  renderProgressCharts();
+  showScreen('progress');
+});
+document.getElementById('backFromProgressBtn').addEventListener('click', () => {
+  renderCategories();
+  showScreen('categories');
+});
+
+function renderProgressCharts() {
+  const container = document.getElementById('progressCharts');
+  container.innerHTML = '';
+
+  if (!player || !player.data) { container.innerHTML = '<div class="progress-no-data">No hay datos aún.</div>'; return; }
+
+  let hasAny = false;
+
+  CATEGORIES.forEach(cat => {
+    const cd = player.data.categories[cat.key];
+    const history = cd.history || [];
+    const color = CAT_COLORS_HEX[cat.key] || '#708090';
+
+    const block = document.createElement('div');
+    block.className = 'progress-cat-block';
+
+    block.innerHTML = `<div class="progress-cat-header"><div class="progress-cat-dot" style="background:${color};"></div><div class="progress-cat-label">${escapeHtml(cat.name)}</div></div>`;
+
+    if (history.length === 0) {
+      block.innerHTML += '<div class="progress-no-data">Sin intentos todavía</div>';
+    } else {
+      hasAny = true;
+      const chart = document.createElement('div');
+      chart.className = 'progress-chart';
+
+      // Show last 10 attempts max
+      const show = history.slice(-10);
+      show.forEach((h, idx) => {
+        const pct = Math.round((h.correct / 15) * 100);
+        const barH = Math.max(8, (pct / 100) * 70);
+        const barColor = pct >= 80 ? 'var(--good)' : pct >= 50 ? color : 'var(--danger)';
+        const wrap = document.createElement('div');
+        wrap.className = 'progress-bar-wrap';
+        wrap.innerHTML = `
+          <div class="progress-bar-value">${h.correct}</div>
+          <div class="progress-bar" style="height:${barH}px; background:${barColor};"></div>
+          <div class="progress-bar-label">#${history.length - show.length + idx + 1}</div>
+        `;
+        chart.appendChild(wrap);
+      });
+      block.appendChild(chart);
+
+      // Summary line
+      const firstScore = history[0].correct;
+      const lastScore = history[history.length - 1].correct;
+      const diff = lastScore - firstScore;
+      let trend = '';
+      if (history.length >= 2) {
+        if (diff > 0) trend = ` · 📈 Mejoraste <b>+${diff}</b> desde tu primer intento`;
+        else if (diff === 0) trend = ' · Se mantuvo igual que el primer intento';
+        else trend = ` · 📉 Bajaste <b>${diff}</b> respecto al primer intento`;
+      }
+      const sumDiv = document.createElement('div');
+      sumDiv.style.cssText = 'font-size:11.5px; color:var(--muted); margin-top:6px;';
+      sumDiv.innerHTML = `${history.length} intento${history.length === 1 ? '' : 's'} · Mejor: <b>${cd.bestCorrect}/15</b>${trend}`;
+      block.appendChild(sumDiv);
+    }
+
+    container.appendChild(block);
+  });
+
+  if (!hasAny) {
+    container.innerHTML = '<div class="progress-no-data">Hacé tu primera prueba para empezar a ver tu progreso acá.</div>';
+  }
+}
+
+document.getElementById('backToCatBtn') && document.getElementById('backToCatBtn').addEventListener('click', () => {
+  renderCategories();
+  showScreen('categories');
+});
+document.getElementById('goRankingBtn').addEventListener('click', () => renderRanking());
+document.getElementById('rankingFromRegisterBtn').addEventListener('click', () => renderRanking());
+document.getElementById('backToHomeBtn').addEventListener('click', () => {
+  practiceMode = false;
+  player = null;
+  document.getElementById('playerNameInput').value = '';
+  document.getElementById('playerContactInput').value = '';
+  document.getElementById('contactError').classList.add('hidden');
+  showScreen('register');
+});
+document.getElementById('backToHomeCatBtn').addEventListener('click', () => {
+  practiceMode = false;
+  player = null;
+  document.getElementById('playerNameInput').value = '';
+  document.getElementById('playerContactInput').value = '';
+  document.getElementById('contactError').classList.add('hidden');
+  showScreen('register');
+});
+document.getElementById('backFromRankingBtn').addEventListener('click', () => {
+  if (player) { renderCategories(); showScreen('categories'); }
+  else showScreen('register');
+});
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+async function startQuiz(categoryKey) {
+  currentCategory = categoryKey;
+  quizQueue = await drawQuizQuestions(categoryKey, QUIZ_LENGTH);
+  quizIndex = 0;
+  quizCorrect = 0;
+  quizTimeUsed = 0;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  questionAnswered = false;
+  document.getElementById('feedbackRow').classList.add('hidden');
+  document.getElementById('nextBtnTop').classList.add('hidden');
+  document.getElementById('tipBox').classList.add('hidden');
+  const cat = CATEGORIES.find(c => c.key === currentCategory);
+  const q = quizQueue[quizIndex];
+
+  document.getElementById('quizCatLabel').textContent = cat.name;
+  document.getElementById('quizProgress').textContent = `Pregunta ${quizIndex + 1} de ${quizQueue.length}`;
+  document.getElementById('questionText').textContent = q.text;
+
+  const optionsContainer = document.getElementById('optionsContainer');
+  optionsContainer.innerHTML = '';
+  const letters = ['A', 'B', 'C'];
+  q.options.forEach((opt, idx) => {
+    const b = document.createElement('button');
+    b.className = 'option-btn';
+    b.type = 'button';
+    b.innerHTML = `<span class="option-letter">${letters[idx]}</span><span>${escapeHtml(opt)}</span>`;
+    b.addEventListener('click', () => selectOption(idx));
+    optionsContainer.appendChild(b);
+  });
+
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerHandle);
+  timeLeft = QUESTION_TIME;
+  updateGauge();
+  timerHandle = setInterval(() => {
+    timeLeft--;
+    updateGauge();
+    if (timeLeft <= 0) {
+      clearInterval(timerHandle);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function updateGauge() {
+  const gaugeFg = document.getElementById('gaugeFg');
+  const gaugeNum = document.getElementById('gaugeNum');
+  const r = 27;
+  const circumference = 2 * Math.PI * r;
+  const fraction = Math.max(timeLeft, 0) / QUESTION_TIME;
+  gaugeFg.style.strokeDasharray = circumference;
+  gaugeFg.style.strokeDashoffset = circumference * (1 - fraction);
+  gaugeFg.classList.remove('warn', 'danger');
+  if (timeLeft <= 5) gaugeFg.classList.add('danger');
+  else if (timeLeft <= 10) gaugeFg.classList.add('warn');
+  gaugeNum.textContent = Math.max(timeLeft, 0);
+}
+
+function selectOption(idx) {
+  if (questionAnswered) return;
+  questionAnswered = true;
+  clearInterval(timerHandle);
+  const timeSpent = QUESTION_TIME - timeLeft;
+  quizTimeUsed += timeSpent;
+
+  const q = quizQueue[quizIndex];
+  const correct = idx === q.correct;
+  lockOptions(q, idx);
+
+  const feedbackText = document.getElementById('feedbackText');
+  if (correct) {
+    quizCorrect++;
+    feedbackText.textContent = `¡Correcto! +${POINTS_PER_CORRECT} pts`;
+    feedbackText.className = 'feedback-text good';
+  } else {
+    feedbackText.textContent = 'Incorrecto';
+    feedbackText.className = 'feedback-text bad';
+  }
+  showTip(q);
+  document.getElementById('feedbackRow').classList.remove('hidden');
+  document.getElementById('nextBtnTop').classList.remove('hidden');
+}
+
+function handleTimeout() {
+  if (questionAnswered) return;
+  questionAnswered = true;
+  quizTimeUsed += QUESTION_TIME;
+  const q = quizQueue[quizIndex];
+  lockOptions(q, -1);
+
+  const feedbackText = document.getElementById('feedbackText');
+  feedbackText.textContent = 'Tiempo agotado — esta pregunta no suma puntos';
+  feedbackText.className = 'feedback-text neutral';
+  showTip(q);
+  document.getElementById('feedbackRow').classList.remove('hidden');
+  document.getElementById('nextBtnTop').classList.remove('hidden');
+}
+
+function showTip(q) {
+  const tipBox = document.getElementById('tipBox');
+  const tipContent = document.getElementById('tipContent');
+  if (q.tip) {
+    tipContent.textContent = q.tip;
+    tipBox.classList.remove('hidden');
+  } else {
+    tipBox.classList.add('hidden');
+  }
+}
+
+function lockOptions(q, chosenIdx) {
+  const buttons = document.querySelectorAll('#optionsContainer .option-btn');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.correct) b.classList.add('correct');
+    if (i === chosenIdx && chosenIdx !== q.correct) b.classList.add('wrong');
+  });
+}
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  quizIndex++;
+  if (quizIndex >= quizQueue.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+});
+
+document.getElementById('nextBtnTop').addEventListener('click', () => {
+  quizIndex++;
+  if (quizIndex >= quizQueue.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+});
+
+document.getElementById('abortQuizBtn').addEventListener('click', () => {
+  const confirmed = confirm('¿Seguro que quieres abandonar esta categoría? Se perderá el progreso de este intento.');
+  if (!confirmed) return;
+  clearInterval(timerHandle);
+  if (player) { renderCategories(); }
+  showScreen('categories');
+});
+
+async function finishQuiz() {
+  const cd = player.data.categories[currentCategory];
+  cd.attempts++;
+  if (!cd.history) cd.history = [];
+  cd.history.push({ correct: quizCorrect, time: quizTimeUsed, date: new Date().toISOString().slice(0,10) });
+  const isNewBest = cd.bestTime === null || quizCorrect > cd.bestCorrect ||
+    (quizCorrect === cd.bestCorrect && quizTimeUsed < cd.bestTime);
+  if (isNewBest) {
+    cd.bestCorrect = quizCorrect;
+    cd.bestTime = quizTimeUsed;
+  }
+  if (!practiceMode) {
+    await storageSet('player:' + player.slug, player.data, true);
+  }
+  renderResult(cd, isNewBest);
+  showScreen('result');
+}
+
+const PRACTICE_PHRASES = {
+  low: [
+    "No está mal, pero podés esforzarte un poco más. ¡Intentalo de nuevo!",
+    "Todavía te falta repasar algunos temas. Volvé a intentarlo, seguro mejorás.",
+    "Vas empezando. Repasá con calma y probá otra vez, vas a mejorar rápido."
+  ],
+  mid: [
+    "¡Muy bien! Vas por buen camino. Con un repaso más vas a dominar el tema para la clase.",
+    "Buen resultado, ya casi lo tenés. Practicá una vez más para asegurarte.",
+    "Vas mejorando bastante. Con un repaso más seguro llegás al máximo."
+  ],
+  high: [
+    "¡Muy buen nivel! Estás muy bien preparado/a para la clase del domingo.",
+    "Excelente resultado, te falta muy poco para el 100%. ¡Seguí así!",
+    "Casi perfecto. Con eso ya podés compartir lo aprendido con confianza en la clase."
+  ],
+  perfect: [
+    "¡Excelente! Dominás el tema. ¡Seguro tienes mucho que compartir en la clase!",
+    "¡Puntaje perfecto! Estás totalmente preparado/a para la lección.",
+    "¡Increíble resultado! Ya conocés muy bien el tema de esta semana."
+  ]
+};
+
+function getPracticePhrase(correct, total) {
+  const ratio = correct / total;
+  let tier;
+  if (ratio >= 1) tier = 'perfect';
+  else if (ratio >= 0.73) tier = 'high';   // ~11/15 o más
+  else if (ratio >= 0.47) tier = 'mid';    // ~7/15 a 10/15
+  else tier = 'low';
+  const options = PRACTICE_PHRASES[tier];
+  return options[Math.floor(Math.random() * options.length)];
+}
+
+function renderResult(cd, isNewBest) {
+  const cat = CATEGORIES.find(c => c.key === currentCategory);
+  document.getElementById('resultCatName').textContent = cat.name;
+  document.getElementById('practiceNote').classList.toggle('hidden', !practiceMode);
+  document.getElementById('practiceBigResult').classList.toggle('hidden', !practiceMode);
+  document.getElementById('goRankingBtn').classList.toggle('hidden', practiceMode);
+  document.getElementById('backToHomeBtn').classList.toggle('hidden', !practiceMode);
+
+  if (practiceMode) {
+    const pct = Math.round((quizCorrect / quizQueue.length) * 100);
+    document.getElementById('practicePercent').textContent = `${pct}%`;
+    document.getElementById('practicePhrase').textContent = getPracticePhrase(quizCorrect, quizQueue.length);
+  }
+
+  document.getElementById('resCorrect').textContent = `${quizCorrect}/${quizQueue.length}`;
+  document.getElementById('resTime').textContent = formatTime(quizTimeUsed);
+  document.getElementById('resAttempt').textContent = `#${cd.attempts}`;
+  document.getElementById('resBest').textContent = isNewBest ? '¡Nuevo mejor!' : `${cd.bestCorrect}/15`;
+}
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+
+/* ============================================================
+   RANKING
+   ============================================================
+   % logrado (composite) combina 4 factores, cada uno normalizado 0-100:
+   - categoriesComponent: cuántas de las 5 categorías jugó
+   - scoreComponent: promedio de aciertos (mejor intento) en las categorías jugadas
+   - timeComponent: qué tan rápido resolvió (menos tiempo = mejor)
+   - attemptsComponent: cuántos intentos necesitó por categoría (menos = mejor)
+   Los pesos son ajustables acá abajo.
+   ============================================================ */
+const WEIGHTS = { categories: 0.30, score: 0.35, time: 0.20, attempts: 0.15 };
+
+function computeMetrics(data) {
+  const playedCats = CATEGORIES.filter(c => data.categories[c.key].attempts > 0);
+  const playedKeys = playedCats.map(c => c.key);
+  const categoryNames = playedCats.map(c => c.name);
+  const categoriesParticipated = playedKeys.length;
+
+  if (categoriesParticipated === 0) {
+    return { categoriesParticipated: 0, categoryNames: [], composite: 0, level: null, avgScorePercent: 0, avgAttempts: 0, avgTime: 0 };
+  }
+
+  let sumScorePct = 0, sumAttempts = 0, sumTime = 0;
+  playedKeys.forEach(k => {
+    const cd = data.categories[k];
+    sumScorePct += (cd.bestCorrect / 15) * 100;
+    sumAttempts += cd.attempts;
+    sumTime += cd.bestTime;
+  });
+  const avgScorePercent = sumScorePct / categoriesParticipated;
+  const avgAttempts = sumAttempts / categoriesParticipated;
+  const avgTime = sumTime / categoriesParticipated;
+
+  const scoreComponent = avgScorePercent;
+  const timeComponent = Math.max(0, Math.min(100, ((MAX_TIME_PER_CATEGORY - avgTime) / MAX_TIME_PER_CATEGORY) * 100));
+  const attemptsComponent = Math.max(0, Math.min(100, 100 - (avgAttempts - 1) * 20));
+  const categoriesComponent = (categoriesParticipated / CATEGORIES.length) * 100;
+
+  const composite = Math.round(
+    scoreComponent * WEIGHTS.score +
+    timeComponent * WEIGHTS.time +
+    attemptsComponent * WEIGHTS.attempts +
+    categoriesComponent * WEIGHTS.categories
+  );
+
+  /* ============================================================
+     NIVELES — combinan categorías jugadas + promedio de aciertos.
+     No basta con jugar las 5 categorías: hay que demostrar
+     conocimiento real para subir de nivel.
+
+     MASTER:  5 categorías + promedio de aciertos >= 70%
+     EXPERTO: 4+ categorías + promedio >= 60%
+              o 5 categorías pero promedio < 70%
+     BÁSICO:  3+ categorías + promedio >= 40%
+              o 4 categorías pero promedio < 60%
+     APRENDIZ: todos los demás (1-2 categorías, o promedios bajos)
+     ============================================================ */
+  let level;
+  if (categoriesParticipated >= 5 && avgScorePercent >= 70) {
+    level = 'Master';
+  } else if (
+    (categoriesParticipated >= 4 && avgScorePercent >= 60) ||
+    (categoriesParticipated >= 5 && avgScorePercent >= 50)
+  ) {
+    level = 'Experto';
+  } else if (
+    (categoriesParticipated >= 3 && avgScorePercent >= 40) ||
+    (categoriesParticipated >= 4 && avgScorePercent >= 30)
+  ) {
+    level = 'Básico';
+  } else {
+    level = 'Aprendiz';
+  }
+
+  return { categoriesParticipated, categoryNames, composite, level, avgScorePercent, avgAttempts, avgTime };
+}
+
+async function renderRanking() {
+  showScreen('ranking');
+  const body = document.getElementById('rankingBody');
+  body.innerHTML = '<p class="empty-note">Cargando ranking…</p>';
+
+  let keys = [];
+  try { keys = await storageListKeys('player:', true); } catch (e) { keys = []; }
+
+  const players = [];
+  for (const key of keys) {
+    const data = await storageGet(key, true);
+    if (data) players.push(data);
+  }
+
+  if (players.length === 0) {
+    body.innerHTML = '<p class="empty-note">Todavía no hay resultados registrados.</p>';
+    return;
+  }
+
+  const withMetrics = players
+    .map(p => ({ data: p, metrics: computeMetrics(p) }))
+    .filter(p => p.metrics.categoriesParticipated > 0);
+
+  const levels = ['Master', 'Experto', 'Básico', 'Aprendiz'];
+  const MEDALS = { Master: '🥇', Experto: '🥈', Básico: '🥉', Aprendiz: '<span class="medal-copper"></span>' };
+  body.innerHTML = '';
+
+  levels.forEach(level => {
+    const group = withMetrics
+      .filter(p => p.metrics.level === level)
+      .sort((a, b) => b.metrics.composite - a.metrics.composite);
+    if (group.length === 0) return;
+
+    const section = document.createElement('div');
+    section.className = 'level-section';
+    section.innerHTML = `<div class="level-title"><span class="level-medal">${MEDALS[level]}</span><span class="level-badge ${level}">NIVEL ${level.toUpperCase()}</span><span class="muted" style="font-size:13px;">${group.length} participante${group.length === 1 ? '' : 's'}</span></div>`;
+
+    const CAT_COLORS = { profecias_cumplidas: 'var(--cat-red)', arrepentimiento: 'var(--cat-yellow)', ultimos_dias: 'var(--cat-blue)', llamado_isaias: 'var(--cat-green)', profecias_mesianicas: 'var(--cat-orange)' };
+
+    group.forEach((p, i) => {
+      const entryId = `rank-${level}-${i}`;
+      const entry = document.createElement('div');
+      entry.className = 'rank-entry';
+
+      // Summary row
+      const row = document.createElement('div');
+      row.className = 'rank-row';
+      row.innerHTML = `
+        <div class="rank-pos">#${i + 1}</div>
+        <div style="flex:1; min-width:0;">
+          <div class="rank-name">${escapeHtml(p.data.name)}</div>
+          <div class="rank-detail">Categoría ${p.metrics.categoryNames.map(escapeHtml).join(' · Categoría ')}</div>
+        </div>
+        <div class="rank-pct">${p.metrics.composite}%</div>
+        <button class="rank-toggle" id="toggle-${entryId}" aria-label="Ver detalle">▶</button>
+      `;
+      row.addEventListener('click', () => {
+        const expand = document.getElementById('expand-' + entryId);
+        const toggle = document.getElementById('toggle-' + entryId);
+        expand.classList.toggle('open');
+        toggle.classList.toggle('open');
+      });
+
+      // Expandable detail
+      const expand = document.createElement('div');
+      expand.className = 'rank-expand';
+      expand.id = 'expand-' + entryId;
+
+      let detailHTML = '<div class="rank-expand-title">Detalle por categoría</div>';
+      let totalAnswered = 0;
+      let totalAttempts = 0;
+
+      CATEGORIES.forEach(cat => {
+        const cd = p.data.categories[cat.key];
+        if (cd.attempts === 0) return;
+        const answered = cd.attempts * 15;
+        totalAnswered += answered;
+        totalAttempts += cd.attempts;
+        const bestPct = Math.round((cd.bestCorrect / 15) * 100);
+        const bestTimeStr = cd.bestTime !== null ? formatTime(cd.bestTime) : '-';
+        detailHTML += `
+          <div class="rank-cat-row">
+            <div class="rank-cat-color" style="background:${CAT_COLORS[cat.key] || 'var(--muted)'};"></div>
+            <div class="rank-cat-info">
+              <div class="rank-cat-name">${escapeHtml(cat.name)}</div>
+              <div class="rank-cat-stats"><b>${cd.attempts}</b> intento${cd.attempts === 1 ? '' : 's'} · mejor: <b>${cd.bestCorrect}/15</b> · tiempo: <b>${bestTimeStr}</b></div>
+            </div>
+            <div class="rank-cat-score">${bestPct}%</div>
+          </div>`;
+      });
+
+      const totalAvailable = CATEGORIES.filter(c => p.data.categories[c.key].attempts > 0).reduce((s, c) => s + ((QUESTIONS[c.key] && QUESTIONS[c.key].length) || 15), 0);
+      detailHTML += `<div class="rank-summary">Total: <b>${totalAttempts}</b> intento${totalAttempts === 1 ? '' : 's'} en <b>${p.metrics.categoriesParticipated}</b> categoría${p.metrics.categoriesParticipated === 1 ? '' : 's'} · <b>${totalAnswered}</b> preguntas respondidas de <b>${totalAvailable}</b> disponibles</div>`;
+
+      expand.innerHTML = detailHTML;
+
+      entry.appendChild(row);
+      entry.appendChild(expand);
+      section.appendChild(entry);
+    });
+    body.appendChild(section);
+  });
+}
+
+/* ============================================================
+   PANEL DE ADMINISTRACIÓN
+   Contraseña por defecto: VenSigueme2026*
+   (se puede cambiar buscando ADMIN_PASSWORD en el código)
+   ============================================================ */
+const ADMIN_PASSWORD = 'VenSigueme2026*';
+
+document.getElementById('adminResetBtn').addEventListener('click', () => {
+  const pwd = prompt('Ingrese la contraseña de administrador:');
+  if (!pwd || pwd.trim() !== ADMIN_PASSWORD) {
+    if (pwd !== null) alert('Contraseña incorrecta.');
+    return;
+  }
+  renderAdminPanel();
+});
+
+async function renderAdminPanel() {
+  const body = document.getElementById('rankingBody');
+
+  let keys = [];
+  try { keys = await storageListKeys('player:', true); } catch (e) { keys = []; }
+
+  const players = [];
+  for (const key of keys) {
+    const data = await storageGet(key, true);
+    if (data) players.push({ key, data });
+  }
+
+  // Also get deck keys for full reset
+  let deckKeys = [];
+  try { deckKeys = await storageListKeys('quizdeck:', true); } catch (e) { deckKeys = []; }
+
+  let html = '<div class="admin-panel">';
+  html += '<h3>🔧 Panel de Administración</h3>';
+
+  if (players.length === 0) {
+    html += '<p class="muted" style="font-size:13px; text-align:center; padding:12px 0;">No hay participantes registrados.</p>';
+  } else {
+    html += '<p class="muted" style="font-size:12px; margin-bottom:12px;">Podés eliminar participantes individuales o limpiar todo el ranking.</p>';
+    players.forEach(p => {
+      const catPlayed = CATEGORIES.filter(c => p.data.categories[c.key].attempts > 0).map(c => c.name);
+      const catLabel = catPlayed.length > 0 ? catPlayed.join(', ') : 'ninguna';
+      html += `<div class="admin-player-row">
+        <div>
+          <div class="admin-player-name">${escapeHtml(p.data.name)}</div>
+          <div style="font-size:11px; color:var(--muted);">Categorías: ${catLabel}</div>
+        </div>
+        <button class="admin-delete-btn" data-key="${escapeHtml(p.key)}">Eliminar</button>
+      </div>`;
+    });
+
+    html += '<button class="admin-delete-all" id="adminDeleteAllBtn" type="button">⚠ ELIMINAR TODO EL RANKING</button>';
+  }
+
+  // Reset quiz decks option
+  html += '<button class="admin-delete-all" id="adminResetDecksBtn" type="button" style="margin-top:6px; border-color:var(--blue); color:var(--blue);">🔄 Reiniciar mazos de preguntas</button>';
+
+  html += '</div>';
+  body.innerHTML += html;
+
+  // Individual delete buttons
+  body.querySelectorAll('.admin-delete-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const key = btn.dataset.key;
+      const name = btn.closest('.admin-player-row').querySelector('.admin-player-name').textContent;
+      if (!confirm(`¿Eliminar a "${name}" del ranking?`)) return;
+      try {
+        if (storageAvailable) {
+          await window.storage.delete(key, true);
+        } else {
+          delete memoryStore[key];
+        }
+      } catch (e) { /* ignore */ }
+      renderRanking();
+      setTimeout(renderAdminPanel, 300);
+    });
+  });
+
+  // Delete all button
+  const deleteAllBtn = document.getElementById('adminDeleteAllBtn');
+  if (deleteAllBtn) {
+    deleteAllBtn.addEventListener('click', async () => {
+      if (!confirm('⚠ ¿Estás seguro de eliminar TODO el ranking?\nEsta acción no se puede deshacer.')) return;
+      if (!confirm('CONFIRMACIÓN FINAL: ¿Borrar todos los datos de todos los participantes?')) return;
+      for (const p of players) {
+        try {
+          if (storageAvailable) {
+            await window.storage.delete(p.key, true);
+          } else {
+            delete memoryStore[p.key];
+          }
+        } catch (e) { /* ignore */ }
+      }
+      renderRanking();
+      setTimeout(renderAdminPanel, 300);
+    });
+  }
+
+  // Reset decks button
+  const resetDecksBtn = document.getElementById('adminResetDecksBtn');
+  if (resetDecksBtn) {
+    resetDecksBtn.addEventListener('click', async () => {
+      if (!confirm('¿Reiniciar los mazos de preguntas? Esto hará que las preguntas se mezclen de nuevo desde cero.')) return;
+      for (const dk of deckKeys) {
+        try {
+          if (storageAvailable) {
+            await window.storage.delete(dk, true);
+          } else {
+            delete memoryStore[dk];
+          }
+        } catch (e) { /* ignore */ }
+      }
+      alert('Mazos reiniciados. Las próximas pruebas usarán un orden nuevo.');
+    });
+  }
+}
+
+/* ============================================================
+   LOGROS / BADGES
+   ============================================================ */
+const BADGES_DEF = [
+  { id:'first_try', icon:'🎯', name:'Primer paso', desc:'Completaste tu primera categoría' },
+  { id:'curious', icon:'🔍', name:'Curioso', desc:'Probaste 3 categorías distintas' },
+  { id:'explorer', icon:'🧭', name:'Explorador', desc:'Jugaste en las 5 categorías' },
+  { id:'perfect', icon:'💎', name:'Perfeccionista', desc:'Lograste 15/15 en alguna categoría' },
+  { id:'persistent', icon:'🔄', name:'Constante', desc:'3 o más intentos en una categoría' },
+  { id:'speedster', icon:'⚡', name:'Velocista', desc:'Completaste una prueba en menos de 2 minutos' },
+  { id:'improving', icon:'📈', name:'Superándote', desc:'Mejoraste tu puntaje en un 2do intento' },
+  { id:'master', icon:'👑', name:'Master', desc:'Alcanzaste el nivel Master (5 categorías)' },
+  { id:'high_score', icon:'🔥', name:'En racha', desc:'80% o más en al menos 3 categorías' },
+  { id:'dedicated', icon:'🏋️', name:'Dedicado', desc:'10 o más intentos en total' }
+];
+
+function checkBadges(data) {
+  const unlocked = [];
+  const played = CATEGORIES.filter(c => data.categories[c.key].attempts > 0);
+  const totalAttempts = CATEGORIES.reduce((s,c) => s + data.categories[c.key].attempts, 0);
+  if (played.length >= 1) unlocked.push('first_try');
+  if (played.length >= 3) unlocked.push('curious');
+  if (played.length >= 5) {
+    unlocked.push('explorer');
+    // Master badge: 5 categorías + promedio >= 70%
+    let sumPct = 0;
+    played.forEach(c => { sumPct += (data.categories[c.key].bestCorrect / 15) * 100; });
+    if (sumPct / played.length >= 70) unlocked.push('master');
+  }
+  if (totalAttempts >= 10) unlocked.push('dedicated');
+  CATEGORIES.forEach(c => {
+    const cd = data.categories[c.key];
+    if (!cd || cd.attempts === 0) return;
+    if (cd.bestCorrect >= 15 && !unlocked.includes('perfect')) unlocked.push('perfect');
+    if (cd.attempts >= 3 && !unlocked.includes('persistent')) unlocked.push('persistent');
+    if (cd.bestTime !== null && cd.bestTime <= 120 && !unlocked.includes('speedster')) unlocked.push('speedster');
+    const h = cd.history || [];
+    for (let i = 1; i < h.length; i++) {
+      if (h[i].correct > h[i-1].correct && !unlocked.includes('improving')) unlocked.push('improving');
+    }
+  });
+  const highCats = played.filter(c => (data.categories[c.key].bestCorrect / 15) >= 0.8);
+  if (highCats.length >= 3) unlocked.push('high_score');
+  return unlocked;
+}
+
+function renderBadgesStrip(container, unlockedIds, showAll) {
+  container.innerHTML = '';
+  const defs = showAll ? BADGES_DEF : BADGES_DEF.filter(b => unlockedIds.includes(b.id));
+  if (defs.length === 0) { container.classList.add('hidden'); return; }
+  container.classList.remove('hidden');
+  defs.forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'badge-item ' + (unlockedIds.includes(b.id) ? 'unlocked' : 'locked');
+    el.title = b.desc;
+    el.innerHTML = `<span class="badge-icon">${b.icon}</span><span>${b.name}</span>`;
+    container.appendChild(el);
+  });
+}
+
+document.getElementById('showBadgesBtn').addEventListener('click', () => {
+  renderBadgesScreen();
+  showScreen('badges');
+});
+document.getElementById('backFromBadgesBtn').addEventListener('click', () => {
+  renderCategories();
+  showScreen('categories');
+});
+
+function renderBadgesScreen() {
+  const container = document.getElementById('badgesContainer');
+  if (!player || !player.data) { container.innerHTML = ''; return; }
+  const unlocked = checkBadges(player.data);
+  document.getElementById('badgesCount').textContent = `${unlocked.length} de ${BADGES_DEF.length} logros desbloqueados`;
+  renderBadgesStrip(container, unlocked, true);
+}
+
+/* ============================================================
+   COMPARTIR POR WHATSAPP
+   ============================================================ */
+document.getElementById('shareWhatsAppBtn').addEventListener('click', () => {
+  if (!currentCategory) return;
+  const cat = CATEGORIES.find(c => c.key === currentCategory);
+  const pct = Math.round((quizCorrect / 15) * 100);
+  let emoji = '🎯';
+  if (pct >= 90) emoji = '🏆';
+  else if (pct >= 70) emoji = '🔥';
+  else if (pct >= 50) emoji = '💪';
+  const text = `${emoji} Acabo de hacer ${quizCorrect}/15 (${pct}%) en la categoría *${cat.name}* de la trivia *DESAFIANDO TU CONOCIMIENTO — VEN, SÍGUEME 2026*! Te animás a intentarlo?`;
+  const url = 'https://wa.me/?text=' + encodeURIComponent(text);
+  window.open(url, '_blank');
+});
+
+/* Mostrar badges desbloqueados en pantalla de resultado */
+const _origRenderResult = renderResult;
+renderResult = function(cd, isNewBest) {
+  _origRenderResult(cd, isNewBest);
+  const badgesContainer = document.getElementById('resultBadges');
+  if (!practiceMode && player && player.data) {
+    const unlocked = checkBadges(player.data);
+    renderBadgesStrip(badgesContainer, unlocked, false);
+    badgesContainer.querySelectorAll('.badge-item').forEach(el => el.classList.add('badge-new'));
+  } else {
+    badgesContainer.classList.add('hidden');
+  }
+};
+
+/* ============================================================
+   INICIO
+   ============================================================ */
+showScreen('register');
+</script>
+</body>
+</html>
