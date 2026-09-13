@@ -175,6 +175,7 @@
   }
   textarea.short{ min-height:38px; }
   textarea.long{ min-height:70px; }
+  textarea.autogrow{ resize:none; overflow:hidden; }
   textarea:focus{ outline:none; border-color:var(--gold); }
 
   .hint{
@@ -194,6 +195,7 @@
 <div class="stage">
 
   <div id="selectScreen">
+    <p class="sub">Elige un caso para empezar. Ábrelos de uno en uno: puedes resolver el que quieras, varios, o los cuatro — pero trabaja uno a la vez e interactúa con él antes de abrir otro.</p>
     <div class="casos" id="casosGrid"></div>
   </div>
 
@@ -209,24 +211,31 @@
 
     <div class="warn">No hables con nadie todavía. Lee tus pistas en silencio y trabaja tu caso a solas.</div>
 
+    <div class="panel">
+      <h2>Pregunta a resolver</h2>
+      <p class="pregunta" id="cPregunta"></p>
+
+      <p class="hint">Busca la respuesta y las pistas en la imagen para encontrar la frase o palabra clave.</p>
+    </div>
+
     <div class="panel" id="pistasPanel">
       <h2>Pista visual</h2>
       <div id="pistasBox"></div>
     </div>
 
     <div class="panel">
-      <h2>Pregunta a resolver</h2>
-      <p class="pregunta" id="cPregunta"></p>
+      <p class="hint">Lee la escritura y responde en el cuadro sobre tu aplicación personal.</p>
 
       <div class="warn">🔒 Esto solo lo ves tú. Es para recordar tu idea cuando quieras compartirla — no se guarda ni se envía a nadie. Al salir de esta página se borra.</div>
 
       <label class="fieldLabel" for="palabraClave">Mi palabra clave es:</label>
-      <textarea id="palabraClave" class="short" placeholder="Escribe aquí..."></textarea>
+      <textarea id="palabraClave" class="short autogrow" placeholder="Escribe aquí..." rows="1"></textarea>
 
       <label class="fieldLabel" for="aplicacion">¿Por qué? / ¿Cómo se aplica a mi vida?</label>
-      <textarea id="aplicacion" class="long" placeholder="Escribe aquí..."></textarea>
+      <textarea id="aplicacion" class="long autogrow" placeholder="Escribe aquí..." rows="2"></textarea>
 
       <p class="hint">Cuando la clase se junte de nuevo, prepárate para contar tu razonamiento — no solo la respuesta.</p>
+      <p class="hint">📸 Haz una captura de pantalla de tu respuesta y guárdala, para comparársela después a la clase si lo deseas.</p>
     </div>
   </div>
 
@@ -299,6 +308,16 @@
     };
   }
 
+  // El cuadro de texto crece a la altura de lo que se va escribiendo,
+  // en vez de quedar con barra de scroll adentro.
+  function autoCrecer(el){
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+  [palabraClaveEl, aplicacionEl].forEach(el=>{
+    el.addEventListener('input', ()=>autoCrecer(el));
+  });
+
   CASOS.forEach(c=>{
     const btn = document.createElement('div');
     btn.className = 'casoBtn ' + c.clase;
@@ -328,6 +347,8 @@
     const guardado = notas[c.letra];
     palabraClaveEl.value = guardado ? guardado.palabraClave : '';
     aplicacionEl.value = guardado ? guardado.aplicacion : '';
+    autoCrecer(palabraClaveEl);
+    autoCrecer(aplicacionEl);
 
     selectScreen.hidden = true;
     caseScreen.hidden = false;
