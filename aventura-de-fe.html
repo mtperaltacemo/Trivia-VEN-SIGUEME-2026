@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aventura de Fe — Noche de Hogar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FBF6EC;
+    --cream-deep: #F3EAD6;
+    --paper: #FFFFFF;
+    --ink: #2B2519;
+    --muted: #7A7060;
+    --teal: #1F4E45;
+    --teal-deep: #163A33;
+    --amber: #E8A33D;
+    --amber-soft: #F6D9A6;
+    --terracotta: #C1694F;
+    --good: #4C8C5A;
+    --line: #E3D9C4;
+    --shadow: 0 6px 18px rgba(43,37,25,0.10);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  h1, h2, h3, .display { font-family: 'Fraunces', serif; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 18px 16px 60px; }
+  .topbar {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom: 16px;
+  }
+  .brand { display:flex; align-items:center; gap:10px; }
+  .brand .icon { font-size: 26px; }
+  .brand .name { font-size: 12px; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); }
+  .brand .title { font-size: 17px; font-weight:700; color: var(--teal-deep); line-height:1.15; }
+  .streak {
+    display:flex; align-items:center; gap:5px; background: var(--paper);
+    border:1px solid var(--line); border-radius:20px; padding:6px 12px;
+    font-size:13px; font-weight:600; color: var(--terracotta); box-shadow: var(--shadow);
+  }
+  .familyNameRow { text-align:center; margin-bottom: 18px; }
+  .familyNameRow input {
+    border:none; background:transparent; text-align:center; font-family:'Fraunces',serif;
+    font-size:15px; color: var(--muted); font-style: italic; width: 100%;
+  }
+  .familyNameRow input:focus { outline: none; border-bottom: 1px dashed var(--muted); }
+
+  .card {
+    background: var(--paper); border-radius: 16px; padding: 16px;
+    box-shadow: var(--shadow); margin-bottom: 14px; border: 1px solid var(--line);
+  }
+  .section-title {
+    font-size: 11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color: var(--terracotta); margin: 0 0 8px;
+  }
+
+  /* ---- Mapa de la aventura ---- */
+  .map-track { position: relative; padding: 6px 0 6px 26px; }
+  .map-track::before {
+    content:''; position:absolute; left: 11px; top: 6px; bottom: 6px; width: 3px;
+    background: var(--line); border-radius: 3px;
+  }
+  .map-week { position: relative; padding: 10px 0 10px 20px; cursor: pointer; }
+  .map-week .dot {
+    position:absolute; left: -26px; top: 12px; width: 26px; height: 26px; border-radius: 50%;
+    display:flex; align-items:center; justify-content:center; font-size: 13px; font-weight:700;
+    background: var(--cream-deep); color: var(--muted); border: 2px solid var(--line);
+  }
+  .map-week.done .dot { background: var(--good); border-color: var(--good); color:#fff; }
+  .map-week.current .dot { background: var(--amber); border-color: var(--amber); color:#fff; box-shadow: 0 0 0 5px rgba(232,163,61,0.25); }
+  .map-week.locked .dot { background: var(--cream-deep); }
+  .map-week .label { font-weight:600; font-size: 14.5px; }
+  .map-week.locked .label { color: var(--muted); }
+  .map-week .sub { font-size: 12px; color: var(--muted); margin-top:1px; }
+  .map-week .badge-emoji { font-size: 18px; margin-left: 4px; }
+  .map-week.locked { opacity: .65; pointer-events: none; }
+
+  .cta-btn {
+    display:block; width:100%; text-align:center; background: var(--teal);
+    color: #fff; border:none; border-radius: 12px; padding: 13px; font-size: 14.5px;
+    font-weight:700; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .cta-btn.secondary { background: var(--paper); color: var(--teal); border: 1.5px solid var(--teal); }
+  .cta-btn.amber { background: var(--amber); }
+  .cta-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .cta-btn.small { padding: 9px; font-size: 13px; }
+
+  .journal-link {
+    text-align:center; margin-top: 4px;
+  }
+  .journal-link button {
+    background:none; border:none; color: var(--teal); font-weight:600; font-size: 13.5px;
+    cursor:pointer; text-decoration: underline;
+  }
+
+  /* ---- Week view ---- */
+  .backRow { display:flex; align-items:center; gap:10px; margin-bottom: 14px; }
+  .backBtn {
+    background: var(--paper); border:1px solid var(--line); border-radius: 10px;
+    padding: 7px 11px; font-size: 13px; cursor:pointer; color: var(--ink);
+  }
+  .weekHeader .kicker { font-size: 11px; letter-spacing:.08em; text-transform:uppercase; color: var(--terracotta); font-weight:700; }
+  .weekHeader h1 { font-size: 21px; margin: 3px 0 4px; color: var(--teal-deep); }
+  .weekHeader .principio { font-size: 13.5px; color: var(--muted); font-style: italic; margin: 0; }
+
+  .dayTabs { display:flex; gap:6px; overflow-x:auto; margin: 14px 0 14px; padding-bottom: 2px; }
+  .dayTab {
+    flex: 0 0 auto; padding: 7px 12px; border-radius: 20px; font-size: 12.5px; font-weight:600;
+    background: var(--cream-deep); color: var(--muted); border: 1px solid var(--line); cursor:pointer;
+    white-space: nowrap;
+  }
+  .dayTab.active { background: var(--teal); color:#fff; border-color: var(--teal); }
+  .dayTab.checked::after { content: ' ✓'; }
+  .dayTab.locked { opacity: .5; pointer-events:none; }
+
+  .verse-box {
+    background: var(--cream-deep); border-left: 4px solid var(--amber); border-radius: 8px;
+    padding: 12px 14px; margin: 8px 0; font-size: 14px; line-height:1.5;
+  }
+  .verse-ref { font-size: 11.5px; color: var(--terracotta); font-weight:700; margin-top:6px; }
+  .listen-btn {
+    margin-top: 8px; background: var(--paper); border:1px solid var(--line); border-radius: 20px;
+    padding: 6px 12px; font-size: 12.5px; cursor:pointer; color: var(--teal);
+  }
+
+  .age-tabs { display:flex; gap:6px; margin: 10px 0 8px; }
+  .age-tab {
+    flex:1; text-align:center; padding: 8px 4px; border-radius: 10px; font-size: 12px; font-weight:700;
+    background: var(--cream-deep); color: var(--muted); cursor:pointer; border:1px solid var(--line);
+  }
+  .age-tab.active { background: var(--amber-soft); color: var(--terracotta); border-color: var(--amber); }
+  .age-content { font-size: 13.5px; line-height:1.5; padding: 4px 2px; }
+
+  .life-question {
+    background: var(--teal); color: #fff; border-radius: 12px; padding: 14px 16px;
+    font-family:'Fraunces',serif; font-size: 16px; font-weight:600; line-height:1.35; text-align:center;
+  }
+
+  .dyn-box p { font-size: 13.5px; line-height: 1.5; margin: 0 0 8px; }
+  .check-row { display:flex; align-items:center; gap:10px; margin-top: 8px; }
+  .check-row input[type=checkbox] { width: 20px; height:20px; accent-color: var(--good); }
+  .check-row label { font-size: 13.5px; font-weight:600; }
+
+  textarea, input[type=text] {
+    width:100%; border:1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+    font-family:'Inter',sans-serif; font-size: 13.5px; resize: vertical; background: var(--cream);
+  }
+
+  .day-strip { display:flex; gap:8px; margin: 6px 0 14px; }
+  .day-chip {
+    flex:1; text-align:center; padding: 10px 4px; border-radius: 12px; background: var(--cream-deep);
+    border: 1.5px solid var(--line); cursor:pointer;
+  }
+  .day-chip .dname { font-size: 11px; font-weight:700; color: var(--muted); text-transform:uppercase; }
+  .day-chip .dcheck { font-size: 18px; margin-top: 3px; }
+  .day-chip.done { background: #E7F3E9; border-color: var(--good); }
+
+  .option-list { display:flex; flex-direction:column; gap:8px; margin-top: 6px; }
+  .option-item {
+    background: var(--cream-deep); border-radius: 10px; padding: 9px 12px; font-size: 13px;
+  }
+  .option-item b { color: var(--teal-deep); }
+
+  .emoji-row { display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 12px; }
+  .emoji-btn {
+    font-size: 22px; background: var(--cream-deep); border: 2px solid transparent; border-radius: 10px;
+    padding: 6px 10px; cursor:pointer;
+  }
+  .emoji-btn.selected { border-color: var(--amber); background: var(--amber-soft); }
+
+  .remember-phrase {
+    text-align:center; font-family:'Fraunces',serif; font-size: 17px; font-weight:700; color: var(--terracotta);
+    padding: 16px 10px; line-height:1.4;
+  }
+
+  .badge-reveal { text-align:center; padding: 10px 0 4px; }
+  .badge-reveal .emoji { font-size: 54px; }
+  .badge-reveal .name { font-weight:700; font-size: 15px; color: var(--teal-deep); margin-top: 4px; }
+
+  .journal-entry {
+    border-bottom: 1px solid var(--line); padding: 14px 0;
+  }
+  .journal-entry:last-child { border-bottom: none; }
+  .journal-entry .jhead { display:flex; align-items:center; gap:8px; }
+  .journal-entry .jemoji { font-size: 26px; }
+  .journal-entry .jtitle { font-weight:700; font-size: 14px; color: var(--teal-deep); }
+  .journal-entry .jdate { font-size: 11px; color: var(--muted); }
+  .journal-entry .jphrase { font-style: italic; font-size: 13px; margin: 6px 0; color: var(--terracotta); }
+  .journal-entry .jnote { font-size: 13px; margin-top:4px; }
+  .journal-entry img { max-width: 100%; border-radius: 10px; margin-top: 8px; }
+
+  .empty-note { text-align:center; color: var(--muted); font-size: 13px; padding: 30px 10px; }
+
+  [hidden] { display:none !important; }
+  .demo-flag {
+    background: var(--amber-soft); color: #6B4A15; font-size: 11px; font-weight:700;
+    text-align:center; border-radius: 8px; padding: 6px 8px; margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="icon">🧭</span>
+      <div>
+        <div class="name">Aventura de Fe</div>
+        <div class="title">Noche de Hogar</div>
+      </div>
+    </div>
+    <div class="streak" id="streakBadge">🔥 0 semanas</div>
+  </div>
+
+  <div class="familyNameRow">
+    <input type="text" id="familyNameInput" placeholder="Familia ___" maxlength="40">
+  </div>
+
+  <!-- ============ HOME: MAPA DE LA AVENTURA ============ -->
+  <div id="screenHome">
+    <div class="demo-flag" id="demoFlag">✨ Semana de ejemplo cargada — reemplázala por el contenido real de Ven, Sígueme cuando quieras.</div>
+
+    <div class="card">
+      <div class="section-title">Mapa de la aventura</div>
+      <div class="map-track" id="mapTrack"></div>
+    </div>
+
+    <div class="journal-link">
+      <button id="openJournalBtn">📖 Ver el Diario Familiar</button>
+    </div>
+  </div>
+
+  <!-- ============ WEEK VIEW ============ -->
+  <div id="screenWeek" hidden>
+    <div class="backRow">
+      <button class="backBtn" id="backToHomeBtn">← Mapa</button>
+    </div>
+
+    <div class="weekHeader">
+      <div class="kicker" id="weekKicker">Semana 1</div>
+      <h1 id="weekTitle">—</h1>
+      <p class="principio" id="weekPrincipio">—</p>
+    </div>
+
+    <div class="dayTabs" id="dayTabs"></div>
+
+    <!-- LUNES -->
+    <div id="dayLunes" class="dayPanel" hidden>
+      <div class="card">
+        <div class="section-title">Conectar con las Escrituras</div>
+        <div id="versesBox"></div>
+        <button class="listen-btn" id="listenBtn">🔊 Escuchar la escritura</button>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Para cada edad</div>
+        <div class="age-tabs">
+          <div class="age-tab active" data-age="ninos">Niño escucha</div>
+          <div class="age-tab" data-age="jovenes">Joven lee</div>
+          <div class="age-tab" data-age="adultos">Adulto profundiza</div>
+        </div>
+        <div class="age-content" id="ageContent"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Pregunta de vida</div>
+        <div class="life-question" id="lifeQuestion">—</div>
+      </div>
+
+      <div class="card dyn-box">
+        <div class="section-title">Dinámica familiar</div>
+        <p id="dynamicText"></p>
+        <div class="check-row">
+          <input type="checkbox" id="dynamicDone">
+          <label for="dynamicDone">Ya la hicimos</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Conversemos (por edad)</div>
+        <div class="age-tabs" id="convTabs">
+          <div class="age-tab active" data-age="ninos">Niños</div>
+          <div class="age-tab" data-age="jovenes">Jóvenes</div>
+          <div class="age-tab" data-age="adultos">Adultos</div>
+        </div>
+        <div class="age-content" id="convContent"></div>
+      </div>
+
+      <button class="cta-btn amber" id="startChallengeBtn">Iniciar el desafío de la semana →</button>
+    </div>
+
+    <!-- MARTES-VIERNES -->
+    <div id="dayRetos" class="dayPanel" hidden>
+      <div class="card">
+        <div class="section-title">Marca los días que avanzaron</div>
+        <div class="day-strip" id="dayStrip"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Desafío individual (elige el tuyo)</div>
+        <div class="option-list" id="individualOptions"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Desafío en familia</div>
+        <p id="familyChallengeText" style="font-size:13.5px; line-height:1.5; margin:0;"></p>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Acción de servicio</div>
+        <p id="serviceActionText" style="font-size:13.5px; line-height:1.5; margin:0;"></p>
+      </div>
+    </div>
+
+    <!-- SABADO -->
+    <div id="dayCierre" class="dayPanel" hidden>
+      <div class="card">
+        <div class="section-title">Pregunta de cierre</div>
+        <div class="life-question" id="closingQuestion" style="background:var(--terracotta);">—</div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">¿Cómo lo vivimos esta semana?</div>
+        <div class="emoji-row" id="emojiRow"></div>
+        <textarea id="closingNote" rows="3" placeholder="Una palabra, una frase, una experiencia..."></textarea>
+        <div style="margin-top:10px;">
+          <input type="file" id="closingPhoto" accept="image/*" style="font-size:12px;">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Frase para recordar</div>
+        <div class="remember-phrase" id="rememberPhrase">—</div>
+      </div>
+
+      <button class="cta-btn" id="closeWeekBtn">Cerrar la aventura de esta semana 🏅</button>
+    </div>
+  </div>
+
+  <!-- ============ BADGE REVEAL MODAL-ish ============ -->
+  <div id="screenBadge" hidden>
+    <div class="backRow">
+      <button class="backBtn" id="backFromBadgeBtn">← Mapa</button>
+    </div>
+    <div class="card">
+      <div class="badge-reveal">
+        <div class="section-title">¡Insignia desbloqueada!</div>
+        <div class="emoji" id="badgeEmoji">🏅</div>
+        <div class="name" id="badgeName">—</div>
+      </div>
+    </div>
+    <button class="cta-btn secondary" id="viewJournalFromBadgeBtn">Ver en el Diario Familiar</button>
+  </div>
+
+  <!-- ============ DIARIO FAMILIAR ============ -->
+  <div id="screenJournal" hidden>
+    <div class="backRow">
+      <button class="backBtn" id="backFromJournalBtn">← Mapa</button>
+    </div>
+    <div class="weekHeader" style="margin-bottom:10px;">
+      <h1 style="margin-bottom:2px;">📖 Diario Familiar</h1>
+      <p class="principio">El registro de nuestra aventura, semana a semana.</p>
+    </div>
+    <div class="card" id="journalList"></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+
+/* ============================================================
+   CONTENIDO DE LAS SEMANAS
+   Cada semana sigue la estructura de 12 campos. Para agregar una
+   semana real de Ven, Sígueme: copiar el bloque, cambiar el id,
+   y reemplazar cada campo. isDemo:true solo se usa para mostrar
+   el aviso de "semana de ejemplo" arriba del mapa.
+   ============================================================ */
+const WEEKS = [
+  {
+    id: 'semana-1-enderezara-tus-veredas',
+    isDemo: false,
+    tema: 'Él enderezará tus veredas',
+    principio: 'Cuando confiamos en Jehová con todo el corazón —en nuestras decisiones, en nuestras palabras, en los tiempos de la vida y en el carácter que construimos— Él endereza nuestro camino.',
+    escrituras: [
+      { texto: 'Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia. Reconócelo en todos tus caminos, y él enderezará tus veredas.', ref: 'Proverbios 3:5-6' },
+      { texto: 'Panal de miel son los dichos suaves: suavidad al alma y medicina para los huesos.', ref: 'Proverbios 16:24' },
+      { texto: 'Todo tiene su tiempo, y todo lo que se quiere debajo del cielo tiene su hora.', ref: 'Eclesiastés 3:1' },
+      { texto: 'Engañosa es la gracia, y vana la hermosura; la persona que teme a Jehová, ésa será alabada.', ref: 'Proverbios 31:30' },
+    ],
+    edades: {
+      ninos: 'Así como confías en que mamá o papá te sostienen la mano al cruzar la calle, podemos confiar en que Dios nos guía aunque no veamos todo el camino. Y con nuestras palabras podemos elegir ser como "miel" en vez de ásperos.',
+      jovenes: 'Lee Proverbios 3:5-6. ¿Alguna vez tomaste una decisión "apoyándote en tu propia prudencia" y después te diste cuenta de que te hubiera ido mejor confiando en Dios?',
+      adultos: 'Estos capítulos hablan de cuatro áreas donde se nota si confiamos en Dios: nuestras decisiones (Prov. 3), nuestras palabras (Prov. 15-16), los tiempos que no controlamos (Eclesiastés 3) y el carácter que formamos en silencio (Prov. 31). Ninguna se arregla sola: las cuatro se entrenan.',
+    },
+    preguntaVida: '¿En qué área te cuesta más confiar en el tiempo y la dirección de Dios: tus decisiones, tus palabras, tus tiempos, o tu carácter?',
+    dinamica: 'Escriban en 4 papelitos: "Decisiones", "Palabras", "Tiempos", "Carácter". Cada uno elige uno al azar y comparte, con honestidad, en qué está tratando de confiar más en Dios en esa área esta semana. Cierren orando juntos por lo que compartieron.',
+    conversacion: {
+      ninos: '¿Qué palabra amable podemos decir hoy en vez de una fea?',
+      jovenes: '¿Qué decisión te gustaría entregarle a Dios en oración en vez de resolverla solo/a?',
+      adultos: '¿Cómo ha "enderezado" Dios algún camino tuyo en el pasado, aunque en su momento no lo entendías?',
+    },
+    desafiosIndividuales: [
+      { etiqueta: 'Niños', texto: 'Cada vez que sientas ganas de responder feo, cambia la respuesta por una palabra amable.' },
+      { etiqueta: 'Jóvenes', texto: 'Antes de tomar una decisión esta semana, detente un minuto y ora pidiendo dirección.' },
+      { etiqueta: 'Adultos', texto: 'Practicar "la blanda respuesta" (Proverbios 15:1) en al menos una conversación difícil esta semana.' },
+    ],
+    desafioFamiliar: 'Cada noche antes de dormir, cada uno comparte una palabra amable que dio o recibió ese día: un "panal de miel" familiar.',
+    accionServicio: 'Como familia, escriban una nota o envíen un mensaje de ánimo a alguien que esté pasando un momento difícil esta semana.',
+    preguntaCierre: '¿En qué sentimos que Dios enderezó algo de nuestro camino esta semana?',
+    frasePararecordar: '"Reconócelo en todos tus caminos, y él enderezará tus veredas." (Proverbios 3:6)',
+    testimonio: 'Confiar no significa entender todo el camino, sino apoyarnos en Aquel que sí lo ve completo.',
+    insignia: { emoji: '🛤️', nombre: 'Insignia de la Vereda Enderezada' },
+  },
+];
+
+/* ============================================================
+   ESTADO / PERSISTENCIA (localStorage, por dispositivo)
+   ============================================================ */
+const STORAGE_KEY = 'aventuraDeFeState_v1';
+
+function defaultState() {
+  return {
+    familyName: '',
+    currentWeekIndex: 0,
+    progress: {}, // weekId -> { mondayDone, dailyChecks:{mar,mie,jue,vie}, closing:{emoji,note,photo,closedAt}, badgeAwarded }
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultState(), parsed);
+  } catch (e) {
+    console.error('No se pudo leer el estado guardado:', e);
+    return defaultState();
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.error('No se pudo guardar el estado (¿localStorage lleno o bloqueado?):', e);
+  }
+}
+
+let state = loadState();
+
+function weekProgress(weekId) {
+  if (!state.progress[weekId]) {
+    state.progress[weekId] = { mondayDone: false, dailyChecks: {}, closing: null, badgeAwarded: false };
+  }
+  return state.progress[weekId];
+}
+
+/* ============================================================
+   NAVEGACIÓN ENTRE PANTALLAS
+   ============================================================ */
+const screens = {
+  home: document.getElementById('screenHome'),
+  week: document.getElementById('screenWeek'),
+  badge: document.getElementById('screenBadge'),
+  journal: document.getElementById('screenJournal'),
+};
+function showScreen(name) {
+  Object.values(screens).forEach(el => el.hidden = true);
+  screens[name].hidden = false;
+  window.scrollTo(0, 0);
+}
+
+let activeWeekIndex = 0;
+let activeDay = 'lunes'; // lunes | retos | cierre
+let activeAgeTab = 'ninos';
+let activeConvTab = 'ninos';
+
+/* ============================================================
+   RENDER: TOPBAR / RACHA / NOMBRE DE FAMILIA
+   ============================================================ */
+function renderTopbar() {
+  const completedCount = WEEKS.filter(w => {
+    const p = state.progress[w.id];
+    return p && p.closing;
+  }).length;
+  document.getElementById('streakBadge').textContent = '🔥 ' + completedCount + (completedCount === 1 ? ' semana' : ' semanas');
+  const input = document.getElementById('familyNameInput');
+  if (document.activeElement !== input) input.value = state.familyName || '';
+}
+document.getElementById('familyNameInput').addEventListener('input', (e) => {
+  state.familyName = e.target.value;
+  saveState();
+});
+
+/* ============================================================
+   RENDER: MAPA DE LA AVENTURA (HOME)
+   ============================================================ */
+function weekStatus(index) {
+  const w = WEEKS[index];
+  const p = state.progress[w.id];
+  if (p && p.closing) return 'done';
+  if (index === 0) return 'current';
+  const prevW = WEEKS[index - 1];
+  const prevP = state.progress[prevW.id];
+  if (prevP && prevP.closing) return 'current';
+  return 'locked';
+}
+
+function renderMap() {
+  const track = document.getElementById('mapTrack');
+  track.innerHTML = '';
+  WEEKS.forEach((w, i) => {
+    const status = weekStatus(i);
+    const div = document.createElement('div');
+    div.className = 'map-week ' + status;
+    const dot = status === 'done' ? '✓' : (i + 1);
+    div.innerHTML =
+      '<div class="dot">' + dot + '</div>' +
+      '<div class="label">Semana ' + (i + 1) + ' · ' + escapeHtml(w.tema) +
+        (status === 'done' ? '<span class="badge-emoji">' + w.insignia.emoji + '</span>' : '') +
+      '</div>' +
+      '<div class="sub">' + (status === 'locked' ? 'Se desbloquea al cerrar la semana anterior' : status === 'done' ? w.insignia.nombre : 'Semana en curso — ¡vamos!') + '</div>';
+    div.addEventListener('click', () => {
+      if (status === 'locked') return;
+      openWeek(i);
+    });
+    track.appendChild(div);
+  });
+  const demoFlag = document.getElementById('demoFlag');
+  demoFlag.hidden = !WEEKS.some(w => w.isDemo);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ============================================================
+   WEEK VIEW
+   ============================================================ */
+function openWeek(index) {
+  activeWeekIndex = index;
+  const w = WEEKS[index];
+  const p = weekProgress(w.id);
+
+  document.getElementById('weekKicker').textContent = 'Semana ' + (index + 1);
+  document.getElementById('weekTitle').textContent = w.tema;
+  document.getElementById('weekPrincipio').textContent = w.principio;
+
+  // Escrituras
+  const versesBox = document.getElementById('versesBox');
+  versesBox.innerHTML = w.escrituras.map(v =>
+    '<div class="verse-box">"' + escapeHtml(v.texto) + '"<div class="verse-ref">' + escapeHtml(v.ref) + '</div></div>'
+  ).join('');
+
+  activeAgeTab = 'ninos';
+  renderAgeContent(w);
+  activeConvTab = 'ninos';
+  renderConvContent(w);
+
+  document.getElementById('lifeQuestion').textContent = w.preguntaVida;
+  document.getElementById('dynamicText').textContent = w.dinamica;
+  document.getElementById('dynamicDone').checked = !!p.mondayDone;
+
+  renderDayStrip(w, p);
+  renderIndividualOptions(w);
+  document.getElementById('familyChallengeText').textContent = w.desafioFamiliar;
+  document.getElementById('serviceActionText').textContent = w.accionServicio;
+
+  document.getElementById('closingQuestion').textContent = w.preguntaCierre;
+  document.getElementById('rememberPhrase').textContent = w.frasePararecordar;
+  renderEmojiRow(p);
+  document.getElementById('closingNote').value = (p.closing && p.closing.note) || '';
+
+  renderDayTabs(w, p);
+  activeDay = p.mondayDone ? 'retos' : 'lunes';
+  if (p.closing) activeDay = 'cierre';
+  showDayPanel(activeDay, w, p);
+
+  showScreen('week');
+}
+
+function renderAgeContent(w) {
+  document.getElementById('ageContent').textContent = w.edades[activeAgeTab];
+  document.querySelectorAll('#screenWeek .card:nth-of-type(1) .age-tab, .age-tabs .age-tab').forEach(()=>{});
+}
+document.querySelectorAll('.card .age-tabs .age-tab').forEach(()=>{});
+
+function wireAgeTabs() {
+  const container = document.querySelector('#dayLunes .card:nth-child(2) .age-tabs');
+  if (!container) return;
+  container.querySelectorAll('.age-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      container.querySelectorAll('.age-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeAgeTab = tab.dataset.age;
+      renderAgeContent(WEEKS[activeWeekIndex]);
+    });
+  });
+}
+
+function renderConvContent(w) {
+  document.getElementById('convContent').textContent = w.conversacion[activeConvTab];
+}
+function wireConvTabs() {
+  const container = document.getElementById('convTabs');
+  container.querySelectorAll('.age-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      container.querySelectorAll('.age-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeConvTab = tab.dataset.age;
+      renderConvContent(WEEKS[activeWeekIndex]);
+    });
+  });
+}
+
+document.getElementById('listenBtn').addEventListener('click', () => {
+  const w = WEEKS[activeWeekIndex];
+  const text = w.escrituras.map(v => v.texto + '. ' + v.ref + '.').join(' ');
+  try {
+    if (!('speechSynthesis' in window)) {
+      alert('Este dispositivo no admite lectura en voz alta. Pueden leerla en familia.');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'es-ES';
+    utter.rate = 0.92;
+    window.speechSynthesis.speak(utter);
+  } catch (e) {
+    console.error('No se pudo reproducir el audio:', e);
+  }
+});
+
+document.getElementById('dynamicDone').addEventListener('change', (e) => {
+  const w = WEEKS[activeWeekIndex];
+  const p = weekProgress(w.id);
+  p.mondayDone = e.target.checked;
+  saveState();
+  renderDayTabs(w, p);
+  renderMap();
+});
+
+document.getElementById('startChallengeBtn').addEventListener('click', () => {
+  const w = WEEKS[activeWeekIndex];
+  const p = weekProgress(w.id);
+  p.mondayDone = true;
+  saveState();
+  renderDayTabs(w, p);
+  activeDay = 'retos';
+  showDayPanel('retos', w, p);
+});
+
+const DAYS_RETO = [
+  { key: 'mar', label: 'Mar' },
+  { key: 'mie', label: 'Mié' },
+  { key: 'jue', label: 'Jue' },
+  { key: 'vie', label: 'Vie' },
+];
+
+function renderDayStrip(w, p) {
+  const strip = document.getElementById('dayStrip');
+  strip.innerHTML = '';
+  DAYS_RETO.forEach(d => {
+    const done = !!p.dailyChecks[d.key];
+    const chip = document.createElement('div');
+    chip.className = 'day-chip' + (done ? ' done' : '');
+    chip.innerHTML = '<div class="dname">' + d.label + '</div><div class="dcheck">' + (done ? '✅' : '⬜') + '</div>';
+    chip.addEventListener('click', () => {
+      p.dailyChecks[d.key] = !p.dailyChecks[d.key];
+      saveState();
+      renderDayStrip(w, p);
+    });
+    strip.appendChild(chip);
+  });
+}
+
+function renderIndividualOptions(w) {
+  const list = document.getElementById('individualOptions');
+  list.innerHTML = w.desafiosIndividuales.map(o =>
+    '<div class="option-item"><b>' + escapeHtml(o.etiqueta) + ':</b> ' + escapeHtml(o.texto) + '</div>'
+  ).join('');
+}
+
+const CLOSING_EMOJIS = ['😊', '🙏', '❤️', '😭', '💪', '✨', '🤗', '😅'];
+function renderEmojiRow(p) {
+  const row = document.getElementById('emojiRow');
+  row.innerHTML = '';
+  CLOSING_EMOJIS.forEach(em => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'emoji-btn' + ((p.closing && p.closing.emoji === em) ? ' selected' : '');
+    btn.textContent = em;
+    btn.addEventListener('click', () => {
+      row.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      row.dataset.selected = em;
+    });
+    row.appendChild(btn);
+  });
+  row.dataset.selected = (p.closing && p.closing.emoji) || '';
+}
+
+let pendingPhotoDataUrl = null;
+document.getElementById('closingPhoto').addEventListener('change', (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) { pendingPhotoDataUrl = null; return; }
+  if (file.size > 3 * 1024 * 1024) {
+    alert('La foto es muy grande para guardarla en el dispositivo. Elegí una más liviana.');
+    e.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => { pendingPhotoDataUrl = reader.result; };
+  reader.onerror = () => { console.error('No se pudo leer la foto.'); };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('closeWeekBtn').addEventListener('click', () => {
+  const w = WEEKS[activeWeekIndex];
+  const p = weekProgress(w.id);
+  const row = document.getElementById('emojiRow');
+  const note = document.getElementById('closingNote').value.trim();
+  p.closing = {
+    emoji: row.dataset.selected || '',
+    note: note,
+    photo: pendingPhotoDataUrl || (p.closing && p.closing.photo) || null,
+    closedAt: new Date().toISOString(),
+  };
+  p.badgeAwarded = true;
+  pendingPhotoDataUrl = null;
+  saveState();
+  renderTopbar();
+  showBadgeReveal(w);
+});
+
+function showBadgeReveal(w) {
+  document.getElementById('badgeEmoji').textContent = w.insignia.emoji;
+  document.getElementById('badgeName').textContent = w.insignia.nombre;
+  showScreen('badge');
+}
+
+/* ---- day tabs (Lunes / Retos / Cierre) ---- */
+function renderDayTabs(w, p) {
+  const tabs = document.getElementById('dayTabs');
+  const items = [
+    { key: 'lunes', label: '🏠 Lunes', locked: false, checked: p.mondayDone },
+    { key: 'retos', label: '🗓️ Mar–Vie', locked: !p.mondayDone, checked: Object.values(p.dailyChecks).some(Boolean) },
+    { key: 'cierre', label: '🏅 Sábado', locked: !p.mondayDone, checked: !!p.closing },
+  ];
+  tabs.innerHTML = '';
+  items.forEach(it => {
+    const el = document.createElement('div');
+    el.className = 'dayTab' + (it.key === activeDay ? ' active' : '') + (it.locked ? ' locked' : '') + (it.checked ? ' checked' : '');
+    el.textContent = it.label;
+    el.addEventListener('click', () => {
+      if (it.locked) return;
+      activeDay = it.key;
+      showDayPanel(activeDay, w, p);
+    });
+    tabs.appendChild(el);
+  });
+}
+
+function showDayPanel(day, w, p) {
+  document.getElementById('dayLunes').hidden = day !== 'lunes';
+  document.getElementById('dayRetos').hidden = day !== 'retos';
+  document.getElementById('dayCierre').hidden = day !== 'cierre';
+  document.querySelectorAll('#dayTabs .dayTab').forEach(t => t.classList.remove('active'));
+  renderDayTabs(w, p);
+}
+
+/* ============================================================
+   DIARIO FAMILIAR
+   ============================================================ */
+function renderJournal() {
+  const list = document.getElementById('journalList');
+  const entries = WEEKS
+    .map((w, i) => ({ w, i, p: state.progress[w.id] }))
+    .filter(e => e.p && e.p.closing)
+    .sort((a, b) => new Date(b.p.closing.closedAt) - new Date(a.p.closing.closedAt));
+
+  if (entries.length === 0) {
+    list.innerHTML = '<div class="empty-note">Todavía no cerraron ninguna semana. ¡Empiecen la aventura desde el mapa!</div>';
+    return;
+  }
+  list.innerHTML = entries.map(e => {
+    const date = new Date(e.p.closing.closedAt);
+    const dateStr = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+    return '<div class="journal-entry">' +
+      '<div class="jhead"><span class="jemoji">' + e.w.insignia.emoji + '</span>' +
+        '<div><div class="jtitle">Semana ' + (e.i + 1) + ' · ' + escapeHtml(e.w.tema) + '</div>' +
+        '<div class="jdate">' + dateStr + '</div></div></div>' +
+      '<div class="jphrase">' + escapeHtml(e.w.frasePararecordar) + '</div>' +
+      (e.p.closing.emoji ? '<div style="font-size:20px;">' + e.p.closing.emoji + '</div>' : '') +
+      (e.p.closing.note ? '<div class="jnote">' + escapeHtml(e.p.closing.note) + '</div>' : '') +
+      (e.p.closing.photo ? '<img src="' + e.p.closing.photo + '" alt="Foto de la semana">' : '') +
+      '</div>';
+  }).join('');
+}
+
+/* ============================================================
+   NAVEGACIÓN GENERAL
+   ============================================================ */
+document.getElementById('backToHomeBtn').addEventListener('click', () => { renderMap(); showScreen('home'); });
+document.getElementById('openJournalBtn').addEventListener('click', () => { renderJournal(); showScreen('journal'); });
+document.getElementById('backFromJournalBtn').addEventListener('click', () => { renderMap(); showScreen('home'); });
+document.getElementById('backFromBadgeBtn').addEventListener('click', () => { renderMap(); showScreen('home'); });
+document.getElementById('viewJournalFromBadgeBtn').addEventListener('click', () => { renderJournal(); showScreen('journal'); });
+
+/* ============================================================
+   INIT
+   ============================================================ */
+wireAgeTabs();
+wireConvTabs();
+renderTopbar();
+renderMap();
+showScreen('home');
+
+})();
+</script>
+</body>
+</html>
