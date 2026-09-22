@@ -1,0 +1,15 @@
+{
+  "name": "Desafiando tu Conocimiento — Ven, Sígueme",
+  "short_name": "Desafiando VS",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0B2545",
+  "theme_color": "#1E4E8C",
+  "icons": [
+    { "src": "icon-trivia-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-trivia-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-trivia-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-trivia-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
