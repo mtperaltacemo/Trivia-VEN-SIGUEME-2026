@@ -4,23 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aventura JAS — Ven, Sígueme</title>
+<!-- Permite agregar la app a la pantalla de inicio del celular, con ícono propio -->
+<link rel="manifest" href="manifest-jas.json">
+<link rel="icon" href="icon-jas-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-jas.png">
+<meta name="theme-color" content="#3D3A72">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Aventura JAS">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* Paleta propia de Aventura JAS (violeta/coral) — a propósito distinta de
+     la paleta ámbar/hogareña de Aventura de Fe, para que se note de un
+     vistazo cuál de las dos apps se está usando. */
   :root {
-    --cream: #FBF6EC;
-    --cream-deep: #F3EAD6;
+    --cream: #F6F1FA;
+    --cream-deep: #EAE0F4;
     --paper: #FFFFFF;
-    --ink: #2B2519;
-    --muted: #7A7060;
-    --teal: #1F4E45;
-    --teal-deep: #163A33;
-    --amber: #E8A33D;
-    --amber-soft: #F6D9A6;
-    --terracotta: #C1694F;
+    --ink: #2A2438;
+    --muted: #766E85;
+    --teal: #3D3A72;
+    --teal-deep: #2A2750;
+    --amber: #E0729E;
+    --amber-soft: #F3C4D6;
+    --terracotta: #A8447A;
     --good: #4C8C5A;
-    --line: #E3D9C4;
-    --shadow: 0 6px 18px rgba(43,37,25,0.10);
+    --line: #DED2EC;
+    --shadow: 0 6px 18px rgba(42,36,56,0.10);
   }
   * { box-sizing: border-box; }
   body {
@@ -182,6 +194,13 @@
   .option-item { background: var(--cream-deep); border-radius: 10px; padding: 9px 12px; font-size: 13px; }
   .option-item b { color: var(--teal-deep); }
 
+  /* ---- Tarjetas de capítulo (aventura narrativa) ---- */
+  .cap-card { cursor:pointer; transition: border-color .15s, background .15s; }
+  .cap-card.elegido { border-color: var(--amber); background: var(--amber-soft); }
+  .cap-titulo { font-family:'Fraunces',serif; font-size: 15.5px; font-weight:700; color: var(--teal-deep); }
+  .cap-ref { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .cap-check { font-size: 11px; color: var(--good); font-weight:700; margin-left: 6px; }
+
   .emoji-row { display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 12px; }
   .emoji-btn {
     font-size: 22px; background: var(--cream-deep); border: 2px solid transparent; border-radius: 10px;
@@ -257,7 +276,7 @@
 
     <div class="card">
       <div class="join-toggle">
-        <button type="button" id="toggleJoinBtn" class="active">Unirme a un grupo</button>
+        <button type="button" id="toggleJoinBtn" class="active">Unirme a la Aventura</button>
         <button type="button" id="toggleCreateBtn">Soy el administrador</button>
       </div>
 
@@ -269,6 +288,14 @@
         <input type="text" id="joinNameInput" placeholder="Nombre y apellido" maxlength="30">
         <div class="join-error" id="joinError"></div>
         <button type="button" class="cta-btn amber" id="joinGroupBtn" style="margin-top:14px;">Unirme al grupo →</button>
+      </div>
+
+      <div id="adminGate" class="join-form" hidden>
+        <p class="join-note">Para crear un grupo nuevo hace falta la clave de organizador — pedísela a quien coordina Ven, Sígueme si no la tenés.</p>
+        <label for="masterPinInput">Clave de organizador</label>
+        <input type="text" id="masterPinInput" placeholder="Clave" maxlength="20" style="text-align:center; letter-spacing:2px; font-weight:700;">
+        <div class="join-error" id="adminGateError"></div>
+        <button type="button" class="cta-btn amber" id="adminGateBtn" style="margin-top:14px;">Continuar →</button>
       </div>
 
       <div id="createForm" class="join-form" hidden>
@@ -310,25 +337,25 @@
     <!-- ============ HOME: MAPA DE LA AVENTURA ============ -->
     <div id="screenHome">
       <div class="hero-card">
-        <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grupo de jóvenes caminando hacia la capilla al amanecer">
+        <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Un joven y una joven caminando hacia la capilla, representando al grupo JAS">
           <defs>
             <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#F6D9A6"/>
-              <stop offset="55%" stop-color="#FBEBD3"/>
+              <stop offset="0%" stop-color="#F0B8D2"/>
+              <stop offset="55%" stop-color="#F3E1EE"/>
               <stop offset="100%" stop-color="#FFFDF8"/>
             </linearGradient>
             <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#FFE9BC" stop-opacity="0.95"/>
-              <stop offset="100%" stop-color="#FFE9BC" stop-opacity="0"/>
+              <stop offset="0%" stop-color="#F6C9DE" stop-opacity="0.95"/>
+              <stop offset="100%" stop-color="#F6C9DE" stop-opacity="0"/>
             </radialGradient>
             <linearGradient id="hillGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#E8C989"/>
-              <stop offset="100%" stop-color="#CE9F58"/>
+              <stop offset="0%" stop-color="#C9A8D9"/>
+              <stop offset="100%" stop-color="#8C6BA8"/>
             </linearGradient>
           </defs>
           <rect x="0" y="0" width="400" height="150" fill="url(#skyGrad)"/>
           <circle cx="322" cy="40" r="50" fill="url(#sunGlow)"/>
-          <circle cx="322" cy="40" r="16" fill="#F3C568"/>
+          <circle cx="322" cy="40" r="16" fill="#E893BC"/>
           <!-- templo (silueta original, inspirada en arquitectura clásica de templo) -->
           <g fill="#7A5C3A" opacity="0.88">
             <rect x="120" y="93" width="110" height="8"/>
@@ -346,16 +373,17 @@
           </g>
           <path d="M0,140 Q140,112 205,120 T400,104 L400,150 L0,150 Z" fill="url(#hillGrad)"/>
           <path d="M35,150 Q140,120 205,126 T400,110" fill="none" stroke="#FFFDF8" stroke-width="11" stroke-linecap="round" opacity="0.55"/>
-          <!-- grupo de jóvenes caminando -->
-          <g fill="#2B2519">
-            <circle cx="62" cy="124" r="6.4"/>
-            <path d="M55,131 q7,-6.4 14,0 l2.4,18 q-9.4,3.8 -18.8,0 z"/>
-            <circle cx="83" cy="119" r="7"/>
-            <path d="M75.5,127 q7.5,-6.6 15,0 l2.6,20 q-10,4 -20.2,0 z"/>
-            <circle cx="104" cy="124" r="6.2"/>
-            <path d="M97.5,131 q6.5,-6 13,0 l2.2,17 q-8.7,3.6 -17.4,0 z"/>
-            <circle cx="124" cy="120" r="6.6"/>
-            <path d="M117,127.5 q7,-6.2 14,0 l2.4,19 q-9.4,3.8 -18.8,0 z"/>
+          <!-- un joven (pantalón, cabeza lisa) y una joven (pollera bien marcada, colita de pelo) -->
+          <g fill="#2A2438">
+            <!-- joven (mujer): cabeza + colita de pelo + pollera bien triangular -->
+            <circle cx="88" cy="113" r="7.3"/>
+            <path d="M94,109 Q101,111 99,120 Q96,119 93,113 Z"/>
+            <path d="M81,120 L95,120 L108,149 L68,149 Z"/>
+            <!-- joven (hombre): cabeza lisa + torso recto + piernas bien separadas -->
+            <circle cx="140" cy="112" r="7.6"/>
+            <path d="M132.5,120 L147.5,120 L147.5,136 L132.5,136 Z"/>
+            <path d="M132.5,136 L139,136 L137.5,150 L131,150 Z"/>
+            <path d="M141,136 L147.5,136 L149,150 L142.5,150 Z"/>
           </g>
         </svg>
       </div>
@@ -368,8 +396,14 @@
       <div class="journal-link">
         <button id="openJournalBtn">📖 Ver mi Diario</button>
       </div>
-      <div class="journal-link">
+      <div class="journal-link" id="adminLinkRow">
         <button id="openAdminBtn">🛡️ Panel del administrador</button>
+      </div>
+      <div class="journal-link" id="defeCrossLinkRow" style="margin-top:14px;">
+        <a href="index.html" style="color:var(--muted); font-size:12px; text-decoration:underline;">👪 ¿Buscás la versión para tu familia? Abrí Aventura de Fe</a>
+      </div>
+      <div class="journal-link" id="adminRecoverRow" style="margin-top:14px;">
+        <a href="#" id="adminRecoverLink" style="color:var(--muted); font-size:12px; text-decoration:underline;">🔑 ¿Sos el líder de este grupo? Ingresá el PIN acá</a>
       </div>
     </div>
 
@@ -400,32 +434,76 @@
 
       <!-- LUNES -->
       <div id="dayLunes" class="dayPanel" hidden>
-        <div class="card">
-          <div class="section-title">Conectar con las Escrituras</div>
-          <div id="versesBox"></div>
-          <button class="listen-btn" id="listenBtn">🔊 Escuchar la escritura</button>
-        </div>
 
-        <div class="card">
-          <div class="section-title">Reflexión</div>
-          <div class="age-content" id="reflexionText" style="font-size:13.5px; line-height:1.5;"></div>
-        </div>
-
-        <div class="card">
-          <div class="section-title">Pregunta personal</div>
-          <div class="life-question" id="personalQuestion">—</div>
-        </div>
-
-        <div class="card dyn-box">
-          <div class="section-title">Actividad de la semana</div>
-          <p id="activityText"></p>
-          <div class="check-row">
-            <input type="checkbox" id="mondayDoneCheck">
-            <label for="mondayDoneCheck">Ya la hice</label>
+        <div id="lunesClasico">
+          <div class="card">
+            <div class="section-title">Conectar con las Escrituras</div>
+            <div id="versesBox"></div>
+            <button class="listen-btn" id="listenBtn">🔊 Escuchar la escritura</button>
           </div>
+
+          <div class="card">
+            <div class="section-title">Reflexión</div>
+            <div class="age-content" id="reflexionText" style="font-size:13.5px; line-height:1.5;"></div>
+          </div>
+
+          <div class="card">
+            <div class="section-title">Pregunta personal</div>
+            <div class="life-question" id="personalQuestion">—</div>
+          </div>
+
+          <div class="card dyn-box">
+            <div class="section-title">Actividad de la semana</div>
+            <p id="activityText"></p>
+            <div class="check-row">
+              <input type="checkbox" id="mondayDoneCheck">
+              <label for="mondayDoneCheck">Ya la hice</label>
+            </div>
+          </div>
+
+          <button class="cta-btn amber" id="startChallengeBtn">Iniciar el desafío de la semana →</button>
         </div>
 
-        <button class="cta-btn amber" id="startChallengeBtn">Iniciar el desafío de la semana →</button>
+        <!-- ============ AVENTURA NARRATIVA (semanas con `capitulos`) ============ -->
+        <div id="lunesAventura" hidden>
+
+          <!-- Apertura cinemática -->
+          <div id="aventuraApertura">
+            <div class="card" style="text-align:center;">
+              <div class="section-title">La aventura de esta semana</div>
+              <h2 id="aperturaTituloEl" style="margin:4px 0 10px; color:var(--teal-deep); font-size:19px;">—</h2>
+              <p id="aperturaTextoEl" style="font-size:14px; line-height:1.6; margin:0 0 18px; color:var(--ink);">—</p>
+              <button class="cta-btn amber" id="comenzarAventuraBtn">Comenzar →</button>
+            </div>
+          </div>
+
+          <!-- Selección de capítulos -->
+          <div id="aventuraCapitulos" hidden>
+            <p style="font-size:13px; color:var(--muted); text-align:center; margin:0 0 12px;">Elegí un capítulo para vivirlo. Podés abrir uno, dos, o los tres.</p>
+            <div id="capitulosGrid"></div>
+            <button class="cta-btn amber" id="continueAventuraBtn" style="margin-top:10px;" hidden>Continuar a mi semana →</button>
+          </div>
+
+          <!-- Detalle de un capítulo -->
+          <div id="aventuraDetalle" hidden>
+            <button class="backBtn" id="backToCapitulosBtn" style="margin-bottom:12px;">← Capítulos</button>
+            <div class="card">
+              <div class="section-title" id="capDetRef">—</div>
+              <h3 id="capDetTitulo" style="margin:2px 0 12px; color:var(--teal-deep);">—</h3>
+              <div id="capDetAudioWrap" hidden style="margin-bottom:12px;">
+                <audio id="capDetAudio" controls style="width:100%;"></audio>
+              </div>
+              <p id="capDetAudioPending" style="font-size:12px; color:var(--muted); font-style:italic;" hidden>🎙️ Narración en camino — mientras tanto, leé la historia acá abajo.</p>
+              <p id="capDetHistoria" style="font-size:13.5px; line-height:1.6; white-space:pre-line;">—</p>
+            </div>
+            <div class="card">
+              <div class="section-title">Tu desafío</div>
+              <p id="capDetDesafio" style="font-size:13.5px; line-height:1.6;">—</p>
+            </div>
+            <button class="cta-btn amber" id="elegirCapituloBtn">Elegir este desafío para mi semana</button>
+          </div>
+
+        </div>
       </div>
 
       <!-- MARTES-VIERNES -->
@@ -435,14 +513,28 @@
           <div class="day-strip" id="dayStrip"></div>
         </div>
 
-        <div class="card">
-          <div class="section-title">Elegí tu desafío individual</div>
-          <div class="option-list" id="individualOptions"></div>
+        <div id="retosClasico" hidden>
+          <div class="card">
+            <div class="section-title">Elegí tu desafío individual</div>
+            <div class="option-list" id="individualOptions"></div>
+          </div>
+
+          <div class="card">
+            <div class="section-title">Tu desafío individual</div>
+            <div class="check-row">
+              <input type="checkbox" id="individualDoneCheck">
+              <label for="individualDoneCheck">Ya cumplí mi desafío</label>
+            </div>
+          </div>
+        </div>
+
+        <div id="retosAventura" hidden>
+          <div class="section-title" style="margin-left:2px;">Tus desafíos elegidos</div>
+          <div id="retosCapitulosList"></div>
         </div>
 
         <div class="card">
-          <div class="section-title">¿Quién del grupo ya cumplió su desafío?</div>
-          <div id="memberChecklist"></div>
+          <p id="groupChallengeCount" style="font-size:12.5px; color:var(--muted); margin:0;"></p>
         </div>
 
         <div class="card">
@@ -515,12 +607,18 @@
       </div>
 
       <div class="card">
+        <div class="section-title">Comenzar la semana</div>
+        <p id="adminStartWeekText" style="font-size:13.5px; line-height:1.5; margin:0 0 12px;">—</p>
+        <button class="cta-btn amber" id="startWeekBtn" hidden>Comenzar la semana →</button>
+      </div>
+
+      <div class="card">
         <div class="section-title">Código del grupo</div>
         <div class="code-box">
           <div class="code-value" id="adminCodeValue">——————</div>
-          <div class="code-hint">Compartilo con el grupo JAS para que se unan</div>
+          <div class="code-hint">Compartilo con el grupo JAS — recién pueden entrar una vez que comenzaste la semana</div>
         </div>
-        <button class="cta-btn small secondary" id="shareCodeBtn">📤 Compartir por WhatsApp</button>
+        <button class="cta-btn small secondary" id="shareCodeBtn">🔗 Copiar link de invitación</button>
       </div>
 
       <div class="card">
@@ -631,6 +729,46 @@ const WEEKS = [
     testimonio: 'Confiar no significa entender todo el camino, sino apoyarte en Aquel que sí lo ve completo.',
     insignia: { emoji: '🛤️', nombre: 'Insignia de la Vereda Enderezada' },
   },
+  {
+    id: 'semana-2-obra-maravillosa-prodigio',
+    fechaInicio: '2026-09-21', // no se puede activar antes de esta fecha
+    tema: 'Una obra maravillosa y un prodigio',
+    principio: 'Dios humilla el orgullo antes de que se derrumbe solo, abre lo que estaba sellado en el momento justo, y traza un camino donde el desierto no dejaba ver ninguno.',
+    // ---- Formato "aventura narrativa" (reemplaza escrituras/reflexion/desafiosOpciones) ----
+    aperturaTitulo: 'Isaías te desafía',
+    aperturaTexto: 'Los profetas antiguos no solo hablaban del pasado — vieron tu semana. Isaías 13, 14, 22, 24 al 30, y 35 esconden tres historias que todavía están pasando: la caída de los orgullosos, la restauración de lo que parecía perdido, y la promesa de un mundo sanado. Elige cuál vivir primero.',
+    capitulos: [
+      {
+        id: 'trono-vacio',
+        titulo: 'El trono vacío',
+        ref: 'Isaías 14:12-16',
+        audio: null, // pendiente de grabar
+        historiaTexto: 'Yo era el que siempre tenía la razón. En el grupo, en el trabajo, hasta en los chats — necesitaba que todos supieran que yo la tenía más clara que nadie. Y la verdad, me encantaba esa sensación de estar arriba.\n\nHasta que un día me tocó presentar algo importante frente a todo mi equipo... y me equivoqué. Feo. Delante de todos. Y lo peor no fue el error — fue darme cuenta de que llevaba meses tratando a la gente como si yo estuviera en un escalón más arriba que ellos. Ese día sentí que ese "trono" que me había armado se cayó de golpe, y yo con él.\n\nLo que aprendí ahí me lo confirmó después una escritura que leí, Isaías 14, del 12 al 16 — habla de alguien que quiso ponerse por encima de todos, y terminó cayendo más bajo que nadie. Me hizo pensar que la humildad no es hacerte chiquito — es dejar de necesitar estar arriba.',
+        desafioTexto: 'Esta semana, elige una situación donde normalmente buscarías quedar por encima de los demás — una discusión, un logro, una comparación — y cédele el protagonismo a otra persona, sin que nadie lo note. Al final del día, anota cómo te sentiste.',
+      },
+      {
+        id: 'lo-que-estaba-sellado',
+        titulo: 'Lo que estaba sellado',
+        ref: 'Isaías 29:11-14',
+        audio: null, // pendiente de grabar
+        historiaTexto: 'Si soy sincera, hubo un tiempo en que sentía que ya lo había escuchado todo. Las mismas historias, los mismos consejos — como si las Escrituras no tuvieran nada nuevo que decirme a mí, específicamente, en el momento que estaba viviendo.\n\nUna noche, sin ganas de nada, abrí el Libro de Mormón en una parte que siempre me había saltado, sin razón. Y por primera vez sentí que esa parte me hablaba a mí, de algo que estaba pasando exactamente esa semana. Fue raro — como si algo que había estado cerrado para mí, de repente se abriera.\n\nDespués entendí que Isaías ya lo había profetizado, en el capítulo 29 — habló de un libro que estaría "sellado" hasta que llegara el momento correcto. Y pensé: capaz no era el libro el que estaba sellado. Capaz era yo.',
+        desafioTexto: 'Lee un capítulo del Libro de Mormón que nunca hayas notado antes, y pregúntate: "¿qué verdad sellada encuentro aquí que necesito hoy?" Compártelo con alguien de la clase el próximo domingo.',
+      },
+      {
+        id: 'camino-que-no-se-veia',
+        titulo: 'El camino que no se veía',
+        ref: 'Isaías 35:1, 8-10',
+        audio: 'audio/capitulo3-el-camino-que-no-se-veia.mp3',
+        historiaTexto: 'Hubo una época en la que sentía que todo se me estaba cerrando — el trabajo, una relación, hasta mis propios planes. Como estar caminando en un desierto sin ver para dónde ir.\n\nUna noche oré, sin pedir nada específico, solo pidiendo ver algo, lo que fuera, que me mostrara que había un camino. No pasó nada mágico esa misma noche. Pero en las semanas siguientes, de a poco, empezaron a aparecer señales — pequeñas, pero reales — de que el desierto sí tenía un camino, aunque yo no lo viera todavía.\n\nDespués leí Isaías 35, y sentí que describía exactamente eso: un desierto que florece, un camino que aparece donde parecía que no había nada. Y entendí que esa promesa no era solo para un pueblo antiguo — era para mi propio desierto.',
+        desafioTexto: 'Identifica un "desierto" que estés atravesando ahora mismo, por pequeño que sea, y escribe una oración pidiendo ver el camino en medio de él. Al final de la semana, revisa si algo cambió.',
+      },
+    ],
+    accionServicio: 'Ayudá esta semana a alguien que sientas que está en su propio "desierto" — una llamada, una visita, o simplemente escuchar sin apurar consejos.',
+    preguntaCierre: '¿En cuál de los tres capítulos sentiste que Dios te habló más directamente esta semana?',
+    frasePararecordar: '"El desierto se alegrará... y florecerá como la rosa." (Isaías 35:1)',
+    testimonio: 'Ningún desierto es la última palabra — Dios ya escribió el camino que todavía no ves.',
+    insignia: { emoji: '🌷', nombre: 'Insignia del Desierto Florecido' },
+  },
 ];
 
 /* ============================================================
@@ -691,6 +829,8 @@ function showScreen(name) {
 
 let activeWeekIndex = 0;
 let activeDay = 'lunes'; // lunes | retos | cierre
+let aventuraView = 'apertura'; // apertura | capitulos | detalle (solo semanas con `capitulos`)
+let aventuraCapId = null;
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -698,23 +838,52 @@ function escapeHtml(s) {
 
 /* ============================================================
    PANTALLA DE INGRESO: crear grupo o unirse con un código
+   Para llegar al formulario de "Crear grupo" hay que pasar antes
+   por una clave de organizador — así no cualquiera que abra la
+   app puede armar un grupo nuevo por curiosidad. Para cambiarla,
+   editar el valor de MASTER_ADMIN_PIN acá abajo.
    ============================================================ */
+const MASTER_ADMIN_PIN = 'JAS2026';
+
 const toggleJoinBtn = document.getElementById('toggleJoinBtn');
 const toggleCreateBtn = document.getElementById('toggleCreateBtn');
 const joinForm = document.getElementById('joinForm');
+const adminGate = document.getElementById('adminGate');
 const createForm = document.getElementById('createForm');
+
+function resetAdminGate() {
+  document.getElementById('masterPinInput').value = '';
+  document.getElementById('adminGateError').style.display = 'none';
+  adminGate.hidden = true;
+  createForm.hidden = true;
+}
 
 toggleJoinBtn.addEventListener('click', () => {
   toggleJoinBtn.classList.add('active');
   toggleCreateBtn.classList.remove('active');
   joinForm.hidden = false;
-  createForm.hidden = true;
+  resetAdminGate();
 });
 toggleCreateBtn.addEventListener('click', () => {
   toggleCreateBtn.classList.add('active');
   toggleJoinBtn.classList.remove('active');
-  createForm.hidden = false;
   joinForm.hidden = true;
+  createForm.hidden = true;
+  adminGate.hidden = false;
+  document.getElementById('masterPinInput').focus();
+});
+
+document.getElementById('adminGateBtn').addEventListener('click', () => {
+  const val = document.getElementById('masterPinInput').value.trim();
+  const errorEl = document.getElementById('adminGateError');
+  if (val.toUpperCase() !== MASTER_ADMIN_PIN.toUpperCase()) {
+    errorEl.textContent = 'Esa clave no es correcta. Pedísela a quien coordina Ven, Sígueme.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  errorEl.style.display = 'none';
+  adminGate.hidden = true;
+  createForm.hidden = false;
 });
 
 function setBtnBusy(btn, busy, busyLabel, normalLabel) {
@@ -738,6 +907,13 @@ document.getElementById('joinGroupBtn').addEventListener('click', async () => {
     const snap = await fref('grupos/' + code + '/info').once('value');
     if (!snap.exists()) {
       errorEl.textContent = 'No encontramos ese código. Revisalo con quien organiza el grupo.';
+      errorEl.style.display = 'block';
+      setBtnBusy(btn, false, '', 'Unirme al grupo →');
+      return;
+    }
+    const semanasSnap = await fref('grupos/' + code + '/semanas').once('value');
+    if (!anyWeekLive(semanasSnap.val())) {
+      errorEl.textContent = 'Todavía no arrancó ninguna semana — esperá a que tu líder la active y volvé a tocar "Unirme al grupo →".';
       errorEl.style.display = 'block';
       setBtnBusy(btn, false, '', 'Unirme al grupo →');
       return;
@@ -773,7 +949,7 @@ document.getElementById('createGroupBtn').addEventListener('click', async () => 
     const now = new Date().toISOString();
     await fref('grupos/' + code + '/info').set({ nombreGrupo: groupName, creadoEn: now });
     await fref('grupos/' + code + '/miembros/' + memberId).set({ nombre: nombre, unidoEn: now });
-    identity = { groupCode: code, memberId: memberId, nombre: nombre };
+    identity = { groupCode: code, memberId: memberId, nombre: nombre, isHost: true };
     saveIdentity(identity);
     startApp();
   } catch (e) {
@@ -813,15 +989,28 @@ function onGroupDataChange() {
     document.getElementById('appRoot').hidden = false;
     document.getElementById('userGreeting').textContent = identity.nombre;
     document.getElementById('userGroupCode').textContent = identity.groupCode;
+    // Quienes se unen como participantes (no quien creó el grupo) no ven el
+    // acceso al Panel del administrador ni el link cruzado a Aventura de Fe
+    // en el mapa — solo su Diario. Si este celular no quedó marcado como
+    // líder (grupo creado antes de esta función, o un segundo celular del
+    // líder), se le muestra en su lugar un link chiquito para recuperar el
+    // acceso ingresando el PIN.
+    document.getElementById('adminLinkRow').hidden = !identity.isHost;
+    document.getElementById('defeCrossLinkRow').hidden = !identity.isHost;
+    document.getElementById('adminRecoverRow').hidden = !!identity.isHost;
     renderTopbar();
     renderMap();
     showScreen('home');
+    // Quien creó el grupo cae directo en su Panel del administrador (pidiendo
+    // el PIN primero, como siempre) en vez del mapa — como el Panel del
+    // Anfitrión de la trivia en vivo. El resto entra al mapa normalmente.
+    if (identity.isHost) showPinCard({ type: 'admin' });
     return;
   }
   renderTopbar();
   if (!screens.home.hidden) renderMap();
   if (!screens.week.hidden) refreshWeekDynamic();
-  if (!screens.admin.hidden) { renderAdminCode(); renderMembersList(); renderAdminWeekSummary(); }
+  if (!screens.admin.hidden) { renderAdminCode(); renderAdminStartWeek(); renderMembersList(); renderAdminWeekSummary(); }
 }
 
 /* ============================================================
@@ -838,7 +1027,16 @@ function weekProgress(weekId) {
     individualDone: !!mp.individualDone,
     closingDone: !!mp.closingDone,
     closingAt: mp.closingAt || null,
+    elegidos: mp.elegidos || {},
+    retoCapitulos: mp.retoCapitulos || {},
   };
+}
+// Para el portón de ingreso: ¿ya arrancó alguna semana en este grupo? Se
+// evalúa sobre el snapshot crudo de Firebase (todavía no hay identity para
+// un participante nuevo, así que no se puede usar weekProgress()).
+function anyWeekLive(semanas) {
+  semanas = semanas || {};
+  return WEEKS.some(w => !!(semanas[w.id] && semanas[w.id].activated));
 }
 // Aplica el mismo cambio a la copia local de groupData, para que la pantalla
 // se actualice al toque aunque el listener de Firebase todavía no haya
@@ -953,19 +1151,30 @@ function openWeek(index) {
   document.getElementById('weekTitle').textContent = w.tema;
   document.getElementById('weekPrincipio').textContent = w.principio;
 
-  const versesBox = document.getElementById('versesBox');
-  versesBox.innerHTML = w.escrituras.map(v =>
-    '<div class="verse-box">"' + escapeHtml(v.texto) + '"<div class="verse-ref">' + escapeHtml(v.ref) + '</div></div>'
-  ).join('');
+  const isAventura = !!w.capitulos;
+  document.getElementById('lunesClasico').hidden = isAventura;
+  document.getElementById('lunesAventura').hidden = !isAventura;
+  document.getElementById('retosClasico').hidden = isAventura;
+  document.getElementById('retosAventura').hidden = !isAventura;
 
-  document.getElementById('reflexionText').textContent = w.reflexion;
-  document.getElementById('personalQuestion').textContent = w.preguntaPersonal;
-  document.getElementById('activityText').textContent = w.actividadSemanal;
+  if (isAventura) {
+    aventuraView = p.mondayDone ? 'capitulos' : 'apertura';
+    renderAventuraLunes(w, p);
+    renderRetosAventura(w, p);
+  } else {
+    const versesBox = document.getElementById('versesBox');
+    versesBox.innerHTML = w.escrituras.map(v =>
+      '<div class="verse-box">"' + escapeHtml(v.texto) + '"<div class="verse-ref">' + escapeHtml(v.ref) + '</div></div>'
+    ).join('');
+    document.getElementById('reflexionText').textContent = w.reflexion;
+    document.getElementById('personalQuestion').textContent = w.preguntaPersonal;
+    document.getElementById('activityText').textContent = w.actividadSemanal;
+    renderIndividualOptions(w);
+  }
   document.getElementById('mondayDoneCheck').checked = !!p.mondayDone;
 
   renderDayStrip(w, p);
-  renderIndividualOptions(w);
-  renderMemberChecklist('memberChecklist', w.id);
+  renderChallengeStatus(w.id);
   document.getElementById('serviceActionText').textContent = w.accionServicio;
 
   document.getElementById('closingQuestion').textContent = w.preguntaCierre;
@@ -1006,7 +1215,8 @@ function refreshWeekDynamic() {
   applyGateVisibility(p);
   document.getElementById('mondayDoneCheck').checked = !!p.mondayDone;
   renderDayStrip(w, p);
-  renderMemberChecklist('memberChecklist', w.id);
+  renderChallengeStatus(w.id);
+  if (w.capitulos) renderRetosAventura(w, p);
   if (p.activated) {
     document.getElementById('dayTabs').hidden = false;
     renderDayTabs(w, p);
@@ -1068,6 +1278,10 @@ document.getElementById('activateWeekBtn').addEventListener('click', () => {
 document.getElementById('openAdminBtn').addEventListener('click', () => {
   showPinCard({ type: 'admin' });
 });
+document.getElementById('adminRecoverLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  showPinCard({ type: 'admin' });
+});
 document.getElementById('resetPinBtn').addEventListener('click', () => {
   const ok = confirm('Esto borra el PIN actual para todo el grupo — cualquiera podrá crear uno nuevo después. ¿Continuar?');
   if (!ok) return;
@@ -1121,6 +1335,17 @@ document.getElementById('pinConfirmBtn').addEventListener('click', () => {
   hidePinCard();
 
   if (action.type === 'admin') {
+    // Quien sabe el PIN es, en la práctica, el líder del grupo — aunque este
+    // celular no lo tuviera marcado (grupo creado antes de esta función, o
+    // un segundo celular del líder). Se lo marca ahora para que el Panel del
+    // administrador y el link cruzado queden visibles de ahí en más.
+    if (!identity.isHost) {
+      identity.isHost = true;
+      saveIdentity(identity);
+      document.getElementById('adminLinkRow').hidden = false;
+      document.getElementById('defeCrossLinkRow').hidden = false;
+      document.getElementById('adminRecoverRow').hidden = true;
+    }
     openAdminPanel();
     return;
   }
@@ -1218,8 +1443,38 @@ function renderAdminWeekSummary() {
     '</tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
+function renderAdminStartWeek() {
+  const text = document.getElementById('adminStartWeekText');
+  const btn = document.getElementById('startWeekBtn');
+  const currentIdx = WEEKS.findIndex((w, i) => weekStatus(i) === 'current');
+  if (currentIdx !== -1) {
+    const w = WEEKS[currentIdx];
+    text.textContent = 'Semana ' + (currentIdx + 1) + ' · ' + w.tema + ' — ya está en curso. Compartí el código de abajo para que se sumen.';
+    btn.hidden = true;
+    return;
+  }
+  const readyIdx = WEEKS.findIndex((w, i) => weekStatus(i) === 'ready');
+  if (readyIdx !== -1) {
+    const w = WEEKS[readyIdx];
+    text.textContent = 'Semana ' + (readyIdx + 1) + ' · ' + w.tema + ' — lista para comenzar.';
+    btn.hidden = false;
+    btn.onclick = () => {
+      activateWeek(w.id);
+      renderAdminStartWeek();
+      renderAdminWeekSummary();
+    };
+    return;
+  }
+  btn.hidden = true;
+  const hasAnyDone = WEEKS.some((w, i) => weekStatus(i) === 'done');
+  text.textContent = (hasAnyDone && WEEKS.length)
+    ? '¡Ya completaron todas las semanas cargadas! Avisale a quien coordina Ven, Sígueme cuando quieran la próxima.'
+    : 'Todavía no hay ninguna semana lista para comenzar (esperando su fecha, o falta cerrar la anterior).';
+}
+
 function openAdminPanel() {
   renderAdminCode();
+  renderAdminStartWeek();
   renderMembersList();
   renderAdminWeekSummary();
   showScreen('admin');
@@ -1230,10 +1485,40 @@ document.getElementById('backFromAdminBtn').addEventListener('click', () => {
   showScreen('home');
 });
 
+function copyToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+  // Fallback para navegadores/webviews sin Clipboard API
+  return new Promise((resolve, reject) => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand('copy');
+      resolve();
+    } catch (e) {
+      reject(e);
+    } finally {
+      document.body.removeChild(ta);
+    }
+  });
+}
+
 document.getElementById('shareCodeBtn').addEventListener('click', () => {
-  const url = location.href.split('#')[0].split('?')[0];
-  const msg = 'Únite a nuestro grupo de Aventura JAS (Ven, Sígueme). Código: ' + identity.groupCode + '\n' + url;
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  const btn = document.getElementById('shareCodeBtn');
+  const url = location.href.split('#')[0].split('?')[0] + '?code=' + identity.groupCode;
+  const original = btn.textContent;
+  copyToClipboard(url).then(() => {
+    btn.textContent = '✅ ¡Link copiado!';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  }).catch(() => {
+    window.prompt('No se pudo copiar solo — copiá este link a mano:', url);
+  });
 });
 
 /* ============================================================
@@ -1260,6 +1545,11 @@ document.getElementById('listenBtn').addEventListener('click', () => {
 document.getElementById('mondayDoneCheck').addEventListener('change', (e) => {
   const w = WEEKS[activeWeekIndex];
   writeMine(w.id, 'mondayDone', e.target.checked);
+});
+
+document.getElementById('individualDoneCheck').addEventListener('change', (e) => {
+  const w = WEEKS[activeWeekIndex];
+  writeMine(w.id, 'individualDone', e.target.checked);
 });
 
 document.getElementById('startChallengeBtn').addEventListener('click', () => {
@@ -1302,38 +1592,158 @@ function renderIndividualOptions(w) {
 }
 
 /* ============================================================
-   SEGUIMIENTO POR INTEGRANTE
-   Cada joven marca su propia casilla cuando cumple su desafío
-   individual de la semana. El resto del grupo (y el administrador
-   desde su panel) ve el mismo listado en vivo, para saber a quién
-   recordarle — pero solo vos podés marcar la tuya.
+   AVENTURA NARRATIVA (semanas con `capitulos`)
+   Apertura cinemática → 3 tarjetas de capítulo (sin spoiler) →
+   detalle (historia + audio narrado + desafío) → el joven elige
+   uno, dos, o los tres antes de continuar a su semana.
    ============================================================ */
-function renderMemberChecklist(containerId, weekId) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  const entries = rosterEntries();
-  if (entries.length === 0) {
-    el.innerHTML = '<div class="empty-note" style="padding:14px 4px;">Todavía no hay nadie más en el grupo.</div>';
+function renderAventuraLunes(w, p) {
+  document.getElementById('aperturaTituloEl').textContent = w.aperturaTitulo;
+  document.getElementById('aperturaTextoEl').textContent = w.aperturaTexto;
+  showAventuraView(w, p);
+}
+
+function showAventuraView(w, p) {
+  w = w || WEEKS[activeWeekIndex];
+  p = p || weekProgress(w.id);
+  document.getElementById('aventuraApertura').hidden = aventuraView !== 'apertura';
+  document.getElementById('aventuraCapitulos').hidden = aventuraView !== 'capitulos';
+  document.getElementById('aventuraDetalle').hidden = aventuraView !== 'detalle';
+  if (aventuraView === 'capitulos') renderCapitulosGrid(w, p);
+  if (aventuraView === 'detalle') renderCapituloDetalle(w, p);
+}
+
+function renderCapitulosGrid(w, p) {
+  const grid = document.getElementById('capitulosGrid');
+  grid.innerHTML = '';
+  w.capitulos.forEach(cap => {
+    const elegido = !!p.elegidos[cap.id];
+    const card = document.createElement('div');
+    card.className = 'card cap-card' + (elegido ? ' elegido' : '');
+    card.innerHTML =
+      '<div class="cap-titulo">' + escapeHtml(cap.titulo) + (elegido ? '<span class="cap-check">✓ Elegido</span>' : '') + '</div>' +
+      '<div class="cap-ref">' + escapeHtml(cap.ref) + '</div>';
+    card.addEventListener('click', () => {
+      aventuraCapId = cap.id;
+      aventuraView = 'detalle';
+      showAventuraView(w, p);
+    });
+    grid.appendChild(card);
+  });
+  const continueBtn = document.getElementById('continueAventuraBtn');
+  const anyElegido = w.capitulos.some(c => p.elegidos[c.id]);
+  continueBtn.hidden = !anyElegido || p.mondayDone;
+}
+
+function renderCapituloDetalle(w, p) {
+  const cap = w.capitulos.find(c => c.id === aventuraCapId);
+  if (!cap) return;
+  document.getElementById('capDetTitulo').textContent = cap.titulo;
+  document.getElementById('capDetRef').textContent = cap.ref;
+  document.getElementById('capDetHistoria').textContent = cap.historiaTexto;
+  document.getElementById('capDetDesafio').textContent = cap.desafioTexto;
+
+  const audioWrap = document.getElementById('capDetAudioWrap');
+  const audioEl = document.getElementById('capDetAudio');
+  const audioPending = document.getElementById('capDetAudioPending');
+  if (cap.audio) {
+    if (audioEl.getAttribute('src') !== cap.audio) audioEl.setAttribute('src', cap.audio);
+    audioWrap.hidden = false;
+    audioPending.hidden = true;
+  } else {
+    audioEl.removeAttribute('src');
+    audioWrap.hidden = true;
+    audioPending.hidden = false;
+  }
+
+  const elegido = !!p.elegidos[cap.id];
+  const btn = document.getElementById('elegirCapituloBtn');
+  btn.textContent = elegido ? 'Quitar de mi semana' : 'Elegir este desafío para mi semana';
+  btn.className = 'cta-btn' + (elegido ? ' secondary' : ' amber');
+}
+
+document.getElementById('comenzarAventuraBtn').addEventListener('click', () => {
+  aventuraView = 'capitulos';
+  showAventuraView();
+});
+
+document.getElementById('backToCapitulosBtn').addEventListener('click', () => {
+  const audioEl = document.getElementById('capDetAudio');
+  audioEl.pause();
+  aventuraView = 'capitulos';
+  showAventuraView();
+});
+
+document.getElementById('elegirCapituloBtn').addEventListener('click', () => {
+  const w = WEEKS[activeWeekIndex];
+  const p = weekProgress(w.id);
+  const cap = w.capitulos.find(c => c.id === aventuraCapId);
+  const elegido = !!p.elegidos[cap.id];
+  writeMine(w.id, 'elegidos/' + cap.id, !elegido);
+  aventuraView = 'capitulos';
+  showAventuraView(w, weekProgress(w.id));
+});
+
+document.getElementById('continueAventuraBtn').addEventListener('click', () => {
+  const w = WEEKS[activeWeekIndex];
+  writeMine(w.id, 'mondayDone', true);
+  activeDay = 'retos';
+  const p = weekProgress(w.id);
+  renderDayTabs(w, p);
+  showDayPanel('retos', w, p);
+});
+
+// Pestaña Martes-Viernes: un checkbox de "ya cumplí" por cada capítulo que
+// el joven eligió el lunes. El indicador agregado ("X de Y ya cumplieron")
+// se calcula igual que antes, sobre el flag general `individualDone` — acá
+// ese flag se deriva de si cumplió AL MENOS UNO de sus desafíos elegidos.
+function renderRetosAventura(w, p) {
+  const container = document.getElementById('retosCapitulosList');
+  const elegidosIds = Object.keys(p.elegidos).filter(id => p.elegidos[id]);
+  if (elegidosIds.length === 0) {
+    container.innerHTML = '<div class="empty-note">Todavía no elegiste ningún desafío — volvé a la pestaña 🏠 Lunes y elegí al menos uno.</div>';
     return;
   }
-  const semanaMiembros = (groupData.semanas && groupData.semanas[weekId] && groupData.semanas[weekId].miembros) || {};
-  el.innerHTML = '';
-  entries.forEach(m => {
-    const done = !!(semanaMiembros[m.id] && semanaMiembros[m.id].individualDone);
-    const isMe = m.id === identity.memberId;
+  const retoState = Object.assign({}, p.retoCapitulos);
+  container.innerHTML = '';
+  w.capitulos.filter(c => elegidosIds.includes(c.id)).forEach(cap => {
+    const done = !!retoState[cap.id];
     const row = document.createElement('div');
-    row.className = 'check-row';
-    row.style.marginTop = '8px';
-    const inputId = containerId + '-chk-' + m.id;
-    row.innerHTML = '<input type="checkbox" id="' + inputId + '"' + (done ? ' checked' : '') + (isMe ? '' : ' disabled') + '>' +
-      '<label for="' + inputId + '">' + escapeHtml(m.nombre) + (isMe ? ' (vos)' : '') + '</label>';
-    if (isMe) {
-      row.querySelector('input').addEventListener('change', (e) => {
-        writeMine(weekId, 'individualDone', e.target.checked);
-      });
-    }
-    el.appendChild(row);
+    row.className = 'card';
+    row.innerHTML =
+      '<div class="cap-titulo" style="margin-bottom:6px;">' + escapeHtml(cap.titulo) + '</div>' +
+      '<p style="font-size:13.5px; line-height:1.5; margin:0 0 10px;">' + escapeHtml(cap.desafioTexto) + '</p>' +
+      '<div class="check-row"><input type="checkbox" ' + (done ? 'checked' : '') + '><label>Ya cumplí este desafío</label></div>';
+    row.querySelector('input[type=checkbox]').addEventListener('change', (e) => {
+      retoState[cap.id] = e.target.checked;
+      writeMine(w.id, 'retoCapitulos/' + cap.id, e.target.checked);
+      const anyDone = elegidosIds.some(id => retoState[id]);
+      writeMine(w.id, 'individualDone', anyDone);
+    });
+    container.appendChild(row);
   });
+}
+
+/* ============================================================
+   SEGUIMIENTO POR INTEGRANTE
+   Cada joven marca su propia casilla cuando cumple su desafío
+   individual de la semana. El resto del grupo solo ve un conteo
+   agregado ("4 de 8 ya cumplieron"), sin nombres — el detalle de
+   quién falta queda solo en el panel del administrador, para sus
+   recordatorios, así nadie queda expuesto frente al grupo.
+   ============================================================ */
+function renderChallengeStatus(weekId) {
+  const check = document.getElementById('individualDoneCheck');
+  const countEl = document.getElementById('groupChallengeCount');
+  const p = weekProgress(weekId);
+  check.checked = !!p.individualDone;
+
+  const entries = rosterEntries();
+  const semanaMiembros = (groupData.semanas && groupData.semanas[weekId] && groupData.semanas[weekId].miembros) || {};
+  const doneCount = entries.filter(m => semanaMiembros[m.id] && semanaMiembros[m.id].individualDone).length;
+  countEl.textContent = entries.length <= 1
+    ? '¡Vos podés ser el primero en cumplirlo esta semana! 💪'
+    : doneCount + ' de ' + entries.length + ' ya cumplieron su desafío esta semana 💪';
 }
 
 const CLOSING_EMOJIS = ['😊', '🙏', '❤️', '😭', '💪', '✨', '🤗', '😅'];
@@ -1464,9 +1874,32 @@ document.getElementById('viewJournalFromBadgeBtn').addEventListener('click', () 
 /* ============================================================
    INIT
    ============================================================ */
+// Si alguien llega desde un link de invitación (?code=XXXXXX, generado por
+// "Copiar link de invitación" en el panel del administrador), va directo a
+// unirse con ese código — nunca ve la opción de crear un grupo nuevo.
+function getUrlCode() {
+  try {
+    const c = (new URLSearchParams(location.search).get('code') || '').trim().toUpperCase();
+    return /^[A-Z0-9]{4,10}$/.test(c) ? c : '';
+  } catch (e) { return ''; }
+}
+const urlCode = getUrlCode();
+
 if (identity && identity.groupCode && identity.memberId) {
   document.getElementById('screenJoin').hidden = true;
   startApp();
+} else if (urlCode) {
+  document.querySelector('#screenJoin .join-toggle').hidden = true;
+  adminGate.hidden = true;
+  createForm.hidden = true;
+  joinForm.hidden = false;
+  const codeInput = document.getElementById('joinCodeInput');
+  codeInput.value = urlCode;
+  codeInput.readOnly = true;
+  codeInput.style.background = 'var(--cream-deep)';
+  document.querySelector('#joinForm .join-note').textContent =
+    'Te invitaron a unirte al grupo JAS (código ' + urlCode + '). Escribí tu nombre para empezar.';
+  document.getElementById('joinNameInput').focus();
 }
 
 })();
